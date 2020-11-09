@@ -1,0 +1,11 @@
+label{
+    width: 30%;
+}
+.marginbottom{
+    margin-bottom: 2rem !important;
+}
+.error-login{
+    color: red;
+    margin-top: -10px;
+    margin-bottom: 14px;
+}

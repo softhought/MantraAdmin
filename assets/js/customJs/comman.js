@@ -1,0 +1,113 @@
+$(document).ready(function(){
+
+    $('.numberwithdecimal').bind('keyup paste', function() {
+        this.value = this.value.replace(/[^0-9\.]/g, '');
+    });
+
+    $('.onlynumber').bind('keyup paste', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+    $('.inputupper').bind('keyup paste', function() {
+       $(this).css('text-transform','uppercase');
+    });
+})
+function readCommanURL(input) {
+   
+    var id = $(input).attr('data-showId');
+    var isimage = $(input).attr('data-isimage');
+  
+    $("#"+isimage).val('Y');
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#'+id)
+                .attr('src', e.target.result)
+                .width(120)
+                .height(125);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+
+    }
+
+}
+
+function ajaxcallcontroller(method,formData){
+   var data = "";
+   var basepath = $("#basepath").val();
+            $.ajax({
+                type: "POST",
+                url: basepath + method,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                data: formData,
+                async:false,
+                success: function(result) {
+                    data = result;
+                },
+                error: function(jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+
+                    // alert(msg);  
+
+                }
+
+            }); /*end ajax call*/
+   return data;
+       
+}
+
+function ajaxcallcontrollerforcutom(method,formData){
+    var data = "";
+    var basepath = $("#basepath").val();
+             $.ajax({
+                 type: "POST",
+                 url: basepath + method,
+                 dataType: "json",                
+                 data: formData,
+                 async:false,
+                 success: function(result) {
+                     data = result;
+                 },
+                 error: function(jqXHR, exception) {
+                     var msg = '';
+                     if (jqXHR.status === 0) {
+                         msg = 'Not connect.\n Verify Network.';
+                     } else if (jqXHR.status == 404) {
+                         msg = 'Requested page not found. [404]';
+                     } else if (jqXHR.status == 500) {
+                         msg = 'Internal Server Error [500].';
+                     } else if (exception === 'parsererror') {
+                         msg = 'Requested JSON parse failed.';
+                     } else if (exception === 'timeout') {
+                         msg = 'Time out error.';
+                     } else if (exception === 'abort') {
+                         msg = 'Ajax request aborted.';
+                     } else {
+                         msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                     }
+ 
+                     // alert(msg);  
+ 
+                 }
+ 
+             }); /*end ajax call*/
+    return data;
+        
+ }
