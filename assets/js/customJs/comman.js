@@ -7,8 +7,8 @@ $(document).ready(function(){
     format: 'dd-mm-yyyy',
     startDate: startDate,
     endDate: endDate,
-    autoclose:true,
-    todayHighlight:true  
+    autoclose:true
+   // todayHighlight:true  
 
  });
 

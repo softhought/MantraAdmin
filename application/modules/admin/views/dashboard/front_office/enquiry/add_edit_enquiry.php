@@ -210,7 +210,7 @@
                                             <select class="form-control select2" id="done_by" name="done_by" style="width: 100%;">
                                                 <option value=''>Select</option>
                                                 <?php foreach($userlist as $userlist){ ?>
-                                                <option value='<?php echo $userlist->user_id; ?>' <?php if($enquiryEditdata->LOCATION == $locationlist->location){ echo "selected"; } ?>><?php echo $userlist->name_in_full; ?></option>
+                                                <option value='<?php echo $userlist->user_id; ?>' <?php if($enquiryEditdata->user_id == $userlist->user_id){ echo "selected"; } ?>><?php echo $userlist->name_in_full; ?></option>
                                                 <?php } ?>
                                             
                                                 </select>

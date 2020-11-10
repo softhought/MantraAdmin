@@ -6,6 +6,7 @@ function __construct()
 	{
 		 parent::__construct();
 		 $this->load->model('commondatamodel','commondatamodel',TRUE);		
+		 $this->load->model('enquirymodel','enquirymodel',TRUE);		
          $this->load->module('template');
 
 		
@@ -16,16 +17,53 @@ public function index(){
     $session = $this->session->userdata('mantra_user_detail');
     if($this->session->userdata('mantra_user_detail'))
     {   
-        //pre($session);exit;
-        $data['wingslist'] = $this->commondatamodel->getAllDropdownData('enquiry_wings');  
-        // pre($data['branchlist']);exit;
-        $data['view_file'] = 'dashboard/front_office/masters/enquiry_wings_list';       
+      
+      $data['winglist'] = $this->commondatamodel->getAllDropdownData('enquiry_wings');  
+      $data['pinlist'] = $this->commondatamodel->getAllDropdownData('pin_master');  
+      $data['userlist'] = $this->commondatamodel->getAllDropdownData('user_master');
+      $data['branchlist'] = $this->commondatamodel->getAllDropdownDataByComId('branch_master');  
+      // pre($data['branchlist']);exit;
+      $data['view_file'] = 'dashboard/front_office/calling/calling_list';      
         $this->template->admin_template($data);  
 		
     }else{
         redirect('admin','refresh');
   
   }
+
+}
+
+public function getenquirylist(){
+
+  $session = $this->session->userdata('mantra_user_detail');
+  if($this->session->userdata('mantra_user_detail'))
+  {   
+
+      $search_by =  $this->input->post('search_by');
+      if(trim(htmlspecialchars($this->input->post('from_dt'))) != ''){          
+        $from_dt = date('Y-m-d',strtotime($this->input->post('from_dt')));
+       }else{
+        $from_dt=NULL;
+       }
+       if(trim(htmlspecialchars($this->input->post('to_date'))) != ''){          
+        $to_date = date('Y-m-d',strtotime($this->input->post('to_date')));
+       }else{
+        $to_date=NULL;
+       }
+    
+      $branch =  $this->input->post('branch');
+      $wing =  $this->input->post('wing');
+      $caller =  $this->input->post('caller');
+      $mobile_no =  $this->input->post('mobile_no');
+      $data['branchlist'] = $this->enquirymodel->getenquirylist($search_by,$from_dt,$to_date,$branch,$wing,$caller,$mobile_no); 
+    // pre($data['branchlist']);exit;
+    $data['view_file'] = 'dashboard/front_office/calling/calling_list';      
+      $this->template->admin_template($data);  
+  
+  }else{
+      redirect('admin','refresh');
+
+}
 
 }
 
@@ -161,7 +199,7 @@ public function addedit_action(){
                   'user_id'=>$done_by,
                   'for_the_wing'=>$wings,
                   'enq_from'=>'',
-                  'BRANCH_ID'=>$branch_id,
+                  'branch_id'=>$branch_id,
                   'company_id'=>$session['companyid']                 
                     );
 
@@ -182,7 +220,9 @@ public function addedit_action(){
                                         'member_id'=>'',
                                         'validity_string'=>'',
                                         'card_code'=>'',
-                                        'payment_id'=>''
+                                        'payment_id'=>'',
+                                        'branch_id'=>$branch_id,
+                                        'company_id'=>$session['companyid']
                                        );
                   $upd_inser = $this->commondatamodel->insertSingleTableData('enquiry_detail',$enquiry_dtl);
                    

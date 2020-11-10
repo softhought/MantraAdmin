@@ -48,6 +48,10 @@ $(document).ready(function(){
         var data =  ajaxcallcontrollerforcutom(method,formData);
         $("#location").html(data.locationlist);
     })
+    getallenquery();
+    $("#viewbtn").click(function(){
+        getallenquery();
+    });
 
 })
 
@@ -116,4 +120,19 @@ function validateform(){
     }
 return true;
 
+}
+
+function getallenquery(){
+//   var search_by = $("#search_by").val();
+  var search_by = '';
+  var from_dt = $("#from_dt").val();
+  var to_date = $("#to_date").val();
+  var branch = $("#branch").val();
+  var wing = $("#wing").val();
+  var caller = $("#caller").val();
+//   var mobile_no = $("#mobile_no").val();
+  var mobile_no = '';
+  var formData = {search_by:search_by,from_dt:from_dt,to_date:to_date,branch:branch,wing:wing,caller:caller,mobile_no:mobile_no};
+  var method = 'enquiry/getenquirylist';
+  var data =  ajaxcallcontrollerforcutom(method,formData);
 }
