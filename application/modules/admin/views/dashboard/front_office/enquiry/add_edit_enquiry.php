@@ -93,7 +93,7 @@
                                     <div class="col-md-3">                                    
                                         <div class="form-group"> 
                                         <div class="input-group input-group-sm">
-                                         <input type="email" class="form-control forminputs typeahead" id="email" name="email" placeholder="Enter Email" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->short_description;  }  ?>">
+                                         <input type="email" class="form-control forminputs typeahead" id="email" name="email" placeholder="Enter Email" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->EMAIL;  }  ?>">
                                         </div>
                                         </div>
                                 </div>
@@ -108,7 +108,7 @@
                                         <select class="form-control select2" id="pin" name="pin" style="width: 100%;">
                                         <option value=''>Select</option>
                                         <?php foreach($pinlist as $pinlist){ ?>
-                                            <option value='<?php echo $pinlist->id; ?>'><?php echo $pinlist->pin_code; ?></option>
+                                            <option value='<?php echo $pinlist->id; ?>' <?php if($mode == 'EDIT' && $enquiryEditdata->PIN == $pinlist->id){ echo "selected"; } ?>><?php echo $pinlist->pin_code; ?></option>
                                         <?php } ?>
                                         </select>
 
@@ -124,6 +124,12 @@
                                             <div class="input-group input-group-sm">
                                             <select class="form-control select2" id="location" name="location" style="width: 100%;">
                                                 <option value=''>Select</option>
+                                                <?php if($mode == 'EDIT'){                                                    
+                                                    foreach($locationlist as $locationlist){ ?>
+
+                                                        <option value='<?php echo $locationlist->location; ?>' <?php if($enquiryEditdata->LOCATION == $locationlist->location){ echo "selected"; } ?>><?php echo $locationlist->location; ?></option>
+
+                                                      <?php  }  }   ?>
                                             
                                                 </select>
                                             </div>
@@ -138,7 +144,7 @@
                                             
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                            <input type="text" class="form-control forminputs typeahead onlynumber" id="mobile_no" name="mobile_no" placeholder="Enter Mobile No." autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->short_description;  }  ?>" maxlength="10">
+                                            <input type="text" class="form-control forminputs typeahead onlynumber" id="mobile_no" name="mobile_no" placeholder="Enter Mobile No." autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->MOBILE1;  }  ?>" maxlength="10">
 
                                             </div>
                                             </div>
@@ -150,7 +156,7 @@
                                         
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                            <input type="text" class="form-control forminputs typeahead onlynumber" id="whatsapp_no" name="whatsapp_no" placeholder="Enter Whatsapp No." autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->short_description;  }  ?>" maxlength="10">
+                                            <input type="text" class="form-control forminputs typeahead onlynumber" id="whatsapp_no" name="whatsapp_no" placeholder="Enter Whatsapp No." autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->MOBILE2;  }  ?>" maxlength="10">
                                             </div>
                                             </div>
                                         </div>
@@ -163,7 +169,7 @@
                                             
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                            <textarea cols="30" rows="2" name="address" id="address"></textarea>
+                                            <textarea cols="30" rows="2" name="address" id="address"><?php if($mode == 'EDIT'){ echo $enquiryEditdata->ADDRESS;  }  ?></textarea>
 
                                             </div>
                                             </div>
@@ -175,7 +181,7 @@
                                         
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                            <textarea cols="30" rows="2" name="remarks" id="remarks"></textarea>
+                                            <textarea cols="30" rows="2" name="remarks" id="remarks"><?php if($mode == 'EDIT'){ echo $enquiryEditdata->REMARKS;  }  ?></textarea>
                                             </div>
                                             </div>
                                         </div>
@@ -190,7 +196,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="text" class="form-control datepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask="" name="followup_date" id="followup_date" im-insert="false" value="" readonly>
+                                            <input type="text" class="form-control datepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask="" name="followup_date" id="followup_date" im-insert="false" value="<?php if($mode == 'EDIT' && $enquiryEditdata->FOLLOWUP_DATE != ""){ echo date('d-m-Y',strtotime($enquiryEditdata->FOLLOWUP_DATE));  }  ?>" readonly>
                                         </div>
                                     </div>
                                 </div>  
@@ -204,7 +210,7 @@
                                             <select class="form-control select2" id="done_by" name="done_by" style="width: 100%;">
                                                 <option value=''>Select</option>
                                                 <?php foreach($userlist as $userlist){ ?>
-                                                <option value='<?php echo $userlist->user_id; ?>'><?php echo $userlist->name_in_full; ?></option>
+                                                <option value='<?php echo $userlist->user_id; ?>' <?php if($enquiryEditdata->LOCATION == $locationlist->location){ echo "selected"; } ?>><?php echo $userlist->name_in_full; ?></option>
                                                 <?php } ?>
                                             
                                                 </select>

@@ -50,7 +50,10 @@ public function addeditenquiry(){
               $data['btnTextLoader'] = "Updating...";    
               $data['enquiryId'] = $this->uri->segment(4);     
                $where = array('ID'=>$data['enquiryId']);      
-              $data['enquiryEditdata'] = $this->commondatamodel->getSingleRowByWhereCls('enquiry_master',$where);   
+              $data['enquiryEditdata'] = $this->commondatamodel->getSingleRowByWhereCls('enquiry_master',$where);  
+               
+              $where = array('pin_code'=>$data['enquiryEditdata']->PIN);        
+              $data['locationlist'] = $this->commondatamodel->getAllRecordWhere('pin_master',$where);    
                         
            }
            $data['winglist'] = $this->commondatamodel->getAllDropdownData('enquiry_wings');  
