@@ -43,11 +43,11 @@
           
             <td align="center">
                     <?php if($wingslist->is_active == 'Y'){ ?>
-                    <a href="<?php echo admin_with_base_url(); ?>enquirywing/inactivebranch/<?php echo $wingslist->wing_id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 15px;padding: 2px 6px 2px 2px;">
+                    <a href="<?php echo admin_with_base_url(); ?>enquirywing/inactivewing/<?php echo $wingslist->wing_id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 15px;padding: 2px 6px 2px 2px;">
                     <i class="fa fa-check"></i> 
                   </a>
                     <?php }else{ ?>
-                      <a href="<?php echo admin_with_base_url(); ?>enquirywing/activebranch/<?php echo $wingslist->wing_id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 16px;padding: 2px 8px 2px 4px;">
+                      <a href="<?php echo admin_with_base_url(); ?>enquirywing/activewing/<?php echo $wingslist->wing_id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 16px;padding: 2px 8px 2px 4px;">
                     <i class="fa fa-times"></i> 
                     <?php } ?>
                     </td>

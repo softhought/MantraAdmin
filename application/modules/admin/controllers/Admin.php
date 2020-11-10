@@ -139,6 +139,7 @@ public function checklogin(){
                     "userid"=>$user->id,
                     "username"=>$user->user_name,
                     "user_role"=>$user->user_role_id,
+                    "branchid"=>$branch,
                     "companyid"=>$company,
                     "yearid"=>$yearid,
                     "fullname"=>$user->name,

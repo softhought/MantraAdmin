@@ -119,6 +119,28 @@ class Commondatamodel extends CI_Model{
              return $data;
          }
 	}
+	public function getAllDropdownDataByComId($table)
+	{
+		$session = $this->session->userdata('mantra_user_detail');
+		$data = array();
+		$this->db->select("*")
+				->from($table)
+				->where('company_id',$session['companyid']);
+		$query = $this->db->get();
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data;
+             
+        }
+		else
+		{
+             return $data;
+         }
+	}
 	
 	public function getSingleRowByWhereCls($table,$where)
 	{
@@ -461,7 +483,9 @@ public function insertSingleActivityTableData($act_module,$module,$action,$metho
                 "user_platform" =>  getUserPlatform(),
 				'ip_address'=>getUserIPAddress(),
 				"old_description"=>$old_details,
-				"description"=>$new_details
+				"description"=>$new_details,
+				'company_id'=>$session['companyid'],
+				'branch_id'=>$session['branchid']
             );
         try {
             $this->db->trans_begin();

@@ -2171,3 +2171,11 @@ tr td .fc-day-grid-event {
 .trnsformupper{
     text-transform: uppercase;
 }
+.labletext{
+    padding-top: 8px !important;
+    font-size: 12px !important
+}
+/* .datepicker table tr td.today, .datepicker table tr td.today.disabled, .datepicker table tr td.today.disabled:hover, .datepicker table tr td.today{
+    background-color: #04c !important;
+
+} */

@@ -1,5 +1,17 @@
 $(document).ready(function(){
 
+    var startDate = new Date($("#acstartDate").val());
+    var endDate = new Date($("#acendDate").val()); 
+
+  $('.datepicker').datepicker({
+    format: 'dd-mm-yyyy',
+    startDate: startDate,
+    endDate: endDate,
+    autoclose:true,
+    todayHighlight:true  
+
+ });
+
     $('.numberwithdecimal').bind('keyup paste', function() {
         this.value = this.value.replace(/[^0-9\.]/g, '');
     });

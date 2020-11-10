@@ -579,9 +579,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
  <input type="hidden" value="<?php echo admin_with_base_url();?>" id="basepath" readonly />
 
- <!-- <input type="hidden" value="<?php echo $accountingyear->start_date;?>" id="acstartDate" readonly />
+ <input type="hidden" value="<?php echo $start_date;?>" id="acstartDate" readonly />
 
- <input type="hidden" value="<?php echo $accountingyear->end_date;?>" id="acendDate" readonly /> -->
+ <input type="hidden" value="<?php echo $end_date;?>" id="acendDate" readonly />
 
      
 

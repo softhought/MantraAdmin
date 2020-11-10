@@ -104,6 +104,42 @@ if (!function_exists('pre'))
             return trim($decrypttext);
         }
     }
+    if(!function_exists('mantraSend')){
+        function mantraSend($phone, $msg)
+            {             
+                $mantra_user = "mantraapi1";               
+                $mantra_password = "j7@L86k1*dG";            
+                $mantra_url = "http://myvaluefirst.com/smpp/sendsms?";
+                //$mantra_from = "manl";
+                $mantra_from = "MANTRA";
+                $mantra_udh = 0;
+                $url = 'username='.$mantra_user;
+                $url.= '&password='.$mantra_password;
+                $url.= '&to='.urlencode($phone);
+                $url.= '&from='.$mantra_from;
+                $url.= '&udh='.$mantra_udh;
+                $url.= '&text='.urlencode($msg);
+                $url.= '&dlr-mask=19&dlr-url*';
+
+                $urltouse =  $mantra_url.$url;
+            //	  if ($debug)
+            //	  { echo "Request: <br>$urltouse<br><br>";
+            //      }
+
+                $file = file_get_contents($urltouse);
+                if ($file=="Sent.")
+                {
+                    $response="Y";
+                }
+                else
+                {
+                    $response="N";
+                }
+
+                return($response);
+            
+            }
+    }  
     
 
 
