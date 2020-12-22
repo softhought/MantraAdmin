@@ -93,4 +93,58 @@ define ("SEARCH_BY", json_encode(array (
    
 )));
 
+define ("GENDER", json_encode(array ( 
+    "M" => "MALE",
+    "F" => "FEMALE",
+    "O" => "OTHER",
+   
+)));
+define ("SEARCH_BY2", json_encode(array ( 
+    "FRESH" => " FRESH",
+    "FOLLOW-UP" => "FOLLOW-UP",
+   
+)));
+
+define ("Rate_TYPE", json_encode(array ( 
+    "Not Free" => "Not Free",
+    "Free" => "Free",
+   
+)));
+define ("PACK_TYPE", json_encode(array ( 
+    "Part of Package" => "Part of Package",
+    "Complimentary" => "Complimentary",
+   
+)));
+define ("PACK_SUB_TYPE", json_encode(array ( 
+    "W/OUT" => "W/OUT",
+    "H and F" => "H and F",
+   
+)));
+define ("HF_GROUP_TYPE", json_encode(array ( 
+    "GEN MED" => "GEN MED",
+    "BODY COMP" => "BODY COMP",
+    "ORTHO" => "ORTHO",
+    "GEN FIT" => "GEN FIT",
+    "BLOOD TEST" => "BLOOD TEST",
+   
+)));
+define ("PACKAGE_TYPE", json_encode(array ( 
+    "M" => "Mother Package",
+    "C" => "Child Package",
+       
+)));
+
+define ("MOTHER_PACKAGE_STATUS", json_encode(array ( 
+    "ALL" => "ALL",
+    "FRESH" => "FRESH",
+    "CONVERTED" => "CONVERTED",
+       
+)));
+define ("MOTHER_PACKAGE_SEARCH", json_encode(array ( 
+    "REG DATE" => "REG DATE",
+    "PAYMENT DATE" => "PAYMENT DATE",
+       
+)));
+
+
 

@@ -9,3 +9,9 @@ label{
     margin-top: -10px;
     margin-bottom: 14px;
 }
+iframe {
+    width: 361px;
+}
+.rc-anchor-logo-portrait {
+    margin: 6px 0 0 82px !important;
+}

@@ -41,4 +41,38 @@ class Commancontroller extends MY_Controller{
     
     }  
 
+    public function check_existingdata(){
+
+        if($this->session->userdata('mantra_user_detail'))
+        {     
+        
+            $usermasterlist = $this->commondatamodel->getAllDropdownData('user_master'); 
+
+            foreach($usermasterlist as $usermasterlist){
+            $insertarr = array(
+                                'name'=>$usermasterlist->name_in_full,
+                                'user_name'=>$usermasterlist->user_name,
+                                'password'=>md5($usermasterlist->user_pwd),
+                                'mobile_no'=>'',
+                                'user_role_id'=>3,
+                                'is_online'=>'N',
+                                'is_active'=>'Y',
+                                'branch_id'=>$usermasterlist->branch_id,
+                                'company_id'=>$usermasterlist->company_id,
+                                'created_by'=>1,
+                                'created_at'=>date('Y-m-d'),
+                                'updated_at'=>date('Y-m-d')
+                                );
+        $enq_master_id = $this->commondatamodel->insertSingleTableData('users',$insertarr);
+            }
+            exit;
+     
+        
+        }else{
+            redirect('admin','refresh');
+      
+        }
+    
+    }  
+
 }

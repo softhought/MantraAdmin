@@ -119,13 +119,14 @@ class Commondatamodel extends CI_Model{
              return $data;
          }
 	}
-	public function getAllDropdownDataByComId($table)
+public function getAllDropdownActiveDataByComId($table)
 	{
 		$session = $this->session->userdata('mantra_user_detail');
 		$data = array();
 		$this->db->select("*")
 				->from($table)
-				->where('company_id',$session['companyid']);
+				->where('company_id',$session['companyid'])
+				->where('is_active','Y');
 		$query = $this->db->get();
 		if($query->num_rows()> 0)
 		{
@@ -559,6 +560,105 @@ public function GetUploadImage($data,$filename,$dir,$short_name="")
 		}
 		
 	}
-	
+public function getAllDropdownDataByComId($table)
+	{
+		$session = $this->session->userdata('mantra_user_detail');
+		$data = array();
+		$this->db->select("*")
+				->from($table)
+				->where('company_id',$session['companyid']);				
+		$query = $this->db->get();
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data;
+             
+        }
+		else
+		{
+             return $data;
+         }
+	}
+
+public function getSingleRowByWhereClsByComId($table,$where)
+	{
+		$session = $this->session->userdata('mantra_user_detail');
+		$data = array();
+		$this->db->select("*")
+				->from($table)
+				->where('company_id',$session['companyid'])
+				->where($where)
+				->limit(1);
+		$query = $this->db->get();
+		
+		#echo "<br>".$this->db->last_query();exit;
+		
+		if($query->num_rows()> 0)
+		{
+           $row = $query->row();
+           return $data = $row;
+             
+        }
+		else
+		{
+            return $data;
+        }
+	}
+public function getAllRecordWhereByComId($table,$where)
+	{
+		$session = $this->session->userdata('mantra_user_detail');
+		$data = array();
+		$this->db->select("*")
+				->from($table)
+				->where('company_id',$session['companyid'])
+				->where($where);
+				
+		$query = $this->db->get();
+		#echo $this->db->last_query();
+
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data;
+             
+        }
+		else
+		{
+             return $data;
+         }
+	}
+
+	public function getAllRecordWhereByComIdOrderBy($table,$where,$order=[])
+	{
+		$session = $this->session->userdata('mantra_user_detail');
+		$data = array();
+		$this->db->select("*")
+				->from($table)
+				->where('company_id',$session['companyid'])
+				->where($where)
+				->order_by($order);
+		$query = $this->db->get();
+		#echo $this->db->last_query();
+
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data;
+             
+        }
+		else
+		{
+             return $data;
+         }
+	}
 	
 }

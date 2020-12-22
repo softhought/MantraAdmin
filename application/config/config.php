@@ -324,7 +324,8 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = 'REALLY_LONG_NUMBER';
+$config['encryption_key_urlencode'] = 'g8WfXyBFkwRnc2zR';
 
 /*
 |--------------------------------------------------------------------------
@@ -521,3 +522,4 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+$config['enc_secrete_key'] = '7lglzCn9kVcGfckWf6jZBJuLGAPwPm3rnti5nxhfDy0='; // Need to change both place config.php and customheader_helper.php if required

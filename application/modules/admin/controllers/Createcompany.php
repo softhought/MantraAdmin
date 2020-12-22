@@ -56,8 +56,9 @@ public function index(){
             
             
            }
-
+           
         //pre($session);exit;
+        //pre($dt);exit;
         $data['view_file'] = 'dashboard/franchisee/createcompany_view';       
         $this->template->admin_template($data);  
 		
@@ -74,10 +75,7 @@ public function index(){
 
       {
         $session = $this->session->userdata('mantra_user_detail');
-          $dataArry=[];
-          $json_response = array();
-          $formData = $this->input->post('formDatas');
-          parse_str($formData, $dataArry);
+       
 
           $companyId = trim(htmlspecialchars($this->input->post('companyId')));
           $mode = trim(htmlspecialchars($this->input->post('mode')));
@@ -87,7 +85,22 @@ public function index(){
           $mobile_no = trim(htmlspecialchars($this->input->post('mobile_no')));
           $docFile =  $_FILES;
           $company_logo = trim(htmlspecialchars($this->input->post('company_logo')));        
-          $isImage = trim(htmlspecialchars($this->input->post('isImage')));        
+          $isImage = trim(htmlspecialchars($this->input->post('isImage'))); 
+          if($this->input->post('sms_facility') == 'on'){
+            $sms_facility = 'Y';
+         }else{
+            $sms_facility = 'N';
+         } 
+         if($this->input->post('email_facility') == 'on'){
+            $email_facility = 'Y';
+         }else{
+            $email_facility = 'N';
+         } 
+         if($this->input->post('accounts') == 'on'){
+            $accounts = 'Y';
+         }else{
+            $accounts = 'N';
+         }        
        
           $imageData = array(				
             'docFile' => $docFile, 
@@ -121,12 +134,32 @@ public function index(){
                     'logo_name'=>$company_logo,
                     'is_parrent'=>'N',
                     'is_active'=>'Y',
+                    'sms_facility'=>$sms_facility,
+                    'accounts'=>$accounts,
+                    'email_facility'=>$email_facility,
                     'created_date'=>date('Y-m-d H:i:s'),
                     'created_by'=>$session['userid']
                       );
 
                   $upd_inser = $this->commondatamodel->insertSingleTableData('company_master',$insert_arr);
 
+                  $voucher_sl_master = array(
+                                            'last_srl'=>1,
+                                            'year_id'=>$session['yearid'],
+                                            'company_id'=>$upd_inser
+                                        );
+                 $vaoucher_srl_inser = $this->commondatamodel->insertSingleTableData('voucher_srl_master',$voucher_sl_master);
+                 $yeartag = date('Y').'-'. date('y', strtotime("+12 months ".date('Y')));
+                 $srl_master = array(
+                    'serialno'=>1,
+                    'moduleTag'=>'NUM',
+                    'noofpaddingdigit'=>2,
+                    'module'=>'SALE',
+                    'company_id'=>$upd_inser,
+                    'year_id'=>$session['yearid'],                    
+                    'yeartag'=>$yeartag
+                );
+                $srl_inser = $this->commondatamodel->insertSingleTableData('serialmaster',$srl_master);
                    /** audit trail */ 
                     $module = 'Create Company';           
                     $action = "Insert";
@@ -146,7 +179,10 @@ public function index(){
                             'company_email'=>$email,
                             'logo_name'=>$company_logo,
                             'is_parrent'=>'N',
-                            'is_active'=>'Y'                           
+                            'is_active'=>'Y',
+                            'sms_facility'=>$sms_facility,
+                            'accounts'=>$accounts,
+                            'email_facility'=>$email_facility                        
                             );
 
                   $where = array('comany_id'=>$companyId);

@@ -435,6 +435,7 @@ body {
     font-weight: 600;
 
     background: #fbfbfb;
+    min-width: 11rem !important;
 
 }
 
@@ -781,6 +782,8 @@ body {
     border: 0;
 
     background: #dab3dd;
+   
+
 
     border-bottom: 2px solid #7b4769;
 
@@ -891,6 +894,7 @@ border: 1px solid
 .layout-box-content-format1 .table.customTbl tbody tr:nth-of-type(2n) {
 
     background: #f8ddfb;
+   
 
 }
 
@@ -2179,3 +2183,93 @@ tr td .fc-day-grid-event {
     background-color: #04c !important;
 
 } */
+
+/* added by anil 11-11-2020 */
+.disable_field {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    border: 1px solid #ced4da;
+    font-size: 15px;
+    color: #495057;
+}
+.modalerror{
+    border: 2px solid #b73434;
+}
+.successmodel{
+    color: #16994F;
+    margin-bottom: 0;
+    margin-right: 29rem !important;
+    padding: 0;
+    font-weight:bold;
+}
+.label-danger{
+    background-color: #d9534f;
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 63%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25em;
+}
+.active{
+    background-color: #f5f5f5;
+}
+.success{
+    background-color: #dff0d8;
+}
+.warning{
+    background-color: #fcf8e3;
+}
+.danger{
+    background-color: #f2dede;
+}
+.info{
+    background-color: #d9edf7;
+}
+.form_text2{
+    border-top: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4b1a18;
+    text-align: left;
+  
+}
+.dipflex{
+    display: flex
+}
+.alerttitale2{
+    font-size: 16px;
+    color: #ac6262;
+}
+.font14{
+    font-size: 14px !important;
+}
+.circledrw {
+    height: 25px;
+    width: 25px;
+    background-color: #E91E63;
+    border-radius: 50%;
+    display: inline-block;
+    padding-top: 3px;
+    color: white;
+    margin-left: 37px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+#detail_cardrate table th{
+    background-color: #ee7555 !important;
+}
+#package_dtl table th{
+    background-color: #ee7555 !important;
+}
+#detail_cardrate table td{
+    background-color: #fbdac1 !important;
+}
+#package_dtl table td{
+    background-color: #fbdac1 !important;
+}

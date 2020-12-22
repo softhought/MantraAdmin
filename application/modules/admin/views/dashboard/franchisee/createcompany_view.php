@@ -59,9 +59,12 @@
 
                                         </div>
                                         </div>
-                                    </div>                                                
+                                    </div>
+                                                                               
                                </div> 
-                               <div class="col-md-4 uploadProfile">
+                               <div class="col-md-6 uploadProfile">
+                                  <div class="row">
+                                     <div class="col-md-10">    
                                     <label for="profilepic"></label>
                                        <div class="form-group profile-block">
                                             <img src='<?php  if($mode == 'EDIT' && $comapnyEditdata->logo_name != ''){ ?> <?php echo base_url(); ?>assets/img/company-logo/<?php echo $comapnyEditdata->logo_name; } ?>' id="showimage" style="width: 120px;height:125px;border: 1px solid #6d78cb;margin-bottom:13px; ">                                    
@@ -73,6 +76,44 @@
                                                 <input type='hidden' name='isImage' id="isImage" value="N">
                                             </div>
                                       </div>
+                                      </div>
+                                      </div>
+                                    
+
+                                     <div class="row">
+                                     <!-- <label for="attendance_consider" class="col-md-12">&nbsp; </label> -->
+                                    
+                                    <div class="col-md-4">
+                                    <label for="sms_facility">SMS Facility </label>
+                                            <div class="form-group"> 
+                                            <div class="input-group input-group-sm">
+                                            <input type="checkbox" class="call-checkbox" name="sms_facility" name="sms_facility" <?php if($mode == 'EDIT' && $comapnyEditdata->sms_facility == 'Y'){ echo "checked";  }  ?> style="margin-left: 2rem;">
+
+
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                    <label for="email_facility">Email Facility </label>
+                                            <div class="form-group"> 
+                                            <div class="input-group input-group-sm">
+                                            <input type="checkbox" class="call-checkbox" name="email_facility" name="email_facility" <?php if($mode == 'EDIT' && $comapnyEditdata->email_facility == 'Y'){ echo "checked";  }  ?> style="margin-left: 2rem;">
+
+
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                    <label for="accounts">Accounts </label>
+                                            <div class="form-group"> 
+                                            <div class="input-group input-group-sm">
+                                            <input type="checkbox" class="call-checkbox" name="accounts" name="accounts" <?php if($mode == 'EDIT' && $comapnyEditdata->accounts == 'Y'){ echo "checked";  }  ?> style="margin-left: 1.5rem;">
+
+
+                                            </div>
+                                            </div>
+                                        </div> 
+                                                </div>
                                  </div> <!-- end of uploadProfile section -->
                             
                             </div>

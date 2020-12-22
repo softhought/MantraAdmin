@@ -26,7 +26,9 @@
               <tr>
               <th>Sl.No</th>
               <th>Wings</th>
-              <th>Short Description</th>             
+              <th>Short Description</th>  
+              <th>Category</th>  
+
               <th>Status</th>  
               <th>Action</th>
                                   
@@ -40,6 +42,7 @@
             <td><?php echo $i++; ?></td>
             <td><?php echo $wingslist->wing_name; ?></td>                    
             <td><?php echo $wingslist->short_description; ?></td>           
+            <td><?php echo $wingslist->category_name; ?></td>           
           
             <td align="center">
                     <?php if($wingslist->is_active == 'Y'){ ?>
