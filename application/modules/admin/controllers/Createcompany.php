@@ -6,6 +6,7 @@ function __construct()
 	{
 		 parent::__construct();
 		 $this->load->model('commondatamodel','commondatamodel',TRUE);
+		 $this->load->model('companyodel','companyodel',TRUE);
          $this->load->module('template');
 	
 
@@ -18,7 +19,8 @@ public function index(){
     if($this->session->userdata('mantra_user_detail'))
     {   
         //pre($session);exit;
-        $data['companylist'] = $this->commondatamodel->getAllDropdownData('company_master');  
+        $data['companylist'] = $this->companyodel->getcompanyList(); 
+
         $data['view_file'] = 'dashboard/franchisee/company_list';       
         $this->template->admin_template($data);  
 		
@@ -56,6 +58,9 @@ public function index(){
             
             
            }
+
+           $where = array('is_active'=>'Y');
+           $data['zonelist'] = $this->commondatamodel->getAllRecordWhere('zone_master',$where);   
            
         //pre($session);exit;
         //pre($dt);exit;
@@ -83,6 +88,7 @@ public function index(){
           $short_name = trim(htmlspecialchars($this->input->post('short_name')));
           $email = trim(htmlspecialchars($this->input->post('email')));
           $mobile_no = trim(htmlspecialchars($this->input->post('mobile_no')));
+          $zone = trim(htmlspecialchars($this->input->post('zone')));
           $docFile =  $_FILES;
           $company_logo = trim(htmlspecialchars($this->input->post('company_logo')));        
           $isImage = trim(htmlspecialchars($this->input->post('isImage'))); 
@@ -138,7 +144,9 @@ public function index(){
                     'accounts'=>$accounts,
                     'email_facility'=>$email_facility,
                     'created_date'=>date('Y-m-d H:i:s'),
-                    'created_by'=>$session['userid']
+                    'created_by'=>$session['userid'],
+                    'zone_id'=>$zone,
+                    'admin_new'=>'Y'
                       );
 
                   $upd_inser = $this->commondatamodel->insertSingleTableData('company_master',$insert_arr);
@@ -149,17 +157,22 @@ public function index(){
                                             'company_id'=>$upd_inser
                                         );
                  $vaoucher_srl_inser = $this->commondatamodel->insertSingleTableData('voucher_srl_master',$voucher_sl_master);
-                 $yeartag = date('Y').'-'. date('y', strtotime("+12 months ".date('Y')));
-                 $srl_master = array(
-                    'serialno'=>1,
-                    'moduleTag'=>'NUM',
-                    'noofpaddingdigit'=>2,
-                    'module'=>'SALE',
-                    'company_id'=>$upd_inser,
-                    'year_id'=>$session['yearid'],                    
-                    'yeartag'=>$yeartag
+                 $sl_table = array(
+                    'latest_srl'=>1,                   
+                    'company_id'=>$upd_inser
                 );
-                $srl_inser = $this->commondatamodel->insertSingleTableData('serialmaster',$srl_master);
+               $vaoucher_srl_inser = $this->commondatamodel->insertSingleTableData('serial_table',$sl_table);
+                //  $yeartag = date('Y').'-'. date('y', strtotime("+12 months ".date('Y')));
+                //  $srl_master = array(
+                //     'serialno'=>1,
+                //     'moduleTag'=>'NUM',
+                //     'noofpaddingdigit'=>2,
+                //     'module'=>'SALE',
+                //     'company_id'=>$upd_inser,
+                //     'year_id'=>$session['yearid'],                    
+                //     'yeartag'=>$yeartag
+                // );
+                // $srl_inser = $this->commondatamodel->insertSingleTableData('serialmaster',$srl_master);
                    /** audit trail */ 
                     $module = 'Create Company';           
                     $action = "Insert";
@@ -182,7 +195,8 @@ public function index(){
                             'is_active'=>'Y',
                             'sms_facility'=>$sms_facility,
                             'accounts'=>$accounts,
-                            'email_facility'=>$email_facility                        
+                            'email_facility'=>$email_facility,
+                            'zone_id'=>$zone,                        
                             );
 
                   $where = array('comany_id'=>$companyId);

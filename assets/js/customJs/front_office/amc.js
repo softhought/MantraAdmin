@@ -46,12 +46,58 @@ $(document).ready(function(){
 
     });
 
+// amc report in calender
+fullcalender();
+    $("#expirydate").click(function() {
+
+
+        //$('#calender').fullCalendar({ events: {} });
+        $('#calender').fullCalendar('destroy');
+        fullcalender();
+    })
 
 
 
 })
 
+function fullcalender() {
 
+    var basepath = $("#basepath").val();
+    var statutory_id = $("#statutory_name").val();
+    $("#calender").html('');
+    $("#loader").css("display", "block");
+   //alert(statutory_id);
+    $.ajax({
+        type: "POST",
+        url: basepath + 'annualmaintanancechrg/getAmcExpirydata',
+        dataType: "json",
+        //contentType: false,
+        data: { statutory_id: statutory_id },
+        success: function(result) {
+           
+            $("#loader").css("display", "none");
+            $('#calender').fullCalendar({
+                displayEventTime: false,
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,listWeek'
+                },
+                defaultDate: new Date(),
+                navLinks: true, // can click day/week names to navigate views
+                editable: false,
+                eventLimit: 2, // allow "more" link when too many events        
+                events: result,
+                
+
+            });
+
+
+
+        }
+
+    });
+}
 
 function validateform(){
 

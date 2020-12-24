@@ -3,9 +3,9 @@
 
 <div class="card card-primary">
     <div class="card-header box-shdw">
-      <h3 class="card-title">AMC List</h3>
+      <h3 class="card-title">Zone List</h3>
        <div class="btn-group btn-group-sm float-right" role="group" aria-label="MoreActionButtons" >
-      <a href="<?php echo admin_with_base_url(); ?>annualmaintanancechrg/addeditamc" class="btn btn-default btnpos">
+      <a href="<?php echo admin_with_base_url(); ?>zone/addeditzone" class="btn btn-default btnpos">
        <i class="fas fa-plus"></i> Add </a>
     </div>
      
@@ -25,11 +25,8 @@
           <thead>
               <tr>
               <th>Sl.No</th>
-              <th>Item Name</th>             
-              <th>Expiry Date</th>             
-              <th>Renewal Amount</th>   
-              <th>Vendor Name</th>   
-              <!-- <th>Status</th>   -->
+              <th>Zone</th>                         
+              <th>Status</th>  
               <th>Action</th>
                                   
               </tr>
@@ -37,28 +34,25 @@
           <tbody>
 
           <?php $i=1;
-          foreach ($Amclist as $Amclist) { ?>
+          foreach ($zonelist as $zonelist) { ?>
             <tr>
             <td><?php echo $i++; ?></td>
-            <td><?php echo $Amclist->statutory_name; ?></td>                    
-            <td><?php echo date('d-m-Y',strtotime($Amclist->expiry_date)); ?></td>                    
-            <td><?php echo $Amclist->renewal_amt; ?></td>                    
-            <td><?php echo $Amclist->account_description; ?></td>                    
-                  
+            <td><?php echo $zonelist->zone_name; ?></td>                   
+                    
           
-            <!-- <td align="center">
-                    <?php if($statutorylist->is_active == 'Y'){ ?>
-                    <a href="<?php echo admin_with_base_url(); ?>statutorymaster/inactive/<?php echo $statutorylist->id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 15px;padding: 2px 6px 2px 2px;">
+            <td align="center">
+                    <?php if($zonelist->is_active == 'Y'){ ?>
+                    <a href="<?php echo admin_with_base_url(); ?>zone/inactive/<?php echo $zonelist->zone_id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 15px;padding: 2px 6px 2px 2px;">
                     <i class="fa fa-check"></i> 
                   </a>
                     <?php }else{ ?>
-                      <a href="<?php echo admin_with_base_url(); ?>statutorymaster/active/<?php echo $statutorylist->id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 16px;padding: 2px 8px 2px 4px;">
+                      <a href="<?php echo admin_with_base_url(); ?>zone/active/<?php echo $zonelist->zone_id; ?>" class="btn tbl-action-btn padbtn" style="font-size: 16px;padding: 2px 8px 2px 4px;">
                     <i class="fa fa-times"></i> 
                     <?php } ?>
-                    </td> -->
+                    </td>
            
             <td align="center">
-              <a href="<?php echo admin_with_base_url(); ?>annualmaintanancechrg/addeditamc/<?php echo $Amclist->amc_id; ?>" class="btn tbl-action-btn padbtn">
+              <a href="<?php echo admin_with_base_url(); ?>zone/addeditzone/<?php echo $zonelist->zone_id; ?>" class="btn tbl-action-btn padbtn">
             <i class="fas fa-edit"></i> 
           </a>
         

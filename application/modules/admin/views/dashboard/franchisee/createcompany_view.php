@@ -51,7 +51,8 @@
                                         </div>
                                     </div>                                                
                              
-                               <div class="col-md-12">
+                             <div class="row">
+                               <div class="col-md-6">
                                     <label for="mobile_no">Register Mobile*</label>
                                         <div class="form-group"> 
                                         <div class="input-group input-group-sm">
@@ -60,7 +61,21 @@
                                         </div>
                                         </div>
                                     </div>
-                                                                               
+                                    <div class="col-md-6">
+                                    <label for="zone">Zone</label>
+                                    <div class="form-group">
+                                    <div class="input-group input-group-sm">                                            
+                                        <select class="form-control select2" name="zone" id="zone">
+                                            <option value="">Select</option>
+                                            <?php foreach($zonelist as $zonelist){ ?>
+                                                    <option value='<?php echo $zonelist->zone_id; ?>' <?php if($mode == 'EDIT' && $comapnyEditdata->zone_id == $zonelist->zone_id){ echo"selected";  }  ?>><?php echo $zonelist->zone_name; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                        </div>
+                                      
+                                    </div>
+                                     </div>                                          
                                </div> 
                                <div class="col-md-6 uploadProfile">
                                   <div class="row">

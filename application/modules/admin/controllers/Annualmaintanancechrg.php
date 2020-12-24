@@ -15,12 +15,13 @@ function __construct()
 
 public function index(){
 
-    $session = $this->session->userdata('mantra_user_detail');
+    
     if($this->session->userdata('mantra_user_detail'))
     {   
+        $session = $this->session->userdata('mantra_user_detail');
         //pre($session);exit;       
-        $data['Amclist'] = $this->amcmodel->getAmcList();  
-        // pre($data['branchlist']);exit;
+        $data['Amclist'] = $this->amcmodel->getAmcList($session['companyid']);  
+         //pre($data['Amclist']);exit;
         $data['view_file'] = 'dashboard/front_office/amc/amc_list';
         $this->template->admin_template($data);  		
 
@@ -51,7 +52,9 @@ public function index(){
            }
          
          $data['statutorylist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('statutory_master');  
-       // pre($data['statutorylist']);exit;
+        
+         $data['vendorlist'] = $this->amcmodel->getVendorList();  
+       // pre($data['vendorlist']);exit;
 
        $data['view_file'] = 'dashboard/front_office/amc/addedit_amc'; ;       
 
@@ -87,6 +90,7 @@ public function index(){
            }
       
         $renewal_amt = trim(htmlspecialchars($this->input->post('renewal_amt')));
+        $account_id = trim(htmlspecialchars($this->input->post('account_id')));
          
 
                         
@@ -99,7 +103,9 @@ public function index(){
                     'statutory_id'=>$item_name,                   
                     'expiry_date'=>$expiry_date,
                     'renewal_amt'=>$renewal_amt,
-                    'year_id'=> $session['yearid']
+                    'year_id'=> $session['yearid'],
+                    'account_id'=>$account_id,
+                    'company_id'=>$session['companyid']
                     );
 
 
@@ -125,6 +131,7 @@ public function index(){
                     'statutory_id'=>$item_name,                   
                     'expiry_date'=>$expiry_date,
                     'renewal_amt'=>$renewal_amt,
+                    'account_id'=>$account_id
                    
                     );
 
@@ -185,10 +192,55 @@ public function index(){
 }
 
 
-
 }
 
+public function amcreportincalender(){
 
+  $session = $this->session->userdata('mantra_user_detail');
+  if($this->session->userdata('mantra_user_detail'))
+  {   
+      //pre($session);exit;       
+      $data['statutorylist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('statutory_master');  
+      // pre($data['branchlist']);exit;
+      $data['view_file'] = 'dashboard/front_office/reports/calender/calender_view';
+      $this->template->admin_template($data);  		
+
+  }else{
+      redirect('admin','refresh');  
+
+}
+}
+
+public  function getAmcExpirydata()
+
+  {
+   
+      $session = $this->session->userdata('mantra_user_detail');
+
+      if($this->session->userdata('mantra_user_detail'))
+
+      {         
+
+          $statutory_id = $this->input->post('statutory_id'); 
+          $session = $this->session->userdata('mantra_user_detail');
+          $comp = $session['companyid'];
+          $json_response = $this->amcmodel->getallamcforcalender($statutory_id,$comp); 
+
+          header('Content-Type: application/json');
+
+          echo json_encode( $json_response );
+
+          exit;
+
+      }
+
+      else{
+
+          redirect('login','refresh');
+
+      }
+
+  }
 
 
 

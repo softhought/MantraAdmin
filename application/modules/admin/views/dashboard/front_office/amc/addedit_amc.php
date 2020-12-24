@@ -85,6 +85,24 @@
                                                 </div>
                                             </div> 
                     </div> 
+                    <div class="row">                                                     
+
+                                <label for="item_name" class="col-md-2 labletext">Vendor Name*  </label>
+                                    <div class="col-md-3">
+                                        
+                                            <div class="form-group"> 
+                                            <div class="input-group input-group-sm">
+                                            <select class="form-control select2" id="account_id" name="account_id" style="width: 100%;">
+                                                <option value=''>Select</option>
+                                                <?php foreach($vendorlist as $vendorlist){ ?>
+                                                <option value='<?php echo $vendorlist->account_id; ?>' <?php if($mode == "EDIT" && $amcEditdata->account_id == $vendorlist->account_id){ echo "selected"; } ?>><?php echo $vendorlist->account_description; ?></option>
+                                                <?php } ?>
+                                            
+                                                </select>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
                                                    
 
                 </div>

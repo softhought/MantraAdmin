@@ -30,6 +30,7 @@
                       <th>Short Name</th>  
                       <th>Mobile No.</th>  
                       <th>Email</th>  
+                      <th>Zone</th>  
                       <th>Status</th>  
                       <th>Action</th>
                                           
@@ -46,6 +47,7 @@
                     <td><?php echo $companylist->short_name; ?></td>
                     <td><?php echo $companylist->company_phone; ?></td>
                     <td><?php echo $companylist->company_email; ?></td>
+                    <td><?php echo $companylist->zone_name; ?></td>
                    
                     <td align="center">
                     <?php if($companylist->is_active == 'Y'){ ?>
