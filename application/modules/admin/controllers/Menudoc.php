@@ -147,7 +147,7 @@ public function addMenudoc(){
                 $rowdeveloper_name=$dataArry['rowdeveloper_name'];
                 $rowdeveloper_note=$dataArry['rowdeveloper_note'];
                 
-                  for ($i=0; $i < sizeof($rowselectedDays_1); $i++) { 
+                  for ($i=0; $i < sizeof($rowdeveloper_note); $i++) { 
                   
                    $doc_dtl_array = array(
                                                 'doc_mst_id' => $insertdata, 
