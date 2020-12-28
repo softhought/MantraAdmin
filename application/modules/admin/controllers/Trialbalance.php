@@ -5,12 +5,13 @@ class Trialbalance extends MY_Controller{
 function __construct()
 	{
 		 parent::__construct();
-		 $this->load->model('commondatamodel','commondatamodel',TRUE);		
-		 $this->load->model('enquirymodel','enquirymodel',TRUE);		
-     $this->load->module('template');
-   
-
-		
+         $this->load->model('commondatamodel','commondatamodel',TRUE);	
+        
+        $this->load->model('trialbalancemodel', '', TRUE);	 	
+        $this->load->model('companymodel', '', TRUE);	
+        $this->load->library('jasperphp'); 	
+         $this->load->module('template');
+   		
 	}
 
 public function index(){
@@ -19,10 +20,13 @@ public function index(){
     if($this->session->userdata('mantra_user_detail'))
     {  
      
-     
-      
-       //pre($data['userlist']);exit;
-      $data['view_file'] = 'dashboard/front_office/calling/calling_list';      
+        $where = array('year_id'=>$session['yearid']);
+
+		$financialyear = $this->commondatamodel->getSingleRowByWhereCls('year_master',$where);
+        $data['start_date']=$financialyear->starting_date;
+        $data['ending_date']=$financialyear->ending_date;
+        //pre($data['start_date']);exit;
+        $data['view_file'] = 'dashboard/account/reports/trialbalance/trial_balance';      
         $this->template->admin_template($data);  
 		
     }else{
@@ -32,39 +36,62 @@ public function index(){
 
 }
 
-public function getenquirylist(){
+public function trailJasper()
 
-  $session = $this->session->userdata('mantra_user_detail');
-  if($this->session->userdata('mantra_user_detail'))
-  {   
+    {
+        $session = $this->session->userdata('mantra_user_detail');
+        if($this->session->userdata('mantra_user_detail'))
+        {     
 
-      $search_by =  $this->input->post('search_by');
-      if(trim(htmlspecialchars($this->input->post('from_dt'))) != ''){          
-        $from_dt = date('Y-m-d',strtotime($this->input->post('from_dt')));
-       }else{
-        $from_dt=NULL;
-       }
-       if(trim(htmlspecialchars($this->input->post('to_date'))) != ''){          
-        $to_date = date('Y-m-d',strtotime($this->input->post('to_date')));
-       }else{
-        $to_date=NULL;
-       }
-    
-      $branch =  $this->input->post('branch');
-      $wing =  $this->input->post('wing');
-      $caller =  $this->input->post('caller');
-      $mobile_no =  $this->input->post('mobile_no');
-      $data['enquirylist'] = $this->enquirymodel->getenquirylist($search_by,$from_dt,$to_date,$branch,$wing,$caller,$mobile_no);
-      //pre($data['enquirylist']);exit;
-     
-     $page = 'dashboard/front_office/calling/calling_partial_list';      
-      $this->load->view($page,$data);
-  
-  }else{
-      redirect('admin','refresh');
+            $file= APPPATH."modules/admin/views/dashboard/account/reports/trialbalance/TrailBalanceJasper.jrxml";
+            $this->load->library('jasperphp');
+            $jasperphp = $this->jasperphp->jasper();
+// pre($file);exit;
+            $dbdriver="mysql";
+            // $server="localhost";
+            // $db="teasamrat";
+            // $user="root";
+            // $pass="";           
+
+            $this->load->database();
+            $server=$this->db->hostname;
+            $user=$this->db->username;
+            $pass=$this->db->password;
+            $db=$this->db->database;
+
+           
+
+            $companyId = $session['companyid'];
+            $yearid = $session['yearid'];
+            $branchid = $session['branchid'];
+                 
+
+            $fromdate = $this->uri->segment(4);
+            $todate = $this->uri->segment(5);
+            $frmDate = date("Y-m-d",strtotime($fromdate));
+            $toDate = date("Y-m-d",strtotime($todate)); 
+             
+            $fiscalStartDt= $this->trialbalancemodel->getFiscalStartDt($yearid);          
+            $company=  $this->companymodel->getCompanyNameById($companyId);           
+            $companyaddress=  $this->companymodel->getCompanyAddressBybranchId($branchid);
+         
+          
+            $dateRange='('.$fromdate.' To '.$todate.')';
+            $printDate=date("d-m-Y");
+
+            // $jasperphp->debugsql=true;
+            $jasperphp->arrayParameter = array('CompanyId'=>$companyId,'YearId'=>$yearid,'fromDate'=>"'".$frmDate."'",'toDate'=>"'".$toDate."'",'fiscalstartdate'=>"'".$fiscalStartDt."'",'CompanyName'=>$company,'CompanyAddress'=>$companyaddress,'printDate'=>$printDate,'dateRange'=>$dateRange);
+            //pre($jasperphp->arrayParameter);  exit;   
+            $jasperphp->load_xml_file($file); 
+            $jasperphp->transferDBtoArray($server,$user,$pass,$db,$dbdriver);
+            $jasperphp->outpage('I','Trial Balance-'.date('d_m_Y-His'));         
+            // $page = 'trial_balance/trailWithJasper.php';
+            // $this->load->view($page, $result, TRUE);
+
+        } else {
+            redirect('admin', 'refresh');
+        }
+    }
+
 
 }
-
-}
-
-|

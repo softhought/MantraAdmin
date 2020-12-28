@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TrialBalanceJasper" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f923a29b-b50b-4cd5-9761-9e7d0a8f6fea">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CompanyId" class="java.lang.Integer"/>
+	<parameter name="YearId" class="java.lang.Integer"/>
+	<parameter name="fromDate" class="java.lang.String"/>
+	<parameter name="toDate" class="java.lang.String"/>
+	<parameter name="fiscalstartdate" class="java.lang.String"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyAddress" class="java.lang.String"/>
+	<parameter name="printDate" class="java.lang.String"/>
+	<parameter name="dateRange" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[call usp_TrialBalance($P{CompanyId},$P{YearId},$P{fromDate},$P{toDate},$P{fiscalstartdate})]]>
+	</queryString>
+	<field name="Account" class="java.lang.String"/>
+	<field name="Opening" class="java.math.BigDecimal"/>
+	<field name="Debit" class="java.math.BigDecimal"/>
+	<field name="Credit" class="java.math.BigDecimal"/>
+	<field name="closingDebit" class="java.math.BigDecimal"/>
+	<field name="closingCredit" class="java.math.BigDecimal"/>
+	<variable name="opening" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Opening}]]></variableExpression>
+	</variable>
+	<variable name="debit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Debit}]]></variableExpression>
+	</variable>
+	<variable name="credit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Credit}]]></variableExpression>
+	</variable>
+	<variable name="ClosingDebit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{closingDebit}]]></variableExpression>
+	</variable>
+	<variable name="ClosingCredit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{closingCredit}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="97" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="24" uuid="74c25e7f-baab-4bc4-9b83-3c5c6b523d85"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="18" isUnderline="true" pdfFontName="Helvetica" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Trial Balance]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="7" y="45" width="261" height="25" uuid="7c7d8328-2924-40c7-8d9d-b103d773fa19"/>
+				<textElement>
+					<font fontName="Arial Black" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="6" y="72" width="543" height="24" uuid="4fbda55b-61b0-4487-b46e-8d0c3db50d7e"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyAddress}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="190" y="24" width="175" height="20" uuid="3909da33-e9a8-40af-84b5-e763c05e4983"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dateRange}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="325" y="45" width="224" height="25" uuid="1231107b-d448-4579-95d7-40c4efec934b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Print Date : "+$P{printDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="46" splitType="Stretch">
+			<staticText>
+				<reportElement x="7" y="24" width="169" height="20" uuid="a7500f90-6a4b-4127-be07-284baf33ab54"/>
+				<box>
+					<pen lineStyle="Solid"/>
+					<topPen lineStyle="Solid"/>
+					<leftPen lineStyle="Solid"/>
+					<bottomPen lineStyle="Solid"/>
+					<rightPen lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Account]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="182" y="24" width="69" height="20" uuid="65c1e689-b4ba-466d-b58e-e7c662f813bc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Opening]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="257" y="24" width="65" height="20" uuid="db31f16a-5dbc-4d8a-a21d-274f9b8ad098"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Debit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="24" width="58" height="20" uuid="b6420fa0-f02e-4fdc-9210-7686092d6c7a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="23" width="71" height="20" uuid="d30378fc-35d4-4eb0-80de-bcd2d77461d3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Debit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="471" y="23" width="78" height="20" uuid="cabad0c1-8fc3-4a9f-887e-8738d4791ff2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="179" y="20" width="1" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="0fcc1b02-f717-4248-b9bb-0fad4abac28e"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="254" y="20" width="1" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="34fd82c2-7466-4ca2-93ea-7a82113aa116"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="387" y="0" width="1" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="2a4708e9-41bf-46ed-8ccb-9165f9664351"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="325" y="20" width="1" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="180f4a26-f37b-4e51-8aab-8c51058ae78d"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="467" y="20" width="1" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="67a5b505-2ecd-423f-8a27-415a56d57528"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="554" y="0" width="1" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="7692f2e6-ca15-42a4-aadf-a4aff1be662d"/>
+			</line>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="58456330-635e-4d49-818c-58e23be5a02b"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="1" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="8fd861dd-ad6f-43de-8cea-cabce8da5fa1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="40" width="555" height="1" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="bb117b7c-f8c9-413e-9710-5a9f7ee89081"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="554" height="1" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="9aaa7db2-bf9d-4ed8-a7d4-e0a163117ec1"/>
+			</line>
+			<staticText>
+				<reportElement x="240" y="3" width="147" height="16" uuid="7a6e5618-4ca3-4e06-9e35-9eb1fcf80b17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transaction during the year]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="3" width="157" height="16" uuid="ad9d360b-fadc-441a-8afd-842e218538ae"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Closing during the year]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="27" splitType="Prevent">
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement stretchType="RelativeToTallestObject" x="7" y="0" width="169" height="27" uuid="20acf33d-ecd1-4e59-87f6-1f79135ebf23"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Account}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToTallestObject" x="182" y="0" width="69" height="27" uuid="7c4c52c1-ae48-4d8a-9fd4-7e93783a1f8c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{Opening}>0 ? $F{Opening} : "" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="257" y="0" width="65" height="27" uuid="3878f27f-310b-4193-9c77-bf0b6ef94d93"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{Debit}>0 ? $F{Debit} : "" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="329" y="0" width="58" height="27" uuid="0f87a5b3-647e-415c-a82d-726c2466395e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{Credit}>0 ? $F{Credit} : "" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="393" y="0" width="71" height="27" uuid="031c746f-7bcf-4210-a718-6caa6225ee8f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{closingDebit}>0 ? $F{closingDebit} : "" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="472" y="0" width="78" height="27" uuid="108c9388-1eb1-4dfd-ad9d-e3e8482f6ca6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{closingCredit}>0 ? $F{closingCredit} : "" )]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="23" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement x="182" y="0" width="69" height="23" uuid="a5fe8c5b-c88f-4bfe-abda-429b1187b8eb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{opening}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="23" uuid="294e33e7-c618-4a47-9733-dc772a64fcaa"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="cdc4a396-9f83-4a90-9a55-adf0ef1d463c"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="179" y="0" width="1" height="23" uuid="f298cf29-5936-45bd-b88b-8f0d67130dbf"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="254" y="0" width="1" height="23" uuid="7268da48-d4e6-4a63-bf92-e2f293e0c6dd"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="325" y="0" width="1" height="23" uuid="0a5bf713-1acc-4a81-9622-ad062de415db"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="390" y="0" width="1" height="23" uuid="256a7ed9-e077-4d0d-915d-2f105a0ba361"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="467" y="0" width="1" height="23" uuid="de9b31ac-2ba1-49ec-b172-0536feb2dad5"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="554" y="0" width="1" height="23" uuid="c4cb246d-8616-4f74-bb62-df49cda2accf"/>
+			</line>
+			<staticText>
+				<reportElement x="6" y="5" width="169" height="18" uuid="bda961af-3db3-4abc-b42a-7c2fa62a561e"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial Black" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Page Total]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement x="257" y="0" width="65" height="23" uuid="43aef344-a451-4226-a449-be2554ece223"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="329" y="0" width="58" height="23" uuid="91cc42ea-af21-46df-900b-75b40d33e21d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{credit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="393" y="0" width="71" height="23" uuid="09be9695-2183-42fa-a56a-74d9c54a6f49"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ClosingDebit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="472" y="0" width="78" height="23" uuid="3c681a73-714c-4d23-a78d-a2953befa912"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ClosingCredit}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="22" width="555" height="1" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="f1c4bc5e-6645-4abe-bef3-6ec0ebc4d65e"/>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="203" y="0" width="80" height="20" uuid="1c8d1970-2c3c-460c-9504-d01aeb763d8d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="283" y="0" width="40" height="20" uuid="1dd3867e-ff08-48d0-8c2d-87e3fa081534"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
