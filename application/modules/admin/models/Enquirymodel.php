@@ -7,6 +7,8 @@ class Enquirymodel extends CI_Model{
     public function getenquirylist($search_by,$from_dt,$to_date,$branch,$wing,$caller,$mobile_no)
 
     {
+        $session = $this->session->userdata('mantra_user_detail');
+        $where_comp = array('enquiry_detail.company_id'=>$session['companyid']);
        if($search_by == 'FOLLOW-UP DATE'){
            $where = "enquiry_detail.followup_date between '$from_dt' and '$to_date'";
        }else{
@@ -18,7 +20,7 @@ class Enquirymodel extends CI_Model{
            $where_brn = array();
        }
        if($wing != ''){
-        $where_wing = array("enquiry_detail.for_the_wing"=>$wing);
+        $where_wing = array("enquiry_detail.wing_id"=>$wing);
         }else{
           $where_wing = array();
         }
@@ -45,6 +47,7 @@ class Enquirymodel extends CI_Model{
                           ->where($where_wing)   
                           ->where($where_caller)   
                           ->where($where_mob) 
+                          ->where($where_comp) 
                           ->group_by('enquiry_detail.enq_id')                          
                           ->order_by('enquiry_master.FIRST_NAME','ASC');
                           
@@ -102,7 +105,8 @@ class Enquirymodel extends CI_Model{
 public function gatallwingslist()
 	{
         $data = array();
-        //$where = array('enq_id'=>$enq_id);
+        $session = $this->session->userdata('mantra_user_detail');
+        $where = array('company_id'=>$session['companyid']);
 		$this->db->select("enquiry_wings.*,wings_category_master.category_name,wings_category_master.cat_id")
                 ->from('enquiry_wings')
                 ->join('wings_category_master','enquiry_wings.wing_category_id = wings_category_master.cat_id','LEFT');               
@@ -132,8 +136,7 @@ public function getuserslist()
         $where = array('is_active'=>'Y','company_id'=>$session['companyid']);
 		$this->db->select("*")
                 ->from('users')               
-                ->where($where)
-                ->order_by('name');
+				->where($where);
 		$query = $this->db->get();
 		#echo $this->db->last_query();exit;
 
@@ -159,8 +162,8 @@ public function getuserslist()
 public function getAllattendance($from_dt,$to_date,$branch_cd)
 	{
         $data = array();
-       // $session = $this->session->userdata('mantra_user_detail');
-        //$where = array('may_i_help_you.company_id'=>$session['companyid']);
+    //    $session = $this->session->userdata('mantra_user_detail');
+    //     $where = array('may_i_help_you.company_id'=>$session['companyid']);
         if($from_dt != "" && $to_date != ""){
             $where2 = 'may_i_help_you.date_of_entry BETWEEN "'.$from_dt.'" AND "'.$to_date.'"';
         }else{
@@ -175,7 +178,7 @@ public function getAllattendance($from_dt,$to_date,$branch_cd)
 		$this->db->select("may_i_help_you.*,branch_master.BRANCH_NAME")
                 ->from('may_i_help_you') 
                 ->join('branch_master','may_i_help_you.branch_cd = branch_master.BRANCH_CODE','LEFT')              
-                // ->where($where)                
+                //  ->where($where)                
 				->where($where2)
                 ->where($where3)
                 ->group_by('may_i_help_you.id')
@@ -240,7 +243,9 @@ public function getAllattendance($from_dt,$to_date,$branch_cd)
 public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$caller)
 
     {
-        
+        $session = $this->session->userdata('mantra_user_detail');
+        $where_comp = array('enquiry_detail.company_id'=>$session['companyid']);
+
        if($search_by == 'FOLLOW-UP'){
            $where = "enquiry_detail.followup_date between '$from_dt' and '$to_date'";
            $where_group = "enquiry_detail.tran_id";
@@ -264,10 +269,10 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
             $where_brn = array();
        }
        if($wing != '' && $search_by == 'FOLLOW-UP'){
-        $where_wing = array("enquiry_detail.for_the_wing"=>$wing);
+        $where_wing = array("enquiry_detail.wing_id"=>$wing);
         }else if($wing != '' && $search_by == 'FRESH'){
 
-            $where_wing = array("enquiry_master.for_the_wing"=>$wing);
+            $where_wing = array("enquiry_master.wing_id"=>$wing);
          
        }else{
           $where_wing = array();
@@ -285,7 +290,7 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
         //     }else{
         //     $where_mob = array();
         // }
-        
+
         $data = array();    
         $query = $this->db->select("enquiry_detail.*,enquiry_master.*,pin_master.pin_code,pin_master.location as pin_location,branch_master.BRANCH_NAME,users.name as caller_name")
                           ->from('enquiry_detail')
@@ -293,6 +298,7 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
                           ->join('pin_master','enquiry_master.PIN = pin_master.id','LEFT')   
                           ->join('branch_master','enquiry_detail.branch_id = branch_master.BRANCH_ID','INNER')   
                           ->join('users','enquiry_detail.user_id = users.id','LEFT')
+                          ->where($where_comp)   
                           ->where($where)   
                           ->where($where_brn)   
                           ->where($where_wing)   
@@ -397,10 +403,9 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
 		{
              return $data;
          }
-    } 
+    }
     
-
-public function getenquiryreportlist($gender,$from_dt,$to_date,$from_dob,$to_dob)
+    public function getenquiryreportlist($gender,$from_dt,$to_date,$from_dob,$to_dob)
 
     {
         $session = $this->session->userdata('mantra_user_detail');
@@ -465,6 +470,6 @@ public function getenquiryreportlist($gender,$from_dt,$to_date,$from_dob,$to_dob
 
     }
     
-
+    
 
 }

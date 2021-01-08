@@ -100,7 +100,7 @@
                         </div>
 
                    </div>
-                   <div class="col-md-3">
+                   <!-- <div class="col-md-3">
                         <label for="firstname">Branch</label>
 
                         <div class="form-group">                              
@@ -118,7 +118,7 @@
 
                         </div>
 
-                        </div>
+                        </div> -->
 
                
 

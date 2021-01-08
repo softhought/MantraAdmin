@@ -66,12 +66,12 @@ public function index(){
 
 
 
-    $session = $this->session->userdata('mantra_user_detail');
+    
 
     if($this->session->userdata('mantra_user_detail'))
 
     {   
-
+      $session = $this->session->userdata('mantra_user_detail');
 
 
         if($this->uri->segment(4) == NULL){
@@ -114,6 +114,7 @@ public function index(){
 
            }
 
+            // $where_cat = array('is_active'=>'Y','company_id'=>$session['companyid']);
             $where_cat = array('is_active'=>'Y');
 
            $data['wingcatlist'] = $this->commondatamodel->getAllRecordWhere('wings_category_master',$where_cat);
@@ -334,12 +335,13 @@ public function existingwing(){
     {     
 
     
-
+      $session = $this->session->userdata('mantra_user_detail');
       $wing_name = $this->input->post('wing_name'); 
       $category = $this->input->post('category'); 
 
       $wingId = $this->input->post('wingId');   
 
+      // $where = array('wing_name'=>$wing_name,'wing_category_id'=>$category,'company_id'=>$session['companyid']);  
       $where = array('wing_name'=>$wing_name,'wing_category_id'=>$category);  
 
       $where_notequal = "wing_id !=".$wingId;

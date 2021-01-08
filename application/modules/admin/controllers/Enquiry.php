@@ -21,8 +21,11 @@ public function index(){
      
      
       // $data['winglist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('enquiry_wings'); 
-      $data['wingcatlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('wings_category_master');  
-      $data['pinlist'] = $this->commondatamodel->getAllDropdownDataByComId('pin_master');  
+      $where_active = array('is_active'=>'Y');
+      $data['wingcatlist'] = $this->commondatamodel->getAllRecordWhere('wings_category_master',$where_active); 
+      $data['pinlist'] = $this->commondatamodel->getAllDropdownData('pin_master');
+      // $data['wingcatlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('wings_category_master');  
+      // $data['pinlist'] = $this->commondatamodel->getAllDropdownDataByComId('pin_master');  
       $data['userlist'] = $this->enquirymodel->getuserslist();
       $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master');  
        //pre($data['userlist']);exit;
@@ -38,10 +41,10 @@ public function index(){
 
 public function getenquirylist(){
 
-  $session = $this->session->userdata('mantra_user_detail');
+  
   if($this->session->userdata('mantra_user_detail'))
   {   
-
+    $session = $this->session->userdata('mantra_user_detail');
       $search_by =  $this->input->post('search_by');
       if(trim(htmlspecialchars($this->input->post('from_dt'))) != ''){          
         $from_dt = date('Y-m-d',strtotime($this->input->post('from_dt')));
@@ -58,6 +61,7 @@ public function getenquirylist(){
       $wing =  $this->input->post('wing');
       $caller =  $this->input->post('caller');
       $mobile_no =  $this->input->post('mobile_no');
+     
       $data['enquirylist'] = $this->enquirymodel->getenquirylist($search_by,$from_dt,$to_date,$branch,$wing,$caller,$mobile_no);
       //pre($data['enquirylist']);exit;
      
@@ -148,9 +152,13 @@ public function addeditenquiry(){
               $data['locationlist'] = $this->commondatamodel->getAllRecordWhere('pin_master',$where);    
                  //pre($where);exit;      
            }
-           $data['wingcatlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('wings_category_master'); 
-           $data['winglist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('enquiry_wings');  
-           $data['pinlist'] = $this->commondatamodel->getAllDropdownDataByComId('pin_master');  
+           $where_active = array('is_active'=>'Y');
+          //  $data['wingcatlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('wings_category_master'); 
+          //  $data['winglist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('enquiry_wings');  
+          //  $data['pinlist'] = $this->commondatamodel->getAllDropdownDataByComId('pin_master');  
+          $data['wingcatlist'] = $this->commondatamodel->getAllRecordWhere('wings_category_master',$where_active); 
+          $data['winglist'] = $this->commondatamodel->getAllRecordWhere('enquiry_wings',$where_active);  
+          $data['pinlist'] = $this->commondatamodel->getAllDropdownData('pin_master');
            $data['userlist'] = $this->enquirymodel->getuserslist();
            $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master'); 
          
@@ -276,7 +284,6 @@ public function addedit_action(){
        $where_brn = array('BRANCH_ID'=>$branch_id);
        $branch_code = $this->commondatamodel->getSingleRowByWhereCls('branch_master',$where_brn)->BRANCH_CODE;
        $where_enqwing = array('wing_id'=>$wing_id);
-       pre($where_enqwing);exit;
        $wing_name = $this->commondatamodel->getSingleRowByWhereCls('enquiry_wings',$where_enqwing)->wing_name;
        $upd_inser = 0;
 
@@ -428,6 +435,15 @@ public function getenqmasterforfeedback(){
       $enquirymstdata= $this->commondatamodel->getSingleRowByWhereCls('enquiry_master',$where); 
       $row_remaks= $this->commondatamodel->getAllDropdownData('reason_master');
       $userlist = $this->commondatamodel->getAllDropdownData('users'); 
+      $where = array('id'=>$enquirymstdata->PIN);        
+      $locationlist = $this->commondatamodel->getSingleRowByWhereCls('pin_master',$where); 
+      // pre($where);
+      // pre($locationlist);exit;
+      if(!empty($locationlist)){
+        $pincode = $locationlist->pin_code;
+      }else{
+        $pincode = "";
+      }
       $remarkslist= '';
       $userlistview = '';
       $remarkslist.= '<option value="">Select</option>';
@@ -442,7 +458,7 @@ public function getenqmasterforfeedback(){
       // pre($row_remaks);
       // pre($enquirymstdata);
       // exit;
-      $json_response = array('enquirymstdata'=>$enquirymstdata,'remarkslist'=>$remarkslist,'userlistview'=>$userlistview);
+      $json_response = array('enquirymstdata'=>$enquirymstdata,'remarkslist'=>$remarkslist,'userlistview'=>$userlistview,'pincode'=>$pincode);
       header('Content-Type: application/json');
       echo json_encode( $json_response );
       exit;
@@ -753,8 +769,9 @@ public function enquiryanalysis(){
   if($this->session->userdata('mantra_user_detail'))
   {  
    
-   
-    $data['winglist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('enquiry_wings');  
+    $where_active = array('is_active'=>'Y');
+    $data['winglist'] = $this->commondatamodel->getAllRecordWhere('enquiry_wings',$where_active); 
+    // $data['winglist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('enquiry_wings');  
     $data['pinlist'] = $this->commondatamodel->getAllDropdownDataByComId('pin_master');  
     $data['userlist'] = $this->enquirymodel->getuserslist();
     $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master');  
@@ -815,7 +832,7 @@ public function specialenquiry(){
    
     $where = array('wing_category_id'=>2,'is_active'=>'Y');
 
-    $data['winglist'] = $this->commondatamodel->getAllRecordWhereByComId('enquiry_wings',$where);  
+    $data['winglist'] = $this->commondatamodel->getAllRecordWhere('enquiry_wings',$where);  
     
     $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master');  
      //pre($data['userlist']);exit;

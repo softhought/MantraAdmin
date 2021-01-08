@@ -50,41 +50,13 @@
             height:45px;
             border:none;
         }
-        .break{
-            page-break-after: always;
-        }
+        
+         
 
-          html,body{
-        max-width: 29.7cm;
-        max-height: 21cm;
-        padding: 5px;
-
-
-       
-        /* change the margins as you want them to be. */
-   } 
-
-            @page { margin: 1;}
-
-  .demo table, .demo th, .demo td {
-  
-   page-break-inside: avoid;
-  }
-
-  tr
-  {
-   
-      page-break-inside: avoid;
-   
-  }
-
-     @media print {
-        thead {display: table-header-group;margin-top: 50px;border-top: 0px;}
-
-    }
+         
         </style>
     </head>
-    <body onload="window.print()">
+    <body>
        
         <table width="100%" class="">
                <tr>
@@ -136,7 +108,7 @@
 		<table width="100%" class="demo">
 		<tr>
                <th align="left">Date</th>
-               <th>&nbsp;</th>
+               <!-- <th>&nbsp;</th> -->
                <th align="left" width='20%'>Particulars</th>
                <th align="left">Voucher Type</th>
                <th align="left">Voucher No.</th>
@@ -144,134 +116,141 @@
                <th align="right">Credit</th>
            </tr>
 		  
-            <?php 
-		$totalDebit = 0;
-        $totalCredit =0;
-		
-		
-		
-		foreach($generalledger as $res){ ?>
-		<tr>
-		    <td>
-                <?php if($res['vchNumber']=="Opening")
-                {echo " ";}
-                else{
-                    echo date('d-m-Y',strtotime($res['VchDate']));
-                    
-                }?>
-            </td>
-			<td><?php echo $res['isdebit'];?></td>
-			<td >
-			
-			<strong><?php //echo $res['VchAccountDetailscrdrtag'];?></strong><br><?php //echo $res['_narration'];?>
-				<?php 
-					$group_array=explode("~",$res['VchAccountDetailscrdrtag']);
-					
-					$acctg1 = explode(",",$group_array[0]);
-					$acctg2 = explode(",",$group_array[1]);
-					$acctg3 = explode(",",$group_array[2]);
-					if($res['VchAccountDetailscrdrtag']!=""){
-					echo("<table width='100%' border='0'>  ");
-					for($i=0;$i<count($acctg1);$i++){
-						echo("<tr>");
-						echo("<td style='border:0'>".$acctg2[$i]."</td><td align='right' style='border:0'>".$acctg3[$i]." (<strong>".$acctg1[$i]."</strong>)</td>");
-						echo("</tr>");
-						
-					}
-					echo("</table>");
-					}
-					
-					
-				
+           <?php if($generalledger){
+                       $totalDebit = 0;
+                       $totalCredit = 0;
+					  foreach($generalledger as $ledger_report_type2){ 
 				?>
-			</td>
-			<td><?php echo $res['VchType'];?></td>
-			<td><?php echo $res['vchNumber'];?></td>
-			<td align="right"><?php if($res['debitamount']==0){echo "";}else{echo number_format($res['debitamount'],2);}?></td>
-            <td align="right"><?php if($res['creditamount']==0){echo "";}else{echo number_format($res['creditamount'],2);}?></td>
-		</tr>
-		<?php 
-		
-		
-			$totalDebit = $totalDebit+$res['debitamount'];
-            $totalCredit = $totalCredit+$res['creditamount'];
-            $differenceAmt = $totalDebit-$totalCredit;
-            $absdifferenceAmt=abs($differenceAmt);
-            if($differenceAmt>0){
-                $lastbalance = $totalDebit;
-                
-            }else{
-                $lastbalance = $totalCredit;
-            }
-            
-            
-            if($differenceAmt>0){
-                $tag = "Dr";
-            }
-            elseif ($differenceAmt==0) {
-            $tag="";
-             }
-            else{
-                $tag="Cr";
-            }
-		
-		
-		
-		
-		} /*---End Of Foreach----*/ 
-		?>
-		
-		<tr>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-               <td align="right" style="border-bottom:1px solid #CCC;border-top:1px solid #CCC;"> <?php if($totalDebit==0){echo "";}else{echo number_format($totalDebit,2);}?></td>
-               <td align="right" style="border-bottom:1px solid #CCC;border-top:1px solid #CCC;"> <?php if($totalCredit==0){echo "";}else{echo number_format($totalCredit,2);}?></td>
+                 <tr>
+					<td><?php echo date("d-m-Y", strtotime($ledger_report_type2['VchDate']));  ?> </td>
+					<td>
+                    
+                    <?php
+                       if($ledger_report_type2['VchAccountDetailsAccountName']!=""){ 
+                        $accountsName = explode(",",$ledger_report_type2['VchAccountDetailsAccountName']);
+                        $accountsTags = explode(",",$ledger_report_type2['VchAccountDetailscrdrtag']);
+                        $accountsAmount = explode(",",$ledger_report_type2['VchAccountDetailsAmount']);
+                        $arrayCount = count($accountsName);
+                    ?>
+                        <table width="250px" style="border: 0px solid #E6E6E6;">
+                        <?php for($i=0;$i<$arrayCount;$i++){ 
+                          if ($accountsAmount[$i]!='' && $accountsAmount[$i]!=0) {
+                          
+                          ?>
+                            <tr>
+                                <td width="180px"> <?php echo($accountsName[$i]); ?> </td>
+                                <td width="40px" align="right"> 
+                                <?php 
+                                   if($accountsTags[$i]=="Y"){echo("Dr");}else{echo("Cr");} 
+                                ?>
+                                </td>
+                                <td width="90px" align="right"> <?php echo($accountsAmount[$i]); ?> </td>
+                            </tr>
+                        <?php }}
+                         ?>
+                        </table>
+                    <?php } ?>
+                    </td>	
+					<td><?php echo($ledger_report_type2['VchType']);?></td>
+					<td><?php echo($ledger_report_type2['vchNumber']); ?> </td>
+					<td align="right"><?php echo($ledger_report_type2['debitamount']); ?> </td>
+					<td align="right"><?php echo($ledger_report_type2['creditamount']); ?> </td>
+                </tr>
+				<?php
+                    $totalDebit = $totalDebit + $ledger_report_type2['debitamount'];
+                    $totalCredit = $totalCredit + $ledger_report_type2['creditamount'];
+                    $closingBalance =0;
+                    $closingBalance = $totalDebit - $totalCredit ;
+				 }
+				} 
+				?>
+		   <tr>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td align="left"></td>
+               <td align="right">
+               <?php if($totalDebit!=0){?>
+                            <hr><strong>
+                            <?php 
+                                
+                                echo ($totalDebit!=0?number_format($totalDebit,2):"" ); 
+                            ?></strong>
+               <?php } ?>
+               </td>
+               <td align="right">
+               <?php if($totalCredit!=0){?>
+               <hr><strong>
+               <?php echo ($totalCredit!=0?number_format($totalCredit,2):"" );  ?>
+               </strong>
+               <?php }?>
+               </td>
            </tr>
-           
            <tr>
-               <td>&nbsp;</td>
-               <td><?php echo $tag;?></td>
-               <td>Closing Balance</td>
-               
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td align="left">
                <?php 
-                        if($tag=="Dr"){ 
-                           
-               ?>
-               <td align="right" style="border-bottom:1px solid #CCC;"><?php echo "";?></td>
-                       
-               <td align="right" style="border-bottom:1px solid #CCC;"> <?php echo number_format($absdifferenceAmt,2);?></td>
-                        <?php } else{
-                            
-                            ?>
-                <td align="right" style="border-bottom:1px solid #CCC;"> <?php echo number_format($absdifferenceAmt,2);?></td>
-                <td align="right" style="border-bottom:1px solid #CCC;"><?php echo "";?></td>
-                        <?php } ?>
-           
-               
-           </tr>
-<?php 
-        
-      
-?>
-           <tr>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-               
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-
-               <td align="right" style="border-bottom:1px solid #CCC;font-weight:700;"><?php echo number_format($lastbalance,2);?></td>
-                       
-               <td align="right" style="border-bottom:1px solid #CCC;font-weight:700;"> <?php echo number_format($lastbalance,2);?></td>
+                    if($closingBalance<0){
                         
-           
+                        echo("Cr Closing" );
+                    }else{
+                        echo("Dr Closing" );
+                    }
+                ?>
+               </td>
+               <td align="right">
+                <?php 
+                    if($closingBalance<0){
+                        $DrclosingBalance = $closingBalance * (-1);
+                        echo("<strong>".number_format($DrclosingBalance,2)."</strong>");
+                    }else{
+                        echo("");
+                    }
+                ?>
+               </td>
+               <td align="right">
+               <?php 
+                    if($closingBalance>0){
+                        echo("<strong>".number_format($closingBalance,2)."</strong>");
+                    }else{
+                        echo("");
+                    }
+                ?>
+               </td>
+           </tr>
+           <tr>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+
+               <td align="right">
+               <hr><strong>
+               <?php if($closingBalance<0){ 
+                        $sumcrdr = ($totalDebit +($closingBalance)) ;
+                        if($sumcrdr<0){ $sumcrdr = $sumcrdr * (-1);}
+                        echo(number_format($sumcrdr,2));
+                    }else{
+                        echo(number_format($totalDebit,2));
+                    }?>
+                <hr> </strong>                   
+               </td>
                
+               <td align="right">
+               <hr><strong>
+                    <?php if($closingBalance>0){ 
+                        $sumcrdr = $totalCredit + $closingBalance;
+                        if($sumcrdr<0){ $sumcrdr = $sumcrdr * (-1);}
+                        echo(number_format($sumcrdr,2));
+                    }else{
+                        echo(number_format($totalCredit,2));
+                    }?>
+                    </strong>
+                <hr>    
+               </td>
+
            </tr>
 		
 		</table>

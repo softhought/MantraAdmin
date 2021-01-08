@@ -4569,3 +4569,29 @@ border: 1px solid
 #package_dtl table td{
     background-color: #fbdac1 !important;
 }
+.voucherdiv{
+    /* border: 1px solid #ae7575; */
+    /* padding: 1px; */
+    /* margin-bottom: 10px; */
+}
+.label-primary {
+    padding: 3px 6px;
+    color:#fdfefe;
+    font-size: 12px;
+    background-color: #337ab7;
+}
+.label-success {
+    background-color: #5cb85c;
+    padding: 3px 6px;
+    color:#fdfefe;
+    font-weight: bold;
+    font-size:12px;
+    
+}
+.head_txt{
+    text-align:center;
+    font-weight: 600;
+    color: #A42929;
+    font-weight: 600;
+    text-decoration: underline;
+}

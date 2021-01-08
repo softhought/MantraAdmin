@@ -19,7 +19,8 @@ class Birthdatwishmodel extends CI_Model{
                 ->from('customer_master')                
 				->where($where)
 				->where($where2)
-				->where($where_brn)
+                ->where($where_brn)
+                ->group_by('customer_master.member_acc_code')
                 ->order_by('customer_master.CUS_NAME','ASC');
                 // ->limit(10);
 		$query = $this->db->get();

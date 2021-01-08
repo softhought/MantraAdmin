@@ -145,6 +145,52 @@ define ("MOTHER_PACKAGE_SEARCH", json_encode(array (
     "PAYMENT DATE" => "PAYMENT DATE",
        
 )));
+define ("TRASANCTION_TYPE", json_encode(array ( 
+    "CASH" => "CASH",
+    "BANK" => "BANK",
+    "CONTRA" => "CONTRA",
+    "JOURNAL" => "JOURNAL",
+       
+)));
 
+define ("SUB_TRASANCTION_TYPE", json_encode(array ( 
+    "RECEIPT" => "RECEIPT",
+    "PAYMENT" => "PAYMENT",
+       
+)));
 
+define ("ACCOUNT_TAG", json_encode(array ( 
+    "Dr" => "Dr",
+    "Cr" => "Cr",
+       
+)));
+define ("MONTH_MASTER", json_encode(array ( 
+    "Apr" => "April",
+    "May" => "May",
+    "Jun" => "June",
+    "Jul" => "July",
+    "Aug" => "August",
+    "Sep" => "September",
+    "Oct" => "October",
+    "Nov" => "November",
+    "Dec" => "December",
+    "Jan" => "January",
+    "Feb" => "February",
+    "Mar" => "March",
+       
+)));
+
+define ("TRASANCTION_TYPE2", json_encode(array ( 
+    "RECEIPT" => "RECEIPT",
+    "PAYMENT" => "PAYMENT",
+    "JOURNAL" => "JOURNAL",
+    "REG" => "REG",
+       
+)));
+define ("COLLECTION_TYPE", json_encode(array ( 
+    "Y" => "Daily Collection",
+    "N" => "Without Daily Collection",
+   
+       
+)));
 

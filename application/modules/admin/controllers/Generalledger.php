@@ -63,7 +63,8 @@ class Generalledger extends MY_Controller {
 		$todate = $this->input->post('todate');
 		$accId = $this->input->post('acccountid');
 		
-		 $branch_id = $this->input->post('branch_id');
+		//  $branch_id = $this->input->post('branch_id');
+		 $branch_id = $session['branchid'];
 		 $frmDate = date("Y-m-d",strtotime($fromdate));
 		 $toDate = date("Y-m-d",strtotime($todate)); 
 	   
@@ -81,15 +82,17 @@ class Generalledger extends MY_Controller {
 	   
 	  // pre($reportType);exit;
 	   
-	    $result['generalledger']= $this->generalledgermodel->getGeneralLedgerReportType3($frmDate,$toDate,$companyId,$yearid,$accId,$branch_id);
+	    // $result['generalledger']= $this->generalledgermodel->getGeneralLedgerReportType3($frmDate,$toDate,$companyId,$yearid,$accId,$branch_id);
+	    $result['generalledger']= $this->generalledgermodel->generalLedgerStyle3_revised($frmDate,$toDate,$companyId,$yearid,$accId,$fiscalStartDt);
+	    
 		   //freeDBResource($this->db->conn_id);
 		   //pre($result['generalledger']);exit;
 		   $page = 'dashboard/account/reports/general_ledger/general_ledger_html_type3.php';
 	 
-	   echo $html = $this->load->view($page, $result,TRUE);
+	    echo $html = $this->load->view($page, $result,TRUE);
 	   
 	//    $pdf->WriteHTML($html); 
-	//    $output = 'testPdf' . date('Y_m_d_H_i_s') . '_.pdf'; 
+	//    $output = 'generalledger' . date('Y_m_d_H_i_s') . '_.pdf'; 
 	//    $pdf->Output("$output", 'I');
 	//    exit();
 	   

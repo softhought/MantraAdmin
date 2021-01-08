@@ -131,6 +131,57 @@ class Generalledgermodel extends CI_Model{
    }
 
 
+   public function generalLedgerStyle3_revised($frmDate,$toDate,$companyId,$yearid,$accId,$fiscalStartDt)
+
+   {
+
+       $data = [];
+
+        $call_procedure = "CALL usp_generalLedgerStyle3_revised('".$frmDate."','".$toDate."',"."$companyId,$yearid,$accId,'".$fiscalStartDt."')";
+
+       $query =$this->db->query($call_procedure);
+
+       if($query->num_rows()>0){
+
+           foreach ($query->result() as $rows) {
+
+           $data[] = [
+
+              "vchId"=>$rows->vchId,
+
+              "vchNumber"=>$rows->vchNumber,
+
+              "debitamount"=>$rows->debitamount,
+
+              "creditamount"=>$rows->creditamount,
+
+              "isdebit"=>$rows->isdebit,
+
+              "Naration"=>$rows->Naration,
+
+              "VchType"=>$rows->VchType,
+
+              "VchDate"=>$rows->VchDate,
+
+              "VchAccountDetailscrdrtag"=>$rows->VchAccountDetailscrdrtag,
+
+              "VchAccountDetailsAccountName"=>$rows->VchAccountDetailsAccountName,
+
+              "VchAccountDetailsAmount"=>$rows->VchAccountDetailsAmount
+
+
+
+           ];
+
+       }
+
+       }
+
+       return $data;
+
+   }
+
+
 
    public function getCompanyNameById($id) {        
 
