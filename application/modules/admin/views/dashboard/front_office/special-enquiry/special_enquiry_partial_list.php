@@ -1,7 +1,9 @@
-<table  class="table customTbl table-bordered table-hover dataTable2 tablepad">
+<table id="specialenq"  class="table customTbl table-bordered table-hover  tablepad">
           <thead>
           <tr>
+          <th style="width:55px;">Select All<input type="checkbox" class="call-checkbox" id = "example-select-all" ></th> 
           <th style="width:55px;">Sl.No</th>              
+                          
               <th style="width:90px;">Enquiry Date</th>
               <th style="width:90px;">Enquiry No.</th>
               <!-- <th style="width:90px;">Wing</th> -->
@@ -22,11 +24,13 @@
           <tbody>
 
           <?php
-		$i=1;
+		$i=1;$k=0;
 		foreach($specialenquirylist as $specialenquirylist){			
 		?>
 	<tr>
-                            <td><?php echo $i++ ?></td>
+      <td class=" dt-body-center"> <input type="checkbox" class="call-checkbox rowCheckAll" name="id[]" value="<?php echo $i++; ?>"></td>
+                            <td><?php echo $i; ?></td>
+                          
                             <td><?php echo date('d-m-Y',strtotime($specialenquirylist->enq_date)); ?></td>
                             <td> 
                             <?php echo $specialenquirylist->ENQ_NO; ?><br>

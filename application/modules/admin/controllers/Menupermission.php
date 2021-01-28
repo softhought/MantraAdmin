@@ -32,7 +32,7 @@ class Menupermission extends MY_Controller {
 
             $data['userslist']=$this->Menupermissionmodel->getUserList($session['user_role']);
             $data['Menulist'] =$this->Menupermissionmodel->getMenuList($session['user_role'],$session['userid']);                          
-           
+          // pre($data['Menulist']);exit;
             $this->template->admin_template($data); 
 
         }else{

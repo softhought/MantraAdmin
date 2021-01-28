@@ -660,5 +660,57 @@ public function getAllRecordWhereByComId($table,$where)
              return $data;
          }
 	}
+
+	public function GetCurrentPackage($mobile_no,$company_id)
+	{
+        // $session = $this->session->userdata('mantra_user_detail');
+        // $company_id = $session['companyid'];
+        $data = array();
+        $date = date("Y-m-d");
+        $where = array('customer_master.IS_ACTIVE'=>'Y','customer_master.pack_type'=>'M','DATE_ADD(payment_master.VALID_UPTO , INTERVAL COALESCE(application_extension.grant_days,0) DAY) >='=>$date,'payment_master.FROM_DT <='=>$date);
+        $where_in = array('F','R','RA');
+       
+        $query = $this->db->select("customer_master.CUS_ID,
+                                    customer_master.MEMBERSHIP_NO,
+                                    customer_master.CUS_BRANCH,
+                                    customer_master.CUS_CARD,
+                                    customer_master.CUS_NAME,
+                                    customer_master.CUS_PHONE,
+                                    customer_master.CUS_EMAIL,
+                                    customer_master.CUS_ADRESS,
+                                    customer_master.CUS_DOB,
+                                    customer_master.CUS_SEX,
+                                    customer_master.EXT_MEMBERSHIP_NO,
+                                    customer_master.EXT_MEMBERSHIP_ID,
+                                    customer_master.member_acc_code,
+                                    payment_master.VALIDITY_STRING,
+                                    payment_master.PAYMENT_ID")
+                          ->from('payment_master')
+                          ->join('customer_master','payment_master.MEMBERSHIP_NO = customer_master.MEMBERSHIP_NO','INNER')   
+                          ->join('application_extension','payment_master.MEMBERSHIP_NO = application_extension.membership_no AND payment_master.VALIDITY_STRING = application_extension.validity_period','LEFT') 
+                          ->where('payment_master.MEMBERSHIP_NO IN (SELECT customer_master.`MEMBERSHIP_NO` FROM customer_master WHERE customer_master.`CUS_PHONE`='.$mobile_no.' AND customer_master.`company_id` = '.$company_id.')',NULL)   
+                          ->where($where)
+                          ->where_in('payment_master.FRESH_RENEWAL',$where_in); 
+                                                
+      
+        $query = $this->db->get();
+        //  echo $this->db->last_query();exit;
+        if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+          
+            return $data;
+             
+        }
+		else
+		{
+             return $data;
+         }
+
+    }
+
 	
 }

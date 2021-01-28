@@ -224,7 +224,7 @@ function __construct()
                    // voucher details insert data  for voucher B
                    if($voucher_master_id > 0 && $voucher_master_id2 > 0){
                    $this->insertvoucherdetails($voucher_master_id2,'Cr',$mem_account_id,$totalAmt,1,$member_acc_code,$membership_ref);
-                   $this->insertvoucherdetails($voucher_master_id2,'Dr',$cgstAccID,$totalAmt,2);
+                   $this->insertvoucherdetails($voucher_master_id2,'Dr',$debit_acc_id,$totalAmt,2);
 
                    $where_voucher_srl = array('year_id'=>$year_id,'company_id'=>$company_id);
                    $voucher_arr = array('last_srl'=>$voucher_srl+1);

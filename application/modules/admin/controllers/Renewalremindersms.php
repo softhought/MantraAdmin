@@ -142,8 +142,9 @@ function __construct()
         //pre($locationlist);exit;
         $cardlistview = '';
         if(!empty($cardlist)){
+          $cardlistview.='<option value="">Select</option>';
         foreach($cardlist as $cardlist){
-          $cardlistview.='<option value="'.$cardlist->CARD_ID.'">'.$cardlist->CARD_DESC.'</option>';
+          $cardlistview.='<option value="'.$cardlist->CARD_ID.'">'.$cardlist->CARD_DESC."(". $cardlist->CARD_CODE.")".'</option>';
         }
       }else{
         $cardlistview.='<option value=""></option>';

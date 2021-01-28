@@ -77,6 +77,7 @@
                 <div class="col-md-1">
                 <label for="payment">&nbsp;</label>
                  <button type="button" class="btn btn-block action-button btn-sm" id="specialenquiryshowbtn">Show</button>
+                 <button type="button" class="btn btn-block action-button btn-sm" id="buton">Button</button>
 
 
                    <!-- Total <span class="badge" id="total_amount_value">7</span> -->
@@ -95,25 +96,26 @@
        </div>
 
       <div id="specialenquiry_list">
-        <table  class="table customTbl table-bordered table-hover dataTable tablepad">
+        <table id="specialenq"  class="table customTbl table-bordered table-hover dataTable tablepad">
           <thead>
           <tr>
           <th style="width:55px;">Sl.No</th>              
               <th style="width:90px;">Enquiry Date</th>
               <th style="width:90px;">Enquiry No.</th>
-              <th style="width:90px;">Wing</th>
+              <!-- <th style="width:90px;">Wing</th> -->
               <th style="width:60px;">Branch</th>
               <th style="width:100px;">Name </th>             
               <th  style="width:70px;">Mobile No.</th>  
               <th  style="width:80px;">Email</th>  
-              <th  style="width:60px;">Pin</th>  
-              <th  style="width:80px;">Location</th>  
+              <!-- <th  style="width:60px;">Pin</th>  
+              <th  style="width:80px;">Location</th>   -->
               <th style="width:100px;">Address</th>  
               <th style="width:60px;">Follow-Up</th>  
               <th style="width:200px;">Remarks</th>  
-              <th style="width:60px;">Status</th>  
-              <th style="width:80px;">Caller</th>              
-              <th style="width:150px;">Action</th>
+              <!-- <th style="width:60px;">Status</th>   -->
+              <!-- <th style="width:80px;">Caller</th>               -->
+              
+          
                                   
               </tr>
           </thead>

@@ -252,7 +252,8 @@ class Renewalemindersmsmodel extends CI_Model{
 		$this->db->select("employee_master.empl_id,employee_master.empl_name,employee_master.branch_id")
                 ->from('employee_master')
                 ->join('team_mantra',' employee_master.empl_id=team_mantra.empl_id','INNER')                
-				->where($where)
+                ->where($where)
+                ->group_by('employee_master.empl_id')
                 ->order_by('employee_master.empl_name','ASC');
                 // ->limit(10);
 		$query = $this->db->get();

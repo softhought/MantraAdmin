@@ -548,4 +548,90 @@ class vouchermodel extends CI_Model{
          }
     }
 
+
+//renewal reminder
+public function gen_rcpt_serial_brn_fin($branch_id,$year_id,$comp)
+	{		
+        $serial = 0;   
+        $where = array('BRANCH_CODE'=>$branch_id,'FIN_ID'=>$year_id,'company_id'=>$comp);
+        $this->db->select("RCPT_NO")
+                 ->from('payment_master')                                              
+                ->where($where)   
+                ->order_by('RCPT_NO','DESC')            
+                ->limit(1);
+                
+                // ->limit(10);
+		$query = $this->db->get();
+        
+        #echo $this->db->last_query();exit;
+
+		if($query->num_rows()> 0)
+		{
+            $row = $query->row(); 
+            $serial = $row->RCPT_NO+1;
+            return $serial;
+             
+        }
+		else
+		{
+             return $serial;
+         }
+    }
+
+public function get_duration($card,$comp)
+	{		
+        $card_duration = 0;   
+        $where = array('CARD_CODE'=>$card,'company_id'=>$comp);
+        $this->db->select("CARD_ACTIVE_DAYS")
+                 ->from('card_master')                                              
+                ->where($where)                            
+                ->limit(1);
+                
+                // ->limit(10);
+		$query = $this->db->get();
+        
+        #echo $this->db->last_query();exit;
+
+		if($query->num_rows()> 0)
+		{
+            $row = $query->row(); 
+            $card_duration = $row->CARD_ACTIVE_DAYS;
+            return $card_duration;
+             
+        }
+		else
+		{
+             return $card_duration;
+         }
+    }
+
+    public function getAccountIdByPaymentModeByBrnCode($branch_code,$payment_mode,$comp)
+	{		
+        $accountid = 0;   
+        $where = array('branch_acc_payment.branch'=>$branch_code,'branch_acc_payment.payment_mode'=>$payment_mode,'branch_acc_payment.is_active'=>'Y','branch_acc_payment.company_id'=>$comp);
+        $this->db->select("branch_acc_payment.account_id")
+                 ->from('branch_acc_payment')                             
+                ->where($where)
+                ->order_by('id','DESC')               
+                ->limit(1);
+                
+                // ->limit(10);
+		$query = $this->db->get();
+        
+        #echo $this->db->last_query();exit;
+
+		if($query->num_rows()> 0)
+		{
+            $row = $query->row(); 
+            $accountid = $row->account_id;
+            return $accountid;
+             
+        }
+		else
+		{
+             return $accountid;
+         }
+    }
+
+
 }

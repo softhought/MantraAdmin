@@ -16,7 +16,7 @@
 
     <div class="list-search-block">
                <div class="row box">  
-              
+              <?php if($user_role == 1 && $user_role == 2){ ?>
                   <div class="col-sm-2">
                     <label for="from_dt">From Date</label>
                        <div class="form-group">
@@ -42,6 +42,7 @@
                         </div>
                          <p id="todateerr" style="font-size: 12px;"></p>
                     </div> 
+              <?php } ?>
                     <div class="col-sm-2">
                     <label for="branch">Branch</label>
                       <div class="form-group">
@@ -95,22 +96,22 @@
         <table  class="table customTbl table-bordered table-hover dataTable tablepad">
           <thead>
               <tr>
-              <th >Sl.No</th>              
-              <th >Date</th>
-              <th >Cash Opening</th>
-              <th >Cash Coll.</th>
-              <th >Cash Rcvd</th>
-              <th ">Chq. Coll. </th>             
-              <th  >Card Coll.</th>  
-              <th  >Payment Gateway</th>  
-              <th  >Fund Transfer</th>  
-              <th  >Ref Pbl.</th>  
-              <th ">Tot. Cash</th>  
+              <th width="3%">#</th>              
+              <th width="8%">Date</th>
+              <th width="8%">Cash Opening</th>
+              <th width="8%">Cash Coll.</th>
+              <th width="8%">Cash Rcvd</th>
+              <th width="8%">Chq. Coll. </th>             
+              <th width="8%">Card Coll.</th>  
+              <th width="8%">Payment Gateway</th>  
+              <th width="8%">Fund Transfer</th>  
+              <th width="8%">Ref Pbl.</th>  
+              <th width="8%">Tot. Cash</th>  
               <th >Today's Coll.</th>  
-              <th ">Cash Dep.</th>  
-              <th >Cash Exp.</th>  
-              <th >Ref. Paid</th>              
-              <th ">Bal. Cash</th>
+              <th width="8%">Cash Dep.</th>  
+              <th width="8%">Cash Exp.</th>  
+              <th width="8%">Ref. Paid</th>              
+              <th width="11%">Bal. Cash</th>
                                   
               </tr>
           </thead>

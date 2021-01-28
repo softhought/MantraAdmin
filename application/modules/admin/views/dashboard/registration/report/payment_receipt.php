@@ -175,10 +175,10 @@
 		  	
 		<?php if($paymentdtl->PAYMENT_MODE == 'Cheque'){ ?>
 			<tr >   
-				<td class="borderleft textstyle">
+				<td class="borderleft textstyle <?php if($paymentdtl->payment_from == "DUE" ){ echo "borderbottom";  }?> ">
 				
 				</td>
-				<td class="paddingleft textstyle">
+				<td class="paddingleft textstyle <?php if($paymentdtl->payment_from == "DUE" ){ echo "borderbottom";  }?>">
 				Cheque Date : <?php echo date('d-m-Y',strtotime($paymentdtl->CHQ_DT)); ?>&emsp;&emsp;&emsp;&emsp;&ensp;
 				Cheque No. : <?php echo $paymentdtl->CHQ_NO; ?> 
 				
@@ -189,6 +189,7 @@
 		
 
 		<?php } ?>
+		<?php if($paymentdtl->payment_from != "DUE" ){ ?>
 		<tr >   
 				<td class="borderleft textstyle borderbottom">
 				
@@ -197,6 +198,7 @@
 				Validity : <?php echo '('.date('d-m-Y',strtotime($paymentdtl->FROM_DT)).' - '.date('d-m-Y',strtotime($paymentdtl->EXPIRY_DT)).')'; ?>
 				</td>
         </tr>
+		<?php } ?>
 		
 </table>
 <br>
@@ -217,9 +219,9 @@
 		<tr class="padding15">
 			<td ><?php echo $paymentdtl->CARD_DESC; ?> </td>
 			<td>1</td>
-			<td><?php echo $paymentdtl->SUBSCRIPTION; ?></td>
-			<td><?php echo $paymentdtl->SUBSCRIPTION; ?></td>
-			<td><?php echo $paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO; ?></td>
+			<td><?php echo $paymentdtl->AMOUNT+$paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT;  ?></td>
+			<td><?php echo $paymentdtl->AMOUNT+$paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT;  ?></td>
+			<td><?php echo $paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT; ?></td>
 			<td><?php echo $paymentdtl->AMOUNT; ?></td>
 			<td><?php echo $paymentdtl->CGST_AMT; ?></td>
 			<td><?php echo $paymentdtl->SGST_AMT; ?></td>

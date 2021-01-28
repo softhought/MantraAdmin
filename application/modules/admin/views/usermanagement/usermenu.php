@@ -530,9 +530,24 @@ a:hover, a:focus {
 
                                                                                 <ul>
 
-                                                                                    <?php foreach($second_lvl['thirdLevelMenu'] as $third_lvl) { ?>                
+                                                                                    <?php foreach($second_lvl['thirdLevelMenu'] as $third_lvl) { 
+																						 if(sizeof($third_lvl['fourthLevelMenu'])>0){ 
+																						?>                
 
-                                                                                        <li id="<?php echo $third_lvl['thirdLevelMenuData']->id; ?>"><?php echo $third_lvl['thirdLevelMenuData']->menu_name; ?></li>      
+                                                                                        <li id="<?php echo $third_lvl['thirdLevelMenuData']->id; ?>"><?php echo $third_lvl['thirdLevelMenuData']->menu_name; ?>  
+																						<ul>
+																						<?php foreach($third_lvl['fourthLevelMenu'] as $fourth_lvl) { ?>
+																							<li id="<?php echo $fourth_lvl['fourthLevelMenuData']->id; ?>"><?php echo $fourth_lvl['fourthLevelMenuData']->menu_name; ?></li>
+																						<?php }  ?>
+																						</ul> 
+																						</li>
+																						<?php }else{ ?>
+
+																					<li id="<?php echo $third_lvl['thirdLevelMenuData']->id;?>"><?php echo $third_lvl['thirdLevelMenuData']->menu_name;?></li>
+
+																				
+
+																						 <?php }  ?>   
 
                                                                                     <?php } ?>
 

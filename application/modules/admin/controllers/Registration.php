@@ -28,6 +28,16 @@ function __construct()
              $payment_id = $this->uri->segment(5);   
             
          }
+         if($this->uri->segment(6) != NULL){
+
+            $sent_msg = $this->uri->segment(6);   
+           
+        }
+        if($sent_msg == 'Y'){
+          $data['sms'] = 'Send Successfully';
+        }else{
+         $data['sms'] = 'Not Send';
+        }
 
               $where = array('CUS_ID'=>$customer_id);      
               $data['customerData'] = $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where);   
@@ -780,8 +790,8 @@ function __construct()
 
 
          /* ---------------------- Files Upload ----------------------- */
-         $file_dir1="member/";
-         $file_dir2="form/";
+          $file_dir1=$_SERVER['DOCUMENT_ROOT']."/admin/member/";
+         $file_dir2=$_SERVER['DOCUMENT_ROOT']."/admin/form/";
 
          if(is_uploaded_file($_FILES['imgInp']['tmp_name']))
          {
@@ -794,7 +804,7 @@ function __construct()
          {
             $imagename="";
          }
-
+         
          if(is_uploaded_file($_FILES['doc1']['tmp_name']))
          {
             move_uploaded_file($_FILES['doc1']['tmp_name'],$file_dir2.$_FILES['doc1']['name'])
@@ -870,7 +880,9 @@ function __construct()
          {
             $doctor_prescription="";
          }
-         
+
+
+         $doctor_prescription="";
          if ($is_compl=="N")
          {           
             $rcpt_srl=$this->reg_model->getReceiptNoPaymentMaster($branch,$year_id,$company_id);
@@ -1084,7 +1096,7 @@ function __construct()
                $insert_fields_arr['BP']=$bp;
                $insert_fields_arr['FAT']=$fat;
                $insert_fields_arr['service_id']=$service_id;
-               $insert_fields_arr['member_diet']=$this->chekFromData($_POST,'sel_diet');
+              // $insert_fields_arr['member_diet']=$this->chekFromData($_POST,'sel_diet');
                $insert_fields_arr['website']=$this->chekFromData($_POST,'txt_website');
                $insert_fields_arr['houseno']=$this->chekFromData($_POST,'txt_houseno');
                $insert_fields_arr['buildingno']= $this->chekFromData($_POST,'txt_buildingno');
@@ -1110,7 +1122,7 @@ function __construct()
                $insert_fields_arr['pcod_medicines']=$this->chekFromData($_POST,'pcod_medicines');
                $insert_fields_arr['is_chronic_kidney_disease']=$this->chekFromData($_POST,'is_chronic_kidney_disease');
                $insert_fields_arr['chronic_kidney_disease_medicines']=$this->chekFromData($_POST,'chronic_kidney_disease_medicines');
-               $insert_fields_arr['psyche']=$this->chekFromData($_POST,'sel_psyche');
+              // $insert_fields_arr['psyche']=$this->chekFromData($_POST,'sel_psyche');
                $insert_fields_arr['regular_med_history']=$this->chekFromData($_POST,'regular_med_history');
 
                if (isset($_POST['txt_inst1_dt']) && strlen($_POST['txt_inst1_dt'])!=0)
@@ -1183,6 +1195,7 @@ function __construct()
                $insert_fields_arr['corporate_comp_id']=$_POST['sel_corp_comny'];
                $insert_fields_arr['company_id'] = $company_id;
                $insert_fields_arr['whatsup_number'] = $whatsup_number;
+               $insert_fields_arr['is_new_soft'] = 'Y';
 
 
                // echo "<pre>";
@@ -1427,6 +1440,7 @@ function __construct()
                      //	$insert_payment_arr['payment_from']='REG';
                         $insert_payment_arr['payment_from'] = $payment_from;
                         $insert_payment_arr['collection_at'] = $collection_at;
+                        $insert_payment_arr['collection_branch_id'] = $this->getBranchIDByCompany($collection_at,$company_id);
                         $insert_payment_arr['voucher_master_id'] = $voucher_master_id;
                         $insert_payment_arr['second_voucher_mast_id'] = $voucher_master_id_2;
                         $insert_payment_arr['IS_GST']= $isGST;
@@ -1471,10 +1485,7 @@ function __construct()
 
                        $this->insertIntoMemberCompliment($cust_ins_id,$mno,$valid_string,$branch,$card,$company_id);
 
-                        $this->intoActivity($cust_ins_id,$_POST);
-
                        $isSms= $this->isSmsFacility($company_id);
-                       
                         if($isSms=='Y'){
 
                            $message = "Thank you for being part of Mantra family.Your Membership no. is ".$mno.". Please use the same for any further communication.";
@@ -2675,6 +2686,7 @@ public function insertIntoInstallment($postdata,$cust_ins_id,$pmt_ins_id,$mno,$v
                $insert_due_arr['pybl_cheque_no']=$f_inst_cheque;
                $insert_due_arr['pybl_bank']=$f_inst_bank;
                $insert_due_arr['pybl_branch']=$f_inst_branch;
+               $insert_due_arr['card_id']=$this->getCardIDByCompany($card,$company_id);
 
 
                $insrt_due=$this->InsertIntoDuePybl($insert_due_arr);
@@ -2698,6 +2710,7 @@ public function insertIntoInstallment($postdata,$cust_ins_id,$pmt_ins_id,$mno,$v
                $insert_due_arr['pybl_cheque_no']=$s_inst_cheque;
                $insert_due_arr['pybl_bank']=$s_inst_bank;
                $insert_due_arr['pybl_branch']=$s_inst_branch;
+               $insert_due_arr['card_id']=$this->getCardIDByCompany($card,$company_id);
 
                $insrt_due=$this->InsertIntoDuePybl($insert_due_arr);
 
@@ -2724,6 +2737,7 @@ public function insertIntoInstallment($postdata,$cust_ins_id,$pmt_ins_id,$mno,$v
                $insert_due_arr['pybl_cheque_no']=$t_inst_cheque;
                $insert_due_arr['pybl_bank']=$t_inst_bank;
                $insert_due_arr['pybl_branch']=$t_inst_branch;
+               $insert_due_arr['card_id']=$this->getCardIDByCompany($card,$company_id);
 
                $insrt_due=$this->InsertIntoDuePybl($insert_due_arr);
 
@@ -2747,6 +2761,7 @@ public function insertIntoInstallment($postdata,$cust_ins_id,$pmt_ins_id,$mno,$v
                $insert_due_arr['pybl_cheque_no']=$fo_inst_cheque;
                $insert_due_arr['pybl_bank']=$fo_inst_bank;
                $insert_due_arr['pybl_branch']=$fo_inst_branch;
+               $insert_due_arr['card_id']=$this->getCardIDByCompany($card,$company_id);
 
                $insrt_due=$this->InsertIntoDuePybl($insert_due_arr);
 
@@ -2770,6 +2785,7 @@ public function insertIntoInstallment($postdata,$cust_ins_id,$pmt_ins_id,$mno,$v
                $insert_due_arr['pybl_cheque_no']=$fi_inst_cheque;
                $insert_due_arr['pybl_bank']=$fi_inst_bank;
                $insert_due_arr['pybl_branch']=$fi_inst_branch;
+               $insert_due_arr['card_id']=$this->getCardIDByCompany($card,$company_id);
 
                $insrt_due=$this->InsertIntoDuePybl($insert_due_arr);
 
@@ -2793,6 +2809,7 @@ public function insertIntoInstallment($postdata,$cust_ins_id,$pmt_ins_id,$mno,$v
                $insert_due_arr['pybl_cheque_no']=$si_inst_cheque;
                $insert_due_arr['pybl_bank']=$si_inst_bank;
                $insert_due_arr['pybl_branch']=$si_inst_branch;
+               $insert_due_arr['card_id']=$this->getCardIDByCompany($card,$company_id);
 
                $insrt_due=$this->InsertIntoDuePybl($insert_due_arr);
 
@@ -3047,22 +3064,6 @@ public function insertIntoMemberCompliment($cust_ins_id,$mno,$valid_string,$bran
 public function isSmsFacility($company_id){
 
     return $sms_facility = $this->commondatamodel->getSingleRowByWhereCls('company_master',array('comany_id'=>$company_id))->sms_facility; 
-
-   }
-
-
-
-   function intoActivity($customer_id,$postdata){
-
-       /** audit trail */ 
-                  $module = 'Customer ';           
-                  $action = "Insert";
-                  $method = 'registration/registration_action';
-                  $table="customer_master";
-                  $old_details="";
-                  $new_details = json_encode($postdata);
-                  $this->commondatamodel->insertSingleActivityTableData('Add Account Master',$module,$action,$method,$customer_id,$table,$old_details,$new_details);
-
 
    }
 

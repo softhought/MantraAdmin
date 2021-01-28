@@ -10,17 +10,50 @@ $(document).ready(function(){
    
         if(Validitywithform()){
    
-    $("#specialenquiry_list").html('');
-    $("#loader").css('display','block');
-    var formData = {from_dt:from_dt,to_date:to_date,branch:branch,wing:wing};
-    var method = 'enquiry/getspecialenquiry';
-    var data =  htmlshowajaxcomtroller(method,formData); 
-    $("#loader").css('display','none');  
-    $("#specialenquiry_list").html(data);
-    $('.dataTable2').DataTable({
-        "scrollX": true
-     })
+        $("#specialenquiry_list").html('');
+        $("#loader").css('display','block');
+        var formData = {from_dt:from_dt,to_date:to_date,branch:branch,wing:wing};
+        var method = 'enquiry/getspecialenquiry';
+        var data =  htmlshowajaxcomtroller(method,formData); 
+        $("#loader").css('display','none');  
+        $("#specialenquiry_list").html(data);
+        var table =  $('#specialenq').DataTable({
+            "scrollX": true
+        })
+       
     }
+    
+    // Handle click on "Select all" control
+    $('#example-select-all').on('click', function(){
+        // Check/uncheck all checkboxes in the table
+        var rows = table.rows({ 'search': 'applied' }).nodes();
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+     });
+  
+     // Handle click on checkbox to set state of "Select all" control
+     $('#specialenq tbody').on('change', 'input[type="checkbox"]', function(){
+        // If checkbox is not checked
+        if(!this.checked){
+           var el = $('#example-select-all').get(0);
+           // If "Select all" control is checked and has 'indeterminate' property
+           if(el && el.checked && ('indeterminate' in el)){
+              // Set visual state of "Select all" control 
+              // as 'indeterminate'
+              el.indeterminate = true;
+           }
+        }
+     });
+        $('#buton').click( function () {            
+        var data = [];
+        var oTable = $('#specialenq').dataTable();
+        var rowcollection =  oTable.$(".call-checkbox:checked", {"page": "all"});
+        
+        rowcollection.each(function(index,elem){              
+            data.push($(elem).val());
+           
+        });
+        console.log(data);
+        });
     });
 
     $(document).on("click", ".addFeedback", function () {

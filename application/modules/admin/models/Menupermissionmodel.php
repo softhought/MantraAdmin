@@ -147,39 +147,23 @@ class Menupermissionmodel extends CI_Model{
        $data = array();
 
        $where_Ary = array(
-
            "admin_menu_master.parent_id" => $parentID,
-
            "admin_menu_master.is_active" => "Y"
-
-       );
-
-       
+       );       
 
        $this->db->select("*")->from('admin_menu_master')
-
                ->where($where_Ary)
-
                ->order_by('admin_menu_master.menu_srl','ASC');
-
         $query = $this->db->get();
 
         // pre($this->db->last_query());
-
        if($query->num_rows()> 0)
-
           {
-
                foreach($query->result() as $rows)
-
                {
-
                    $data[] = array(
-
                            "secondLevelMenuData" => $rows,
-
                            "thirdLevelMenu" => $this->getThirdLevelMenuDevOnly($rows->id) 
-
                         );
 
                }
@@ -227,11 +211,38 @@ class Menupermissionmodel extends CI_Model{
                $data[] = array(
 
                        "thirdLevelMenuData" =>$rows,
+                       "fourthLevelMenu" => $this->getFourthLevelMenuDevOnly($rows->id) 
 
                    );
 
            }
 
+       }
+
+          return $data;
+
+   }
+
+   public function getFourthLevelMenuDevOnly($parentID)
+   {
+       $data = array();
+       $where_Ary = array(
+           "admin_menu_master.parent_id" => $parentID,
+           "admin_menu_master.is_active" => "Y"
+       );       
+
+        $this->db->select("*")->from('admin_menu_master')
+               ->where($where_Ary)
+               ->order_by('admin_menu_master.menu_srl','ASC');
+        $query = $this->db->get();
+       if($query->num_rows()>  0) 
+       {
+           foreach($query->result() as $rows)
+           {
+               $data[] = array(
+                       "fourthLevelMenuData" =>$rows,
+                   );
+           }
        }
 
           return $data;
@@ -283,7 +294,6 @@ class Menupermissionmodel extends CI_Model{
                    $data[] = array(
 
                            "FirstLevelMenuData" => $rows,
-
                            "secondLevelMenu" => $this->getSecondLevelMenu($rows->id,$user_id) 
 
                         );
@@ -395,6 +405,57 @@ class Menupermissionmodel extends CI_Model{
                $data[] = array(
 
                        "thirdLevelMenuData" =>$rows,
+                       "fourthLevelMenu" => $this->getFourthLevelMenu($rows->id,$user_id)
+
+                   );
+
+           }
+
+       }
+
+          return $data;
+
+   }
+
+   public function getFourthLevelMenu($parentID,$user_id)
+
+   {
+
+       $data = array();
+
+       $where_Ary = array(
+
+           "admin_menu_master.parent_id" => $parentID,
+
+           "admin_menu_master.is_active" => "Y",
+
+           "admin_menu_permission.user_id" => $user_id,
+
+       );
+
+       
+
+      $this->db->select("admin_menu_master.*")->from('admin_menu_master')
+
+               ->join('admin_menu_permission','admin_menu_master.id=admin_menu_permission.menu_id')
+
+               ->where($where_Ary)
+
+               ->order_by('admin_menu_master.menu_srl','ASC');
+
+        $query = $this->db->get();
+
+       if($query->num_rows()> 0) 
+
+       {
+
+           foreach($query->result() as $rows)
+
+           {
+
+               $data[] = array(
+
+                       "fourthLevelMenuData" =>$rows,
 
                    );
 

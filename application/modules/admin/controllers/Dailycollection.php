@@ -21,6 +21,7 @@ public function collectionbranchwise(){
         
         $session = $this->session->userdata('mantra_user_detail');
         $comp = $session['companyid'];
+        $data['user_role'] = $session['user_role'];
         $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master'); 
         $data['cashaccountlist'] = $this->dailycollectionmodel->getAllCashAccountByComId($comp); 
         // pre($data['branchlist']);exit;
@@ -46,6 +47,7 @@ public function getAlldailycollection(){
         
            $brn_id =  $this->input->post('branch');
            $cash_account_id =  $this->input->post('cash_account_id');
+           
            if ($user_role=="1" || $user_role=="2")
             {
                 if(trim(htmlspecialchars($this->input->post('from_dt'))) != ''){          
@@ -62,11 +64,13 @@ public function getAlldailycollection(){
             }
             else
             {
+                $duration=7;
                 $tdt=date("Y-m-d");
                 $fdt=strtotime ('-7 day',strtotime($tdt));
-
+               
                 $last_date = explode("-",$tdt);
                 $fdt = date('Y-m-d',strtotime('-'.$duration.' day',mktime(0,0,0,$last_date[1],$last_date[2],$last_date[0])));
+               
             }
          
             $aryDate=array();

@@ -164,7 +164,7 @@
                                 <div class="col-md-3">   
                                         <div class="form-group">
                                         <div class="input-group input-group-sm">                                                             
-                                            <input type="text" class="form-control forminputs typeahead" id="first_name" name="first_name"  autocomplete="off" value="" readonly>
+                                            <input type="text" class="form-control forminputs typeahead" id="first_name" name="first_name"  autocomplete="off" value="<?php echo $sms; ?>" readonly>
                                         </div>
                                     </div>
                                 </div> 

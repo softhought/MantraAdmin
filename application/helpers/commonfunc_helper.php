@@ -110,6 +110,7 @@ if (!function_exists('pre'))
                 $mantra_user = "mantraapi1";               
                 $mantra_password = "j7@L86k1*dG";            
                 $mantra_url = "http://myvaluefirst.com/smpp/sendsms?";
+                $mantra_url = "https://103.229.250.200/smpp/sendsms?";
                 //$mantra_from = "manl";
                 $mantra_from = "MANTRA";
                 $mantra_udh = 0;
@@ -127,6 +128,7 @@ if (!function_exists('pre'))
             //      }
 
                 $file = file_get_contents($urltouse);
+                pre($file);exit;
                 if ($file=="Sent.")
                 {
                     $response="Y";
@@ -140,6 +142,7 @@ if (!function_exists('pre'))
             
             }
     }  
+    
     if(!function_exists('siteURL'))
 	{
 		
@@ -149,7 +152,5 @@ if (!function_exists('pre'))
 			return $protocol . $domainName;
 		}
 	}
-    
-
 
 

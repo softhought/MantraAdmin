@@ -4595,3 +4595,27 @@ border: 1px solid
     font-weight: 600;
     text-decoration: underline;
 }
+.font12{
+    font-size: 12px !important;
+}
+.colored{
+    color:red;
+}
+.colorbl{
+    color: #561a4c !important;
+}
+.fontetext{
+    font-size:15px;
+    margin-top:-4px;
+    margin-bottom:5px;
+    font-weight: 700;
+}
+.displaybl{
+    display: block;
+}
+/* Ensure that the demo table scrolls */
+/* th, td { white-space: nowrap; }
+div.dataTables_wrapper {
+    width: 800px;
+    margin: 0 auto;
+} */

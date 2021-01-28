@@ -193,4 +193,13 @@ define ("COLLECTION_TYPE", json_encode(array (
    
        
 )));
+define ("PAYMENT_MODE", json_encode(array ( 
+    "Cash" => "Cash",
+    "ONP" => "ONP",
+    "Cheque" => "Cheque",
+    "Card" => "Card",
+    "Fund Transfer" => "Fund Transfer",
+   
+       
+)));
 

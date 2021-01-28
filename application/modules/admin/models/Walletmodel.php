@@ -310,8 +310,99 @@ class Walletmodel extends CI_Model{
 
 	}
 
+//Start added by anil on 13-01-2021
+public function getCashBackOnSaleAmt($branch,$card_code,$company)
+	{
+		$cashback_amt = 0;
+		$where = array('branch' => $branch,
+						'package' => $card_code,
+						'company_id' => $company,
+						'is_active' => 'Y',
+					);
+		$this->db->select("*")
+				 ->from('on_sale_cash_back_master')
+				 ->where($where)
+				 ->limit(1);
+		$query = $this->db->get();
+		
+		#echo "<br>".$this->db->last_query();
+		
+		if($query->num_rows()> 0)
+		{
+			$row = $query->row();
+			$cashback_amt = $row->cashback_amt;
+		  
+		   return $cashback_amt;
+             
+        }
+		else
+		{
+            return $cashback_amt;
+        }
+	}
 
-	
+	public function GetPromoWithMemberAccCode($member_acc_code)
+	{
+        $data = array();
+		$where1 = array('promo_cashbck_assign_to_mem.is_promo' => 'Y',
+						'promo_cashbck_assign_to_mem.member_acc_code' => $member_acc_code
+					 );
+	    $where2='promo_cashbck_assign_to_mem.amount!=0  AND promo_master.valid_upto >= CAST(NOW() AS DATE)';
+		$this->db->select("promo_cashbck_assign_to_mem.*,promo_master.title")
+				->from('promo_cashbck_assign_to_mem')
+				->join('promo_master','promo_master.id = promo_cashbck_assign_to_mem.transaction_id','INNER')
+				->where($where1)
+				->where($where2)
+				;
+		$query = $this->db->get();
+		#echo "<br>".$this->db->last_query();	
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data; 
+        }
+		else
+		{
+             return $data;
+         }
+	}
+
+	public function getCashbackExiredate($member_acc_code,$new_valid_upto){
+
+        $data =array();
+
+       $sql ="SELECT * FROM promo_cashbck_assign_to_mem WHERE member_acc_code = '$member_acc_code' AND is_promo = 'N' AND expire_dt < '$new_valid_upto'";       
+
+        $query = $this->db->query($sql);
+        if ($query->num_rows() > 0) {
+             $row = $query->row();    
+             $data = $row;           
+
+        }
+        return $data;
+
+	}
+	public function getwithoutexpirecashback($member_acc_code){
+
+        $data =array();
+
+        $sql ="SELECT * FROM promo_cashbck_assign_to_mem WHERE member_acc_code = '$member_acc_code' AND is_promo = 'N' AND expire_dt >= CURDATE()";       
+
+        $query = $this->db->query($sql);
+        if ($query->num_rows() > 0) {
+             $row = $query->row();    
+             $data = $row;           
+
+        }
+        return $data;
+
+	}
+
+
+//End added by anil on 13-01-2021
 
 
 
