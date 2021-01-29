@@ -87,27 +87,20 @@
           
 <table  class="table customTbl table-bordered table-hover  tablepad" id="specialEnqTable">
           <thead>
-          <tr>
+        <tr>
               <th style="width:100px;">
                <!-- <input type="checkbox" class="rowCheckAll" name="rowCheckAll" id="rowCheckAll" value="Y" > Select All</th></th>  -->
               <input type="checkbox" class="call-checkbox rowCheckAll" id = "example-select-all" > &nbsp;Select All</th>
-              <th style="width:55px;">Sl.No</th>              
-              <th style="width:90px;">Enquiry Date</th>
-              <th style="width:90px;">Enquiry No.</th>
-              <th style="width:90px;">Sms/Email</th>
-              <!-- <th style="width:90px;">Wing</th> -->
-              <th style="width:60px;">Branch</th>
-              <th style="width:100px;">Name </th>             
-              <th  style="width:70px;">Mobile No.</th>  
-              <th  style="width:80px;">Email</th>  
-              <!-- <th  style="width:60px;">Pin</th>  
-              <th  style="width:80px;">Location</th>   -->
-              <th style="width:100px;">Address</th>  
-              <th style="width:60px;">Follow-Up</th>  
-              <th style="width:200px;">Remarks</th>  
-              
-              <!-- <th style="width:60px;">Status</th>   -->
-              <!-- <th style="width:80px;">Caller</th>               -->
+              <th style="width:45px;">Sl.No</th> 
+              <th style="width:90px;">Sms/Email</th>             
+							<th>Mem. No|Name</th>
+							<th>Category </th>
+							<th>Card</th>
+							<th>Branch</th>
+							<th>Gender</th>
+							<th>Mobile</th>
+							<th>Email</th>
+							<th style="width:190px;">Validity</th>
               
               </tr>
           </thead>
@@ -118,44 +111,31 @@
 		foreach($specialenquirylist as $specialenquirylist){			
 		?>
 	<tr>                     
-                      <td align="center">
+                     <td align="center">
 
-                  <!-- <input type="hidden" name="row_special_id_<?php echo $row;?>" id="row_special_id_<?php echo $row;?>" value="<?php echo $specialenquirylist->enq_id;?>" >
-
-                  <input type="checkbox" class="rowCheck" name="rowCheck[]" id="rowCheck_<?php echo $row;?>" value="<?php echo $row;?>" > -->
-                  <input type="checkbox" class="call-checkbox rowCheck" name="id[]" id="row_check_<?php echo $row; ?>" value="<?php echo $specialenquirylist->enq_id; ?>">
+                
+                  <input type="checkbox" class="call-checkbox rowCheck" name="id[]" id="row_check_<?php echo $row; ?>" value="<?php echo $specialenquirylist->CUS_ID; ?>">
                   </td>
                             <td><?php echo $i++ ?></td>
-                            <td><?php echo date('d-m-Y',strtotime($specialenquirylist->enq_date)); ?></td>
-                            <td> 
-                            <?php echo $specialenquirylist->ENQ_NO; ?><br>
-                           
-                                  
-                                <a href="javascript:void(0);" data-id="<?php echo $specialenquirylist->enq_id; ?>" class="addFeedback hidebtn_<?php echo $specialenquirylist->enq_id; ?>" style="margin-left: 30px;"> <img src="<?php echo base_url(); ?>assets/img/add_icon.png" width="30" height="30" /></a> 
-
-                                  <a href="javascript:void(0);" data-toggle="modal" data-id="<?php echo $specialenquirylist->enq_id; ?>" data-target="#feedbackList" class="feedbackList hidebtn_<?php echo $specialenquirylist->enq_id; ?>"><img src="<?php echo base_url(); ?>assets/img/dtl_view.png" width="30" height="30" /></a> 
-                                
-                            
-                            </td>
-                            <td>  <br><a href="javascript:void(0);" data-toggle="modal" data-id="<?php echo $specialenquirylist->enq_id; ?>" data-target="#smslistmodel" class="smsList hidebtn_<?php echo $specialenquirylist->enq_id; ?>">
-                            <img src="<?php echo base_url(); ?>assets/img/sms.png" width="30" height="30" /></a>
-                            <a href="javascript:void(0);" data-toggle="modal" data-id="<?php echo $specialenquirylist->enq_id; ?>" data-target="#emaillistmodel" class="emailList hidebtn_<?php echo $specialenquirylist->enq_id; ?>">
-                            <img src="<?php echo base_url(); ?>assets/img/email.png" width="30" height="30" /></a> </td>
-                            <!-- <td><?php echo $specialenquirylist->for_the_wing; ?></td> -->
-                            <td><?php echo $specialenquirylist->BRANCH_NAME; ?></td>
-                           
+                          
                          
-                            <td><?php echo $specialenquirylist->FIRST_NAME.' '.$specialenquirylist->LAST_NAME; ?></td>
-                            <td><?php echo $specialenquirylist->MOBILE1; ?></td>
-                            <td><?php echo $specialenquirylist->EMAIL; ?></td>
-                            <!-- <td><?php echo $specialenquirylist->pin_code; ?></td>
-                            <td><?php echo $specialenquirylist->pin_location; ?></td> -->
-                            <td><?php echo $specialenquirylist->ADDRESS; ?></td>
-                            <td><?php echo date('d-m-Y',strtotime($specialenquirylist->followup_date)); ?></td>
-                            <td><?php echo $specialenquirylist->enq_remarks; ?></td>
-                            
-                            <!-- <td><?php echo $status; ?></td> -->
-                            <!-- <td><?php echo $specialenquirylist->caller_name; ?></td> -->
+                            <td>  <br><a href="javascript:void(0);" data-toggle="modal" data-id="<?php echo $specialenquirylist->CUS_ID; ?>" data-target="#smslistmodel" class="smsListOldmem hidebtn_<?php echo $specialenquirylist->CUS_ID; ?>">
+                            <img src="<?php echo base_url(); ?>assets/img/sms.png" width="30" height="30" /></a>
+                            <a href="javascript:void(0);" data-toggle="modal" data-id="<?php echo $specialenquirylist->CUS_ID; ?>" data-target="#emaillistmodel" class="emailListOldmem hidebtn_<?php echo $specialenquirylist->CUS_ID; ?>">
+                            <img src="<?php echo base_url(); ?>assets/img/email.png" width="30" height="30" /></a> </td>
+                           	<td><span class="badge badge-success" style="font-size:11px;">
+                             <?PHP echo($specialenquirylist->membership_no);?></span>
+                             <br>&nbsp;<?PHP echo($specialenquirylist->CUS_NAME);?></td>
+                           	<td><?PHP echo($specialenquirylist->category_name);?></td>
+                            <td><span class="badge badge-info" style="font-size:11px;">
+                            <?PHP echo($specialenquirylist->CARD_CODE);?></span></td>
+                            <td><?PHP echo($specialenquirylist->BRANCH_CODE);?></td>
+                            <td><?PHP echo($specialenquirylist->CUS_SEX);?></td>
+                            <td><span class="badge badge-secondary" style="font-size:11px;">
+                            <?PHP echo($specialenquirylist->CUS_PHONE);?></span></td>
+                            <td><?PHP echo($specialenquirylist->CUS_EMAIL);?></td>
+                            <td><span class="badge badge-danger" style="font-size:11px;">
+                            <?PHP echo($specialenquirylist->validFrom." to ".$specialenquirylist->expiryDate);?></span></td>
                            
                       </tr>
         <?php $row++; } ?>

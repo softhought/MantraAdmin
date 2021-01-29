@@ -20,6 +20,7 @@ function __construct()
       {  
          $customer_id=0;
          $payment_id=0;
+         $sent_msg  = 'N';
          if($this->uri->segment(4) != NULL){
            $customer_id = $this->uri->segment(4);   
          }
@@ -38,7 +39,6 @@ function __construct()
         }else{
          $data['sms'] = 'Not Send';
         }
-
               $where = array('CUS_ID'=>$customer_id);      
               $data['customerData'] = $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where);   
 
@@ -790,7 +790,7 @@ function __construct()
 
 
          /* ---------------------- Files Upload ----------------------- */
-          $file_dir1=$_SERVER['DOCUMENT_ROOT']."/admin/member/";
+          $file_dir1=$_SERVER['DOCUMENT_ROOT']."/images/member_p/";
          $file_dir2=$_SERVER['DOCUMENT_ROOT']."/admin/form/";
 
          if(is_uploaded_file($_FILES['imgInp']['tmp_name']))
@@ -1473,7 +1473,12 @@ function __construct()
                        /*-------------------------- update CashBckAdminConversion -------------------------------- */
                        $where = array('member_id' => $extMemberId,'is_redeemed' => 'N');
                        $upd_cash_bck_admin = $this->commondatamodel->updateSingleTableData('cash_back_admin',$upd_cashbck_admn,$where);
-                        /*-------------------------- update voucher master -------------------------------- */
+                       
+                       $where_cus = array('CUS_ID'=>$cust_ins_id);
+                       $upd_customer = array('PAYMENT_ID'=>$pmt_ins_id);
+                       $this->commondatamodel->updateSingleTableData('customer_master',$upd_customer,$where_cus);
+                       
+                       /*-------------------------- update voucher master -------------------------------- */
                        $this-> updateVoucherMasterPaymentId($pmt_ins_id,$voucher_master_id);
                        $this-> updateVoucherMasterPaymentId($pmt_ins_id,$voucher_master_id_2);
 
@@ -1486,10 +1491,11 @@ function __construct()
                        $this->insertIntoMemberCompliment($cust_ins_id,$mno,$valid_string,$branch,$card,$company_id);
 
                        $isSms= $this->isSmsFacility($company_id);
+                       $sent_msg = 'N';
                         if($isSms=='Y'){
 
                            $message = "Thank you for being part of Mantra family.Your Membership no. is ".$mno.". Please use the same for any further communication.";
-                            mantraSend($phone,$message);
+                           $sent_msg = mantraSend($phone,$message);
                         }
 
                          if($cust_ins_id){
@@ -1498,7 +1504,8 @@ function __construct()
                                  "mode"=>$mode, 
                                  "cust_ins_id"=>$cust_ins_id, 
                                  "pmt_ins_id"=>$pmt_ins_id, 
-                                 "msg_data" => "Save Successfully"
+                                 "msg_data" => "Save Successfully",
+                                 'sent_msg'=>$sent_msg
                                        
                            );
                            } else{
@@ -2887,10 +2894,11 @@ public function insertIntoMemberCompliment($cust_ins_id,$mno,$valid_string,$bran
 
             $link="https://www.mantrahealthclub.com/mantra/termofuse/agreement/".$sign_id;
             $message = "Please read the agreement to get verification code ".$link;
-           mantraSend($mobile,$message);
+            mantraSend($mobile,$message);
 
             
-             $json_response = array("sign_id" => $sign_id);
+             $json_response = array("sign_id" => $sign_id,
+              "verifed_code" => $verifed_code,"link" => $link);
 
 					echo json_encode( $json_response );
 						exit;

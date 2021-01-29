@@ -100,11 +100,11 @@ class Registrationmodel extends CI_Model{
     public function getUsers($company_id)
 	{
         $data = array();
-        $where = array('visible_stat' => 'Y','company_id' => $company_id );
+        $where = array('is_active' => 'Y','company_id' => $company_id );
 		$this->db->select("*")
-				->from('user_master')
+				->from('users')
 				->where($where)
-				->order_by('name_in_full', 'asc');
+				->order_by('name', 'asc');
 		$query = $this->db->get();
 		#q();
 		if($query->num_rows()> 0)

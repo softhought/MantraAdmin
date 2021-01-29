@@ -106,7 +106,10 @@ if (!function_exists('pre'))
     }
     if(!function_exists('mantraSend')){
         function mantraSend($phone, $msg)
-            {             
+            {    
+                $CI =& get_instance();
+                $CI->load->database();
+                $CI->load->library('session');
                 $mantra_user = "mantraapi1";               
                 $mantra_password = "j7@L86k1*dG";            
                 $mantra_url = "http://myvaluefirst.com/smpp/sendsms?";
@@ -128,14 +131,37 @@ if (!function_exists('pre'))
             //      }
 
                 $file = file_get_contents($urltouse);
-                pre($file);exit;
+               
+                $session = $CI->session->userdata('mantra_user_detail');
+                $company_id = $session['companyid'];
                 if ($file=="Sent.")
                 {
                     $response="Y";
+                    
+		          $sms_log_inst = array(
+                    'mobile' => $phone,
+                    'message' => $msg,   
+                    'status_code' => $response,                 
+                    'response_code' => $file,                   
+                    'created_on' => date('Y-m-d h:i s'),
+                    'company_id'=>$company_id
+
+                   );
+                   $CI->commondatamodel->insertSingleTableData('sms_log',$sms_log_inst);
                 }
                 else
                 {
                     $response="N";
+                    $sms_log_inst = array(
+                        'mobile' => $phone,
+                        'message' => $msg,   
+                        'status_code' => $response,                 
+                        'response_code' => $file,                   
+                        'created_on' => date('Y-m-d h:i s'),
+                        'company_id'=>$company_id
+    
+                       );
+                       $CI->commondatamodel->insertSingleTableData('sms_log',$sms_log_inst);
                 }
 
                 return($response);

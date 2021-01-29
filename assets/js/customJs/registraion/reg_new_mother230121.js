@@ -206,15 +206,13 @@ $(document).ready(function () {
       //console.log("sign_id" + data);
       $("#agreement_sign_id").val(data.sign_id);
       /*------------------------------------------*/
-      // $("#term_condition_verify_code").val(data.verifed_code);
+      $("#term_condition_verify_code").val(data.verifed_code);
       $("#verify_no").hide();
       $("#verify_code").show();
 
       /*------------------------------------------*/
-      var whatsapp =
-        "https://api.whatsapp.com/send?text=https://www.mantrahealthclub.com/mantra/termofuse/agreement/" +
-        data.sign_id;
-      $("#wplink").prop("href", whatsapp);
+      var whatsapp="https://api.whatsapp.com/send?text=https://www.mantrahealthclub.com/mantra/termofuse/agreement/" + data.sign_id;
+      $("#wplink").prop("href",whatsapp);
       $(".trmVerify").show();
     }
   );

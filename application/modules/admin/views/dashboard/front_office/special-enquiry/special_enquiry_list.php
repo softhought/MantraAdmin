@@ -16,8 +16,28 @@
 
     <div class="list-search-block">
                <div class="row box">  
-                             
-                  <div class="col-sm-2">
+
+                    <div class="col-sm-2">
+                    <label for="wing">Type</label>
+                      <div class="form-group">
+                       <div class="input-group input-group-sm">
+                            
+                        <select class="form-control select2" name="search_type" id="search_type" >
+                              <option value="">Select</option>
+                              <?php foreach (json_decode(SPECIAL_ENQUIRY) as $key => $value) {
+                                # code...
+                               ?>
+                                      <option value='<?php echo $key; ?>'><?php echo $value; ?></option>
+                                <?php } ?>
+                            </select>
+                          </div>
+                        </div>
+                        
+                    </div> 
+
+                    
+                         
+                  <div class="col-sm-2 ">
                     <label for="from_dt">From Date</label>
                        <div class="form-group">
                         <div class="input-group input-group-sm">
@@ -30,7 +50,7 @@
                        
                     </div>
                    
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 ">
                     <label for="to_date">To Date</label>
                        <div class="form-group">
                         <div class="input-group input-group-sm">
@@ -42,6 +62,64 @@
                         </div>
                         
                     </div> 
+
+                      <!-- <div class="col-sm-2 old_mem_div">
+                    <label for="wing">Search From</label>
+                      <div class="form-group">
+                       <div class="input-group input-group-sm" >
+                            
+                        <select class="form-control select2" name="sel_month" id="sel_month" >
+                              <option value="">Select</option>
+                              <?php for ($i=1; $i < 25; $i++) { 
+                             
+                               ?>
+                                      <option value='<?php echo $i; ?>'><?php echo $i." month ago"; ?></option>
+                                <?php } ?>
+                            </select>
+                          </div>
+                        </div>
+                        
+                    </div> -->
+
+                   
+                        <div class="col-sm-2 old_mem_div" >
+                    <label for="wing">Category</label>
+                      <div class="form-group">
+                       <div class="input-group input-group-sm">
+                            
+                        <select class="form-control select2" name="sel_category" id="sel_category" >
+                              <option value="">Select</option>
+                                <?php foreach ($categorylist as $key => $value) {
+                                
+                               ?>
+                                      <option value='<?php echo $value->id; ?>'><?php echo $value->category_name; ?></option>
+                                <?php } ?>
+                            </select>
+                          </div>
+                        </div>
+                        
+                    </div> 
+
+                       <div class="col-sm-2 old_mem_div">
+                    <label for="wing">Package</label>
+                      <div class="form-group">
+                       <div class="input-group input-group-sm" id="package_drp">
+                            
+                        <select class="form-control select2" name="sel_card" id="sel_card" >
+                              <option value="">Select</option>
+                           
+                            </select>
+                          </div>
+                        </div>
+                        
+                    </div> 
+                    
+                    
+                   
+
+                 
+
+
                     <div class="col-sm-2">
                     <label for="branch">Branch</label>
                       <div class="form-group">
@@ -57,27 +135,12 @@
                         </div>
                        
                     </div> 
-                    <div class="col-sm-2">
-                    <label for="wing">Wing</label>
-                      <div class="form-group">
-                       <div class="input-group input-group-sm">
-                            
-                        <select class="form-control select2" name="wing" id="wing" >
-                              <option value="">Select</option>
-                              <?php foreach($winglist as $winglist){ ?>
-                                      <option value='<?php echo $winglist->wing_id; ?>'><?php echo $winglist->wing_name; ?></option>
-                                <?php } ?>
-                            </select>
-                          </div>
-                        </div>
-                        
-                    </div>                  
+                                
                   
 
                 <div class="col-md-1">
                 <label for="payment">&nbsp;</label>
                  <button type="button" class="btn btn-block action-button btn-sm" id="specialenquiryshowbtn">Show</button>
-                 <button type="button" class="btn btn-block action-button btn-sm" id="buton">Button</button>
 
 
                    <!-- Total <span class="badge" id="total_amount_value">7</span> -->
@@ -94,35 +157,9 @@
            <img src="<?php echo base_url(); ?>assets/img/loader.gif" width="90" height="90" id="gear-loader" style="margin-left: auto;margin-right: auto;"/>
            <span style="color: #bb6265;">Loading...</span>
        </div>
-
+       <center> <div id="response_message" style="font-weight: bold;font-size: 25px;color: #821e70;"></div> </center>
       <div id="specialenquiry_list">
-        <table id="specialenq"  class="table customTbl table-bordered table-hover dataTable tablepad">
-          <thead>
-          <tr>
-          <th style="width:55px;">Sl.No</th>              
-              <th style="width:90px;">Enquiry Date</th>
-              <th style="width:90px;">Enquiry No.</th>
-              <!-- <th style="width:90px;">Wing</th> -->
-              <th style="width:60px;">Branch</th>
-              <th style="width:100px;">Name </th>             
-              <th  style="width:70px;">Mobile No.</th>  
-              <th  style="width:80px;">Email</th>  
-              <!-- <th  style="width:60px;">Pin</th>  
-              <th  style="width:80px;">Location</th>   -->
-              <th style="width:100px;">Address</th>  
-              <th style="width:60px;">Follow-Up</th>  
-              <th style="width:200px;">Remarks</th>  
-              <!-- <th style="width:60px;">Status</th>   -->
-              <!-- <th style="width:80px;">Caller</th>               -->
-              
-          
-                                  
-              </tr>
-          </thead>
-          <tbody>
-          
-          </tbody>
-        </table>
+       
      </div>
     </div>
 

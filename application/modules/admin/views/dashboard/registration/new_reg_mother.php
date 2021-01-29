@@ -222,7 +222,7 @@
 					
 					<!-- added on 20.08.2016 -->
 					<tr>
-						<td class="form_text2" width="135">Category*</td>
+						<td  width="135">Category*</td>
 						<td>
 						<select name="sel_category" id="sel_category" class="form_input_text pay_info_chng form-control select2"  style="width: 306px;" onchange="getPackageList(this.value);">
 									<option value=''>Select</option>
@@ -239,7 +239,7 @@
 					</tr>
 					<!-- package by category -->
 					<tr>
-						<td class="form_text2" width="135">Package*</td>
+						<td  width="135">Package*</td>
 						<td>
 							<div id="pack">
 							<select name="sel_card" id="sel_card" class="form_input_text pay_info_chng form-control select2"  style="width: 306px;" >
@@ -641,12 +641,12 @@
 					
 					<tr><td>Branch</td><td><input name="txt_branch" id="txt_branch" type="text" class="form_input_text pay_info_chng form-control forminputs txtInp"  ></td></tr>
 
-					<tr><td class="form_text2" width="200">Done by*</td><td><select name="sel_user" id="sel_user" class="form_input_text pay_info_chng form-control select2" >
+					<tr><td  width="200">Done by*</td><td><select name="sel_user" id="sel_user" class="form_input_text pay_info_chng form-control select2" >
 					<?PHP
 					if ($mode=="Edit")
 					{
-  					   echo("<option value=\"".$user_id."\">");
-					   echo($user_name);
+  					   echo("<option value=\"".$id."\">");
+					   echo($name);
 					   echo("</option>");
 
 					}
@@ -656,10 +656,10 @@
 					}
 					foreach ($rowUser as $row_user)
 					{
-                       if ($user_id!=$row_user->user_id)
+                       if ($user_id!=$row_user->id)
 					   {
-					      echo("<option value=\"".$row_user->user_id."\">");
-					      echo($row_user->name_in_full);
+					      echo("<option value=\"".$row_user->id."\">");
+					      echo($row_user->name);
 					      echo("</option>");
 					   }
 					}
@@ -836,9 +836,7 @@
 
 					<tr><td width="135">Website</td><td><input name="txt_website" id="txt_website" type="text" class="form_input_text persnl_info_chng form-control forminputs txtInp2"  value="<?PHP echo(@$email);?>"></td></tr>
 
-					<tr><td width="135">Occupation
-												<i class="fa fa-plus-circle" style="color: green;font-size: 15px;" aria-hidden="true" data-toggle="modal" data-target="#addDoctorReferral" style="cursor:pointer;"></i>	</label> 
-					</td>
+					<tr><td width="135">Occupation</td>
 					<td>
 					<!-- <input name="txt_occu" id="txt_occu" type="text" class="form_input_text form-control forminputs txtInp2"  value="<?PHP echo(@$occupation);?>"> -->
 								<select name="txt_occu" id="txt_occu" class="form_input_text form-control forminputs select2" >
@@ -853,7 +851,7 @@
 
 								</select>
 
-					
+
 					</td>
 					</tr>
 
@@ -1617,7 +1615,7 @@
 										</div>  
 				</div>
 
-					 <div class="row"> 
+					 <!-- <div class="row"> 
 					    <label class="col-md-1 labletext" for="enquiry_dt"> </label>  
 						<label class="col-md-2 labletext" for="enquiry_dt">Psyche </label>                         
 									<div class="col-md-6">
@@ -1634,7 +1632,7 @@
 													</div>
 													</div>
 										</div>  
-				</div>
+				</div> -->
 
 				 <div class="row"> 
 					    <label class="col-md-1 labletext" for="enquiry_dt"> </label>  
