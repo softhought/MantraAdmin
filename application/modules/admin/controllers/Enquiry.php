@@ -688,6 +688,9 @@ function send_my_sms($phone,$enq_no,$wing,$branch)
 {
     $mantra_url = "http://myvaluefirst.com/smpp/sendsms?";
     $feed = 'N';
+    $module = "Enquiry";
+    $controller = "Enquiry/send_my_sms";
+
 	if ($wing=="GYM")
 	{
 		 if($branch=="CM")
@@ -714,12 +717,14 @@ function send_my_sms($phone,$enq_no,$wing,$branch)
 		{
 	         $message = "Thank you for showing interest on Mantra Health Club.Your Enquiry No. is ".$enq_no.". We look forward to serving you better, please contact +919748488321 / +919836959859 for any further queries";
 		}
-    $feed=mantraSend($phone,$message);
+     
+     
+    $feed=mantraSend($phone,$message,$module,$controller);
 	}
 	if ($wing=="INSTITUTE")
 	{
          $message = "Earn a Diploma in Fitness Management-Interactive & career counseling session on Saturday, 7th of Jun,14 from 12:00 pm to 2 pm at MANTRA HEALTH CLUB, 29F B.T. Road, Kol-2.Chiriyamore (Dumdum)";
-         $feed=mantraSend($phone,$message);
+         $feed=mantraSend($phone,$message,$module,$controller);
 	}
 	if ($wing=="OLD MEMBER")
 	{
@@ -739,7 +744,7 @@ function send_my_sms($phone,$enq_no,$wing,$branch)
 		{
 	         $message = "We Miss You You! We would be delighted to have you back on Mantra. Why not call us at +919051195830 / +919051195830.";
     }
-    $feed=mantraSend($phone,$message);
+    $feed=mantraSend($phone,$message,$module,$controller);
 
 	}
 
@@ -1085,7 +1090,9 @@ if($applytype=='ENQUIRED PERSON'){
 
               $message = $matter_data;
              // $member_mobile=7003319369;
-              $msg_res= mantraSend($member_mobile,$message);
+                $module = "Special Enquiry";
+                $controller = "Enquiry/applyEnquiryNotification";
+              $msg_res= mantraSend($member_mobile,$message,$module,$controller);
             //  $msg_res='Y';
               if($msg_res=='Y'){$err_id =1;}else{$err_id =0;}
               
@@ -1168,7 +1175,9 @@ if($applytype=='OLD MEMBER'){
 
               $message = $matter_data;
              // $member_mobile=7003319369;
-              $msg_res= mantraSend($member_mobile,$message);
+              $module = "Special Enquiry";
+              $controller = "Enquiry/applyEnquiryNotification";
+              $msg_res= mantraSend($member_mobile,$message,$module,$controller);
              // $msg_res='Y';
               if($msg_res=='Y'){$err_id =1;}else{$err_id =0;}
 
