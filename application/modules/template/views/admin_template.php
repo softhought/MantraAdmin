@@ -200,6 +200,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   }
 
+  .float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:20px;
+	right:20px;
+	background-color:#881A62;;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:22px;
+}
+
   </style>
 
    <!-- custome css  -->
@@ -585,7 +602,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
  <input type="hidden" value="<?php echo $end_date;?>" id="acendDate" readonly />
 
-     
+     <!-- Code begins here -->
+
+<a href="#" class="float">
+
+<i class="fas fa-envelope-open-text my-float"></i>
+</a>
 
       </div><!-- /.container-fluid -->
 

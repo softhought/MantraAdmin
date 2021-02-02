@@ -305,7 +305,7 @@ define ("PAYMENT_MODE", json_encode(array (
 define ("SPECIAL_ENQUIRY", json_encode(array ( 
     "ENQUIRED PERSON" => "ENQUIRED PERSON",
     "OLD MEMBER" => "OLD MEMBER",
-   // "EXISTING MEMBER" => "EXISTING MEMBER",
+    "EXISTING MEMBER" => "EXISTING MEMBER",
    
        
 )));
