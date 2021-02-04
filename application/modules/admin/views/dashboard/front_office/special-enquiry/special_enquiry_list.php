@@ -23,7 +23,7 @@
                        <div class="input-group input-group-sm">
                             
                         <select class="form-control select2" name="search_type" id="search_type" >
-                              <option value="">Select</option>
+                              <!-- <option value="">Select</option> -->
                               <?php foreach (json_decode(SPECIAL_ENQUIRY) as $key => $value) {
                                 # code...
                                ?>
@@ -147,10 +147,30 @@
                </div>
                <div class="col-md-12">
                <p class="errormsgcolor" id="errormsg"></p>
+                 <div class="alert alert-light alert-dismissible fade show notemsg" role="alert">
+ <span id="note_text"><strong>Note: </strong>List of person those who enquired but not converted as member.</span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
                </div>
+              
               </div>
 
+               <div class="row ">  
+ <div class="col-md-12">
+             
+               </div>
+
+               
+
+               </div>
+
+              
+
               </div> <!-- End of search block -->
+
+              
 
       <div class="formblock-box">
       <div style="text-align: center;display:none;" id="loader">

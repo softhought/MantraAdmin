@@ -6,17 +6,29 @@ $(document).ready(function () {
   $(document).on("change", "#search_type", function () {
     search_type = $("#search_type").val();
 
+    $("#specialenquiry_list").html("");
+    $("#note_text").html("-------------------------------------------------");
+
     if (search_type == "ENQUIRED PERSON" || search_type == "") {
       $(".old_mem_div").hide();
       $(".enquired_div").show();
+      $("#note_text").html(
+        "<strong>Note: </strong>List of person those who enquired but not converted as member."
+      );
     }
     if (search_type == "OLD MEMBER") {
       $(".old_mem_div").show();
       $(".enquired_div").hide();
+      $("#note_text").html(
+        "<strong>Note: </strong>List of members whose expiry lies in between from date & To date and no package is active as on date."
+      );
     }
     if (search_type == "EXISTING MEMBER") {
-      $(".old_mem_div").hide();
+      $(".old_mem_div").show();
       $(".enquired_div").hide();
+      $("#note_text").html(
+        "<strong>Note: </strong>List of members whose validity is currently active but will expire within the date range specified."
+      );
     }
   });
 
@@ -240,7 +252,25 @@ $(document).ready(function () {
     $("#smslistmodel").modal("show");
   });
 
-  $(document).on("click", ".emailListOldmem", function () {
+  $(document).on("click", ".emailListExistingmem", function () {
+    var cus_id = $(this).attr("data-id");
+    var formData = { cus_id: cus_id };
+    var method = "enquiry/getEmailListExistingMem";
+    var data = htmlshowajaxcomtroller(method, formData);
+    $("#emailModalBody").html(data);
+    $("#emaillistmodel").modal("show");
+  });
+
+  $(document).on("click", ".smsListExtmem", function () {
+    var cus_id = $(this).attr("data-id");
+    var formData = { cus_id: cus_id };
+    var method = "enquiry/getSmslistExtMem";
+    var data = htmlshowajaxcomtroller(method, formData);
+    $("#smsModalBody").html(data);
+    $("#smslistmodel").modal("show");
+  });
+
+  $(document).on("click", ".emailListExtmem", function () {
     var cus_id = $(this).attr("data-id");
     var formData = { cus_id: cus_id };
     var method = "enquiry/getEmailListOldMem";

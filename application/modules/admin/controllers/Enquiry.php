@@ -602,6 +602,29 @@ public function getSmslistOldMem(){
 }
 
 
+public function getSmslistExtMem(){  
+  if($this->session->userdata('mantra_user_detail'))
+  {   
+    $session = $this->session->userdata('mantra_user_detail');
+      $cus_id =  $this->input->post('cus_id');
+      
+      $where = array('CUS_ID'=>$cus_id);
+      $data['customermstdata']= $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where);
+
+      $data['oldmemsmsdel']= $this->enquirymodel->getExtMemberSms($cus_id);
+     // pre($data['enquirysmsdel']);exit;
+     // $page = 'dashboard/front_office/calling/feedback_list_modal';   
+      $page = 'dashboard/front_office/special-enquiry/sms_list_modal_existing_mem';      
+      $this->load->view($page,$data);
+  
+  }else{
+      redirect('admin','refresh');
+
+}
+
+}
+
+
 
 public function getEmailList(){  
   if($this->session->userdata('mantra_user_detail'))
@@ -648,6 +671,33 @@ public function getEmailListOldMem(){
 }
 
 }
+
+
+public function getEmailListExistingMem(){  
+  if($this->session->userdata('mantra_user_detail'))
+  {   
+    $session = $this->session->userdata('mantra_user_detail');
+      $cus_id =  $this->input->post('cus_id');
+      
+      $where = array('CUS_ID'=>$cus_id);
+      $data['customermstdata']= $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where);
+
+      $membership_no=$data['customermstdata']->MEMBERSHIP_NO;
+
+      $data['oldmememaildel']= $this->enquirymodel->getOldmemberEmail($membership_no);
+     // pre($data['enquirysmsdel']);exit;
+     // $page = 'dashboard/front_office/calling/feedback_list_modal';   
+      $page = 'dashboard/front_office/special-enquiry/email_list_modal_old_mem.php';      
+      $this->load->view($page,$data);
+  
+  }else{
+      redirect('admin','refresh');
+
+}
+
+}
+
+
 
 
 public function enquiryclose(){
@@ -1025,9 +1075,12 @@ public function getspecialenquiry(){
    
         $data['specialenquirylist']=$this->enquirymodel->getAllOldMemberList($from_dt,$to_date,$sel_category,$sel_card,$branch,$session['companyid']);
       $page = 'dashboard/front_office/special-enquiry/special_enquiry_partial_list_old_member';   
-      }else{
-        $data['specialenquirylist']=[];
-        $page = 'dashboard/front_office/special-enquiry/special_enquiry_partial_list';   
+      }else if($search_type=='EXISTING MEMBER'){
+                  $sel_month =  $this->input->post('sel_month');
+          $sel_category =  $this->input->post('sel_category');
+          $sel_card =  $this->input->post('sel_card');
+         $data['specialenquirylist']=$this->enquirymodel->getAllExistingMemberList($from_dt,$to_date,$sel_category,$sel_card,$branch,$session['companyid']);
+        $page = 'dashboard/front_office/special-enquiry/special_enquiry_partial_list_existing_member';   
       }
     
       // pre($data['specialenquirylist']);
@@ -1177,7 +1230,7 @@ if($applytype=='OLD MEMBER'){
              // $member_mobile=7003319369;
               $module = "Special Enquiry";
               $controller = "Enquiry/applyEnquiryNotification";
-              $msg_res= mantraSend($member_mobile,$message,$module,$controller);
+             // $msg_res= mantraSend($member_mobile,$message,$module,$controller);
              // $msg_res='Y';
               if($msg_res=='Y'){$err_id =1;}else{$err_id =0;}
 
@@ -1236,6 +1289,95 @@ if($applytype=='OLD MEMBER'){
 
 }
 /* -------------------------------------------END OF OLD MEMBER---------------------------------------------------- */
+
+
+/* ------------------------------------------- EXISTING MEMBER ---------------------------------------------------- */
+
+if($applytype=='EXISTING MEMBER'){
+
+  $customer_ids=$enqids;
+  $rowMemberData = $this->enquirymodel->getMemberDetailsByIds($customer_ids);
+
+  
+      if($send_type=='sms'){
+
+          foreach ($rowMemberData as $rowMemberData) {
+            
+
+              $member_mobile=$rowMemberData->CUS_PHONE;
+              $member_name=$rowMemberData->CUS_NAME;
+		          $member_no=$rowMemberData->MEMBERSHIP_NO;  
+		          $mem_id=$rowMemberData->CUS_ID;  
+
+              $message = $matter_data;
+             // $member_mobile=7003319369;
+              $module = "Special Enquiry";
+              $controller = "Enquiry/applyEnquiryNotification";
+              $msg_res= mantraSend($member_mobile,$message,$module,$controller);
+             // $msg_res='Y';
+              if($msg_res=='Y'){$err_id =1;}else{$err_id =0;}
+
+              $sms_old_master['sms_master_id']=$subject_id;
+              $sms_old_master['sms_text']=$message;
+              $sms_old_master['member_id']=$mem_id;
+              $sms_old_master['membership_no']=$member_no;
+              $sms_old_master['mobile_no']=$member_mobile;
+              $sms_old_master['err_id']=$err_id;
+              $sms_old_master['date_of_sending']=date('Y-m-d h:i');
+              $sms_old_master['branch_id']=$rowMemberData->branch_id;
+              $sms_old_master['company_id']=$rowMemberData->company_id;
+
+              $this->commondatamodel->insertSingleTableData('smsnew_report_bulk',$sms_old_master);
+
+          }
+       
+      }else{
+
+
+            foreach ($rowMemberData as $rowMemberData) {
+            
+
+              $member_mobile=$rowMemberData->CUS_PHONE;
+              $member_name=$rowMemberData->CUS_NAME;
+		          $member_no=$rowMemberData->MEMBERSHIP_NO;  
+              $mem_id=$rowMemberData->CUS_ID;  
+              $member_email=$rowMemberData->CUS_EMAIL;
+
+              $message = $matter_data;
+         
+              $member_email='devsofthought@gmail.com';
+             
+              $email_stat ='';
+              
+              $title=$sel_email;
+              $subject="Existing Member Notification";
+
+
+              	$email_sending_detail['date_of_sending']=date('Y-m-d h:i');
+                $email_sending_detail['matter_id']=$sel_email;
+                $email_sending_detail['membership_no']=$member_no;
+                $email_sending_detail['member_name']=$member_name;
+                $email_sending_detail['email_text']=$message;
+                $email_sending_detail['email_tag']=$email_stat;
+                $email_sending_detail['email_id']=$member_email;
+
+
+             $this->commondatamodel->insertSingleTableData('email_report_bulk',$email_sending_detail);
+
+          }
+
+
+        
+      }
+
+
+
+
+}
+
+exit;
+
+/* -------------------------------------------END OF EXISTING MEMBER ---------------------------------------------------- */
 
         
       $json_response = array(
