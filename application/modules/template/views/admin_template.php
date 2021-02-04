@@ -555,7 +555,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <div class="content layout-body-container">
 
-      <div class="container">
+      <div class="container" id="maincontainer">
 
 <?php //pre($menu); ?>
 
