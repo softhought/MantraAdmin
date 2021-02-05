@@ -2,7 +2,7 @@
 <table  class="table customTbl table-bordered table-hover dataTable tablepad">
           <thead>
               <tr>
-              <th width="3%">#s</th>              
+              <th width="3%">#</th>              
               <th width="8%">Date</th>
               <th width="8%">Cash Opening</th>
               <th width="8%">Cash Coll.</th>

@@ -3,7 +3,7 @@
 
 <div class="card card-primary">
     <div class="card-header box-shdw">
-      <h3 class="card-title">Collection Register</h3>
+      <h3 class="card-title">Collection Register Revised</h3>
        <!-- <div class="btn-group btn-group-sm float-right" role="group" aria-label="MoreActionButtons" >
       <a href="<?php echo admin_with_base_url(); ?>enquiry/addeditenquiry" class="btn btn-default btnpos">
        <i class="fas fa-plus"></i> Add Enquiry</a>
@@ -46,7 +46,7 @@
                     <div class="col-sm-2">
                     <label for="branch">Branch</label>
                       <div class="form-group">
-                       <div class="input-group input-group-sm">
+                       <div class="input-group input-group-sm" id="brancherr">
                             
                         <select class="form-control select2" name="branch" id="branch">
                               <option value="">Select</option>
@@ -78,7 +78,7 @@
 
                 <div class="col-md-2">
                 <label for="payment">&nbsp;</label>
-                 <button type="button" class="btn btn-block action-button btn-sm" id="dailycollectionviewbtn" style="width: 60%;">Show</button>
+                 <button type="button" class="btn btn-block action-button btn-sm" id="dailycollectionviewbtnrev" style="width: 60%;">Show</button>
 
                    <!-- Total <span class="badge" id="total_amount_value">7</span> -->
                </div>

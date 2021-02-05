@@ -1230,7 +1230,7 @@ if($applytype=='OLD MEMBER'){
              // $member_mobile=7003319369;
               $module = "Special Enquiry";
               $controller = "Enquiry/applyEnquiryNotification";
-             // $msg_res= mantraSend($member_mobile,$message,$module,$controller);
+              $msg_res= mantraSend($member_mobile,$message,$module,$controller);
              // $msg_res='Y';
               if($msg_res=='Y'){$err_id =1;}else{$err_id =0;}
 
