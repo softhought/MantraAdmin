@@ -976,7 +976,7 @@
 		
 		
 		<!-- Panel Five Medical Information -->
-		<div class="panel panel-default" id="medical_info_panel" >
+		<!-- <div class="panel panel-default" id="medical_info_panel" >
 			<div class="panel-heading" role="tab" id="headingFive">
 				<h4 class="panel-title">
 					<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
@@ -1256,14 +1256,16 @@
 					
 					<tr>
 						<td colspan="2" align="center"><button type="button" class="btn btn-danger validate_div" id="medical_info" style="width: 30%;background:#C9302C;border:#C9302C;" >Validate</button></td>
-						<input type="hidden" name="medical_info_status" id="medical_info_status" />
+						
 					</tr>
 
 
 				</table>
 				</div>
 			</div>
-		</div> <!-- Panel Five Medical Information End -->
+		</div>  -->
+		<input type="hidden" name="medical_info_status" id="medical_info_status" value="Y"/>
+		<!-- Panel Five Medical Information End -->
 
 
 		
@@ -1508,7 +1510,8 @@
 				<h4 class="panel-title">
 					<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
 						<i class="more-less glyphicon glyphicon-plus"></i>
-						General Medical Assessment 
+						<!-- General Medical Assessment  -->
+						Medical Information(s)
 					</a>
 				</h4>
 			</div>
@@ -1844,11 +1847,16 @@
 													</div>
 												
 										</div> 
+
+</a>
 								<div class="col-md-1 trmVerify"  style="display:none;">
 								<span class="badge badge-danger " id="verify_code" style="cursor: pointer;margin-top:5px;">Verify</span>
-								<span class="badge badge-secondary " id="verify_no" style="cursor: pointer;margin-top:5px;">Verify</span>	
+								<span class="badge badge-secondary " id="verify_no" style="cursor: pointer;margin-top:5px;">Verify</span>
+								<a id="wplink" href="https://api.whatsapp.com/send?text=https://www.mantrahealthclub.com/mantra/termofuse/agreement/16" target="_blank" > <img src="<?php echo base_url(); ?>assets/img/wp.png" width="20" height="20" /></a>
+
 
 								</div>
+
 								 <label for="branch_id" class="col-md-5 labletext trmVerify"  style="display:none;">
 								 <span id="resend_term_verfy_code" style="cursor: pointer;">Resend </span> 
 								 <span style="color:gray" id="otp_text_mobile"> </span> 
@@ -2269,7 +2277,7 @@
 				</tr>
 			</table>
 			
-			<h3>Medical Information(s)</h3>
+			<!-- <h3>Medical Information(s)</h3>
 			<table class="table">
 				<tr>
 					<td>Present Complaint</td>
@@ -2324,7 +2332,7 @@
 					<td id="prv_hold_mem"></td>
 				</tr>
 				
-			</table>
+			</table> -->
 			
 			<h3>Services interested in Life Style Modification Programme</h3>
 			<table class="table">
@@ -2369,7 +2377,8 @@
 				
 			</table>
 			
-			<h3>General Medical Assessment</h3>
+			<!-- <h3>General Medical Assessment</h3> -->
+			<h3>Medical Information(s)</h3>
 			<table class="table">
 				<tr>
 					<td>Hign BP</td>

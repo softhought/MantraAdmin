@@ -35,13 +35,19 @@
                                     </div>
                                 </div>  
                                 <div class="col-md-1"></div>
-                               
+                               <?php $first_name = ""; $last_name = "";
+                                if($mode == 'ADD' && !empty($mayihelpudata)){ 
+                                    $name = explode(" ",$mayihelpudata->name);
+                                   
+                                    $first_name =  $name[0]; 
+                                    if(isset($name[1])){ $last_name =  $name[1]; } 
+                                    } ?>
                                     <label for="first_name" class="col-md-2 labletext">First Name*  </label>
                                     <div class="col-md-3">
                                         
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control forminputs typeahead" id="first_name" name="first_name" placeholder="Enter First Name" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->FIRST_NAME;  }  if($mode == 'ADD' && !empty($mayihelpudata)){ echo explode(" ",$mayihelpudata->name)[0]; } if($mode == 'ADD' && !empty($freeguestpassdata)){ echo $freeguestpassdata->first_name; } ?>">
+                                                <input type="text" class="form-control forminputs typeahead" id="first_name" name="first_name" placeholder="Enter First Name" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->FIRST_NAME;  }  if($mode == 'ADD' && !empty($mayihelpudata)){ echo $first_name; } if($mode == 'ADD' && !empty($freeguestpassdata)){ echo $freeguestpassdata->first_name; } ?>">
 
                                             </div>
                                             </div>
@@ -70,7 +76,7 @@
                                         
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control forminputs typeahead" id="last_name" name="last_name" placeholder="Enter Last Name" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->LAST_NAME;  } if($mode == 'ADD' && !empty($mayihelpudata)){ echo explode(" ",$mayihelpudata->name)[1]; } if($mode == 'ADD' && !empty($freeguestpassdata)){ echo $freeguestpassdata->last_name; }  ?>">
+                                                <input type="text" class="form-control forminputs typeahead" id="last_name" name="last_name" placeholder="Enter Last Name" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->LAST_NAME;  } if($mode == 'ADD' && !empty($mayihelpudata)){ echo $last_name; } if($mode == 'ADD' && !empty($freeguestpassdata)){ echo $freeguestpassdata->last_name; }  ?>">
 
                                             </div>
                                             </div>
@@ -101,7 +107,7 @@
                                        <div class="input-group-prepend">
                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                            </div>
-                                           <input type="text" class="form-control datepicker2" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask="" name="dob" id="dob" im-insert="false" value="<?php if($mode == 'EDIT' && $enquiryEditdata->dob != ""){ echo date('d-m-Y',strtotime($enquiryEditdata->dob)); } ?>" readonly>
+                                           <input type="text" class="form-control " data-inputmask-alias="datetime"  data-mask="" name="dob" id="dob" im-insert="false" value="<?php if($mode == 'EDIT' && $enquiryEditdata->dob != ""){ echo date('d-m-Y',strtotime($enquiryEditdata->dob)); } ?>" readonly>
                                        </div>
                                    </div>
                                </div>
@@ -109,7 +115,6 @@
                                         
                                             <div class="form-group"> 
                                             <div class="input-group input-group-sm">
-                                            
                                                 <input type="text" class="form-control forminputs typeahead onlynumber" id="age" name="age" placeholder="Enter Age" autocomplete="off" value="<?php if($mode == 'EDIT'){ echo $enquiryEditdata->age;  }  ?>">
 
                                             </div>

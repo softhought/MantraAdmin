@@ -8,7 +8,10 @@
               <th style="width:60px;">Branch</th>
               <th style="width:100px;">Name </th>             
               <th  style="width:70px;">Mobile No.</th>  
+              <th  style="width:70px;">dob</th> 
+              <th  style="width:70px;">Age</th> 
               <th  style="width:80px;">Email</th>  
+              
               <th  style="width:60px;">Pin</th>  
               <th  style="width:80px;">Location</th>  
               <th style="width:100px;">Address</th>  
@@ -43,6 +46,18 @@
                          foreach ($enquirylist['followup_count'] as $followup_count){
                             $total_followup+=1;
                          }
+
+                         if($enquirylist['enqdtl']->age > 0){
+                              $mem_age = $enquirylist['enqdtl']->age;
+                         }else{
+                              $bday = $enquirylist['enqdtl']->dob;
+                              $today = date('Y-m-d');
+                              $diff = abs(strtotime($today) - strtotime($bday));
+                              $years = floor($diff / (365*60*60*24));
+                              $mem_age = $years;
+                             
+                             // $mem_age = $enquirylist->dob;
+                         }
                          
                          ?>
                     <tr>
@@ -57,6 +72,8 @@
                          
                             <td><?php echo $enquirylist['enqdtl']->FIRST_NAME.' '.$enquirylist['enqdtl']->LAST_NAME; ?></td>
                             <td><?php echo $enquirylist['enqdtl']->MOBILE1; ?></td>
+                            <td><?php if($enquirylist['enqdtl']->dob != ""){ echo date('d-m-Y',strtotime($enquirylist['enqdtl']->dob)); } ?></td>
+                            <td><?php echo $mem_age; ?></td>
                             <td><?php echo $enquirylist['enqdtl']->EMAIL; ?></td>
                             <td><?php echo $enquirylist['enqdtl']->pin_code; ?></td>
                             <td><?php echo $enquirylist['enqdtl']->pin_location; ?></td>

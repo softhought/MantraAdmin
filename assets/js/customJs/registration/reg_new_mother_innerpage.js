@@ -741,17 +741,17 @@ function setOutput(responseText) {
 
     var g = document.getElementById("sel_gender");
     var m = document.getElementById("sel_marital");
-    var a = document.getElementById("sel_app");
-    var a = document.getElementById("sel_app");
+    // var a = document.getElementById("sel_app");
+    // var a = document.getElementById("sel_app");
     var d = document.getElementById("sel_dig");
-    var h = document.getElementById("sel_hrt");
-    var u = document.getElementById("sel_urn");
-    var n = document.getElementById("sel_nrv");
-    var e = document.getElementById("sel_ent");
-    var o = document.getElementById("sel_ort");
-    var p = document.getElementById("sel_psy");
-    var f = document.getElementById("sel_fem");
-    var t = document.getElementById("sel_dit");
+    // var h = document.getElementById("sel_hrt");
+    // var u = document.getElementById("sel_urn");
+    // var n = document.getElementById("sel_nrv");
+    // var e = document.getElementById("sel_ent");
+    // var o = document.getElementById("sel_ort");
+    // var p = document.getElementById("sel_psy");
+    // var f = document.getElementById("sel_fem");
+    // var t = document.getElementById("sel_dit");
 
     var b = document.getElementById("sel_blood_grp");
 
@@ -794,40 +794,40 @@ function setOutput(responseText) {
     document.getElementById("txt_phone2").value = strSend[9];
     document.getElementById("txt_mail").value = strSend[10];
     document.getElementById("txt_occu").value = strSend[11];
-    document.getElementById("txt_comp").value = strSend[12];
-    document.getElementById("txt_his").value = strSend[13];
+    // document.getElementById("txt_comp").value = strSend[12];
+    // document.getElementById("txt_his").value = strSend[13];
 
     // BY Mithilesh on 28.10.2016
-    if (strSend[14].trim() != "") {
-      selectedValue("sel_app", strSend[14]);
-    }
+    // if (strSend[14].trim() != "") {
+    //   selectedValue("sel_app", strSend[14]);
+    // }
     if (strSend[15].trim() != "") {
       selectedValue("sel_dig", strSend[15]);
     }
-    if (strSend[16].trim() != "") {
-      selectedValue("sel_hrt", strSend[16]);
-    }
-    if (strSend[17].trim() != "") {
-      selectedValue("sel_urn", strSend[17]);
-    }
-    if (strSend[18].trim() != "") {
-      selectedValue("sel_nrv", strSend[18]);
-    }
-    if (strSend[19].trim() != "") {
-      selectedValue("sel_ent", strSend[19]);
-    }
-    if (strSend[20].trim() != "") {
-      selectedValue("sel_ort", strSend[20]);
-    }
-    if (strSend[21].trim() != "") {
-      selectedValue("sel_psy", strSend[21]);
-    }
-    if (strSend[22].trim() != "") {
-      selectedValue("sel_fem", strSend[22]);
-    }
-    if (strSend[23].trim() != "") {
-      selectedValue("sel_dit", strSend[23]);
-    }
+    // if (strSend[16].trim() != "") {
+    //   selectedValue("sel_hrt", strSend[16]);
+    // }
+    // if (strSend[17].trim() != "") {
+    //   selectedValue("sel_urn", strSend[17]);
+    // }
+    // if (strSend[18].trim() != "") {
+    //   selectedValue("sel_nrv", strSend[18]);
+    // }
+    // if (strSend[19].trim() != "") {
+    //   selectedValue("sel_ent", strSend[19]);
+    // }
+    // if (strSend[20].trim() != "") {
+    //   selectedValue("sel_ort", strSend[20]);
+    // }
+    // if (strSend[21].trim() != "") {
+    //   selectedValue("sel_psy", strSend[21]);
+    // }
+    // if (strSend[22].trim() != "") {
+    //   selectedValue("sel_fem", strSend[22]);
+    // }
+    // if (strSend[23].trim() != "") {
+    //   selectedValue("sel_dit", strSend[23]);
+    // }
 
     /*a.options[a.selectedIndex].value=strSend[14]; 
     a.options[a.selectedIndex].text=strSend[14]; 

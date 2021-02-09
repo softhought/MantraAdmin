@@ -294,7 +294,7 @@ class Registrationmodel extends CI_Model{
 				->order_by('CARD_DESC', 'asc');
 				;
 		$query = $this->db->get();
-		#echo "<br>".$this->db->last_query();	
+		#echo "<br>".$this->db->last_query();exit;	
 		if($query->num_rows()> 0)
 		{
             foreach ($query->result() as $rows)

@@ -76,7 +76,7 @@ function __construct()
         $data['branch_id'] = $branch_id; 
         
 
-       // pre($data['renewalreminderlist']);exit;
+        //pre($data['renewalreminderlist']);exit;
         $page = 'dashboard/payment_received/renewal-reminder/renewal_reminder_partial_list'; 
         $this->load->view($page,$data);    
               
@@ -183,6 +183,7 @@ function __construct()
         $session = $this->session->userdata('mantra_user_detail');
           $enq_id =  $this->input->post('enq_id');
           $customer_id =  $this->input->post('customer_id');
+          $payment_id =  $this->input->post('payment_id');
           $feedbackEnqMode =  $this->input->post('feedbackEnqMode');
           $wing =  $this->input->post('wing');
           $sel_remarks =  $this->input->post('sel_remarks');
@@ -241,7 +242,7 @@ function __construct()
             $age = "";
           }
           
-          if($feedbackEnqMode == 'Enquiry' && $enq_id == 0){            
+          if($feedbackEnqMode == 'Enquiry'){            
 
             $insert_arr = array(
               'DATE_OF_ENQ'=>date("Y-m-d"),
@@ -270,6 +271,7 @@ function __construct()
                 );  
                
                 $enq_master_id = $this->commondatamodel->insertSingleTableData('enquiry_master',$insert_arr);
+                
                 if($enq_master_id){
                 $enq_no=$this->prepareEnqNo(substr($first_name,0,1),substr($last_name,0,1),$mobile1,$enq_master_id);
                 $where_enq = array('ID'=>$enq_master_id);
@@ -289,18 +291,26 @@ function __construct()
 
           }
 
-          if($feedbackEnqMode == 'Feedback' && $enq_id != 0){
+          if($feedbackEnqMode == 'Feedback'){
 
             $insert_dtl_id = $this->insertenquirydtl($enq_id,$sel_remarks,$remarks,$followup_date,$branch_code,$done_by,$wing,$wing_id,$branch_id,$customer_id,$card_code,$validity_string,$payment_id,$session['companyid']);
 
           }
-                        
-           
+
+          $tot_calling = $this->renewalremidermodel->getTotalRenewalEnqCall($customer_id,$payment_id,'RENEWAL');      
+          if($tot_calling<10)
+          {
+            $tot_call = "0".$tot_calling;
+          }
+          else
+          {
+              $tot_call = $tot_calling;
+          }
                 /** audit trail */ 
                
                      
                 if($insert_dtl_id){
-                  $json_response = array('msg_status'=>1);
+                  $json_response = array('msg_status'=>1,'tot_calling'=>$tot_call);
                 }else{
                   $json_response = array('msg_status'=>0);
                 }
@@ -366,15 +376,25 @@ public function getfeedbacklist(){
 
       $data['name'] = $memberdtl->CUS_NAME;
       $data['mno'] = $memberdtl->MEMBERSHIP_NO;
+      $data['enquirydata'] = array();
+      $enquirymstdata= $this->renewalremidermodel->getEnquiryRenewalRow($cusid,$pid);
 
-      $data['enquirydata']= $this->renewalremidermodel->getEnquiryRenewalRow($cusid,$pid);
+      foreach($enquirymstdata as $enquirymstdata){
+        $enq_id = $enquirymstdata->enqMastID;
+        $enquirydtldata= $this->renewalremidermodel->getEnquiryDetailByEnqNo($enq_id);
+        $data['enquirydata'][] = array(
+                                    'enqMastID'=>$enq_id,
+                                    'ENQ_NO'=>$enquirymstdata->ENQ_NO,
+                                    'enquirydtldata'=>$enquirydtldata
+        );
+      }
 
       // if(!empty($data['enquirymstdata']) && $data['enquirymstdata']->enqMastID > 0){
       //   $enq_id = $data['enquirymstdata']->enqMastID;
       //   $data['enquirydel']= $this->enquirymodel->getallenquirydtl($enq_id);
       // }
      
-      //pre($data['enquirydata']);exit;
+     // pre($data['enquirydata']);exit;
       $page = 'dashboard/payment_received/renewal-reminder/feedback_list_modal';      
       $this->load->view($page,$data);
   
@@ -413,7 +433,12 @@ public function addeditrenewal(){
           $member_acc_code=$memberdtl->member_acc_code;
           $branch_id = $this->getBranchIDByCompany($branch_code,$company_id);
           $rowCard = $this->registrationmodel->getCardDtlByCode($card_code,$company_id);
-          $card_id = $rowCard->CARD_ID;
+          if(!empty($rowCard)){
+            $card_id = $rowCard->CARD_ID;
+          }else{
+            $card_id = NULL;
+          }
+          
 
           $where_payment = array('PAYMENT_ID'=>$payment_id);
           $paymentdtl= $this->commondatamodel->getSingleRowByWhereCls('payment_master',$where_payment);
@@ -434,12 +459,18 @@ public function addeditrenewal(){
 
           $data['cashback_on_sale']= $this->walletmodel->getCashBackOnSaleAmt($branch_code,$card_code,$company_id);
           $ratedtl= $this->renewalremidermodel->getRateDetailByCompany($branch_code,$card_code,$company_id);
-          $data['renewal_rate'] = $ratedtl->renewal_rate;
+          if(!empty($ratedtl)){
+            $data['renewal_rate'] = $ratedtl->renewal_rate;
+          }else{
+            $data['renewal_rate'] = 0;
+          }
+        
 
          }
 
          $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master'); 
-         $data['dueinstallmentlist'] = $this->renewalremidermodel->getinstallmentperiod($company_id); 
+         //$data['dueinstallmentlist'] = $this->renewalremidermodel->getinstallmentperiod($company_id); 
+         $data['dueinstallmentlist'] = $this->commondatamodel->getAllDropdownData('installment_phase'); 
          $data['cgstlist'] = $this->registrationmodel->GetGSTRate('CGST',$company_id);
          $data['sgstlist'] = $this->registrationmodel->GetGSTRate('SGST',$company_id);
          $data['corporatecomlist'] = $this->registrationmodel->getAllCorporateCompanyList($company_id);
@@ -512,7 +543,8 @@ public function getinstallmentview(){
        }else{
         $payment_dt=NULL;
        }
-       if($this->input->post('complimentry') == 'on'){
+       $complimentry = $this->input->post('complimentry');
+       if(isset($complimentry)){
         $is_compl = 'Y';
       }
       else{
@@ -680,8 +712,10 @@ public function getinstallmentview(){
 
           $totalAmt = 0;
           $totalAmt = $payment_now+$cgstTaxAmt+$sgstTaxAmt;
+          $where_comp = array('comany_id'=>$comp);
+          $is_gst = $this->commondatamodel->getSingleRowByWhereCls('company_master',$where_comp)->is_gst;
 
-          if($branch_code!="LT" && $branch_code!="TR" && $is_compl=="N"  && $payment_now>0)
+          if($branch_code!="TR" && $is_compl=="N"  && $payment_now>0)
           {
            
             
@@ -715,11 +749,17 @@ public function getinstallmentview(){
              $voucher_master_id = $this->insertvouchermaster($voucher_srl,$voucher_no,$payment_dt,$branch_id,$payment_from,$narration,$payment_master_id,$totalAmt,$card_category,$card_id,$card_code,$card_desc);
              // voucher details insert data  for voucher A
              if($voucher_master_id > 0){
-
+              if($is_gst == 'Y'){
               $this->insertvoucherdetails($voucher_master_id,'Cr',$card_acc_id,$payment_now,1);
               $this->insertvoucherdetails($voucher_master_id,'Cr',$cgstAccID,$cgstTaxAmt,2);
               $this->insertvoucherdetails($voucher_master_id,'Cr',$sgstAccID,$sgstTaxAmt,3);
               $this->insertvoucherdetails($voucher_master_id,'Dr',$mem_account_id,$totalAmt,4,$member_acc_code,$membership_ref);
+
+              }else{
+                $this->insertvoucherdetails($voucher_master_id,'Cr',$card_acc_id,$payment_now,1);
+                $this->insertvoucherdetails($voucher_master_id,'Dr',$mem_account_id,$totalAmt,2,$member_acc_code,$membership_ref);
+              }
+              
               }
 
               // voucher master insert data for voucher B
@@ -742,93 +782,16 @@ public function getinstallmentview(){
               $upd_enq = $this->commondatamodel->updateSingleTableData('payment_master',$upd_payment,$where_payment);
               }
 
-              // Amount Distribution Per Month
-
-              $this->calmemberAmountDistribution($mno,$branch_code,$card_code,$open_date,$valid_upto,$valid_string,$premium_amt,$payment_master_id,$comp);
-
-              //Start due payable insert
-              if($due_amt > 0){
-                 $installment_period = trim($this->input->post('installment_phase'));
-                  if($installment_period > 0){
-
-                    $installment_dt = $this->input->post('installment_dt');
-                    $installmentamt = $this->input->post('installmentamt');
-                    $dueinstallmentchrg = $this->input->post('dueinstallmentchrg');
-                    $installmentcheque = $this->input->post('installmentcheque');
-                    $installmentbank = $this->input->post('installmentbank');
-                    $installmentbranch = $this->input->post('installmentbranch');
-                    //pre($installment_dt);exit;
-
-                    for($i=0;$i<$installment_period;$i++){
-
-                          if($installment_dt[$i] != ""){ 
-                            $date_installment = date('Y-m-d',strtotime($installment_dt[$i])); 
-                          }else{
-                            $date_installment = NULL;
-                          }
-                          $due_payable_amt = $installmentamt[$i];
-                          $installment_charge = $dueinstallmentchrg[$i];
-                          $pybl_cheque_no = $installmentcheque[$i];
-                          $pybl_bank = $installmentbank[$i];
-                          $pybl_branch = $installmentbranch[$i];
-                          $due_amt = $due_payable_amt - $installment_charge;
-                          $from_where = 'REN';
-
-                          $this->insertduepayable($cus_id,$mno,$date_installment,$due_amt,$installment_charge,$due_payable_amt,$branch_code,$card_code,$valid_string,$from_where,$payment_master_id,$pybl_cheque_no,$pybl_bank,$pybl_branch,$card_id);
-                        }
-                  }                 
-
-              } 
-              
-              //End due payable insert
-
-              // start cash back insert data
-
-              if($wallet_cashback != "" && ($is_promo == "Y" || $is_promo == "N")){
-
-                $getPromoDetail = $this->commondatamodel->getSingleRowByWhereCls("promo_cashbck_assign_to_mem",["promo_cashbck_assign_to_mem.id"=>$promo_cashback_id]);
-    
-                    $insert_promo = [];
-                    $insert_promo = [
-                        "promo_cashback_id" => $getPromoDetail->transaction_id,
-                        "mobile_no" => $phone,
-                        "amount" => $cashback_amt,
-                        "payment_id" => $payment_master_id,
-                        "is_debit" => 'Y',
-                        "tran_module" => 'REN',
-                        "tran_date" => date("Y-m-d H:i:s"),
-                        "promo_cashback_assign_id" =>($is_promo == "Y") ? 0 : $promo_cashback_id,
-                        "case_dtl_type" => "For Renewal ".$card_code." Package",
-                        "member_acc_code" => $member_acc_code,
-                        "attendance_month" => NULL,
-                        "membership_no" => ($is_promo == "Y") ? NULL :$getPromoDetail->membership_no,
-                        "validity_string" => ($is_promo == "Y") ? NULL : $getPromoDetail->validity_string,
-                        "expire_dt" => ($is_promo == "Y") ? NULL : $getPromoDetail->expire_dt
-                        
-                    ]; 
-
-                    $promo_or_cash_back = $this->commondatamodel->insertSingleTableData("promo_cashbck_pmnt_dtl",$insert_promo);
-    
-                    // Update Cash Back Or Promo
-                    $promoOrgBalance = $getPromoDetail->amount;
-                    $remaningBalance = 0;
-                    $remaningBalance = $promoOrgBalance - $cashback_amt;
-    
-                 $update_balance = $this->commondatamodel->updateSingleTableData("promo_cashbck_assign_to_mem",["promo_cashbck_assign_to_mem.amount"=>$remaningBalance],["promo_cashbck_assign_to_mem.id"=>$promo_cashback_id]);	
-                    
-                $this->cashbackaction($cus_id,$mno,$valid_string,$valid_upto,$card_code,$branch_code);
-
-
-              }else{
-
-                $this->cashbackaction($cus_id,$mno,$valid_string,$valid_upto,$card_code,$branch_code);
-
-              }
-              // end cash back insert data
+           
 
              
           }else{
-            $payment_master_id = $this->insertpaymentmaster($mno,$card_code,$open_date,$valid_upto,0,$disc_nego,$rem_nego,$cashback_amt,$premium_amt,$payment_now,$due_amt,$cgstTaxAmt,$cgstRateID,$sgstTaxAmt,$sgstRateID,$totalAmt,$payment_dt,$branch_code,$rcpt_srl,$payment_mode,$cheque_no,$cheque_date,$cheque_bank,$cheque_branch,$cus_id,$valid_string,$coll_brn_code,$corporate_comp_id,$collection_branch_id,$branch_id,$card_id,$user_given_extentiondays);
+            if($branch_code == "TR"){
+              $sub_amt = $subscription_amt;
+            }else{
+              $sub_amt =0;
+            }
+            $payment_master_id = $this->insertpaymentmaster($mno,$card_code,$open_date,$valid_upto,$sub_amt,$disc_nego,$rem_nego,$cashback_amt,$premium_amt,$payment_now,$due_amt,$cgstTaxAmt,$cgstRateID,$sgstTaxAmt,$sgstRateID,$totalAmt,$payment_dt,$branch_code,$rcpt_srl,$payment_mode,$cheque_no,$cheque_date,$cheque_bank,$cheque_branch,$cus_id,$valid_string,$coll_brn_code,$corporate_comp_id,$collection_branch_id,$branch_id,$card_id,$user_given_extentiondays);
             $renewal_insert = array(
               'payment_id'=>$payment_master_id,
               'customer_id'=>$cus_id,
@@ -842,7 +805,94 @@ public function getinstallmentview(){
           $where_payment_ren = array('PAYMENT_ID'=>$pre_payment_id);
           $upd_payment_ren = array('RENEW_ID'=>$renewal_id);
           $this->commondatamodel->updateSingleTableData('payment_master',$upd_payment_ren,$where_payment_ren);
+
+          
           }
+
+          //Start due payable insert
+          if($due_amt > 0){
+            $installment_period = trim($this->input->post('installment_phase'));
+             if($installment_period > 0){
+
+               $installment_dt = $this->input->post('installment_dt');
+               $installmentamt = $this->input->post('installmentamt');
+               $dueinstallmentchrg = $this->input->post('dueinstallmentchrg');
+               $installmentcheque = $this->input->post('installmentcheque');
+               $installmentbank = $this->input->post('installmentbank');
+               $installmentbranch = $this->input->post('installmentbranch');
+               //pre($installment_dt);exit;
+
+               for($i=0;$i<$installment_period;$i++){
+
+                     if($installment_dt[$i] != ""){ 
+                       $date_installment = date('Y-m-d',strtotime($installment_dt[$i])); 
+                     }else{
+                       $date_installment = NULL;
+                     }
+                     $due_payable_amt = $installmentamt[$i];
+                     $installment_charge = $dueinstallmentchrg[$i];
+                     $pybl_cheque_no = $installmentcheque[$i];
+                     $pybl_bank = $installmentbank[$i];
+                     $pybl_branch = $installmentbranch[$i];
+                     $due_amt = $due_payable_amt - $installment_charge;
+                     $from_where = 'REN';
+
+                     $this->insertduepayable($cus_id,$mno,$date_installment,$due_amt,$installment_charge,$due_payable_amt,$branch_code,$card_code,$valid_string,$from_where,$payment_master_id,$pybl_cheque_no,$pybl_bank,$pybl_branch,$card_id);
+                   }
+             }                 
+
+         } 
+         
+         //End due payable insert
+
+         // start cash back insert data
+
+         if(($is_compl=="N"  && $payment_now>0) && ($wallet_cashback != "") && ($is_promo == "Y" || $is_promo == "N")){
+
+          $getPromoDetail = $this->commondatamodel->getSingleRowByWhereCls("promo_cashbck_assign_to_mem",["promo_cashbck_assign_to_mem.id"=>$promo_cashback_id]);
+
+              $insert_promo = [];
+              $insert_promo = [
+                  "promo_cashback_id" => $getPromoDetail->transaction_id,
+                  "mobile_no" => $phone,
+                  "amount" => $cashback_amt,
+                  "payment_id" => $payment_master_id,
+                  "is_debit" => 'Y',
+                  "tran_module" => 'REN',
+                  "tran_date" => date("Y-m-d H:i:s"),
+                  "promo_cashback_assign_id" =>($is_promo == "Y") ? 0 : $promo_cashback_id,
+                  "case_dtl_type" => "For Renewal ".$card_code." Package",
+                  "member_acc_code" => $member_acc_code,
+                  "attendance_month" => NULL,
+                  "membership_no" => ($is_promo == "Y") ? NULL :$getPromoDetail->membership_no,
+                  "validity_string" => ($is_promo == "Y") ? NULL : $getPromoDetail->validity_string,
+                  "expire_dt" => ($is_promo == "Y") ? NULL : $getPromoDetail->expire_dt
+                  
+              ]; 
+
+              $promo_or_cash_back = $this->commondatamodel->insertSingleTableData("promo_cashbck_pmnt_dtl",$insert_promo);
+
+              // Update Cash Back Or Promo
+              $promoOrgBalance = $getPromoDetail->amount;
+              $remaningBalance = 0;
+              $remaningBalance = $promoOrgBalance - $cashback_amt;
+
+           $update_balance = $this->commondatamodel->updateSingleTableData("promo_cashbck_assign_to_mem",["promo_cashbck_assign_to_mem.amount"=>$remaningBalance],["promo_cashbck_assign_to_mem.id"=>$promo_cashback_id]);	
+              
+          $this->cashbackaction($cus_id,$mno,$valid_string,$valid_upto,$card_code,$branch_code);
+
+
+        }else if(($is_compl=="N"  && $payment_now>0)){
+
+          $this->cashbackaction($cus_id,$mno,$valid_string,$valid_upto,$card_code,$branch_code);
+
+        }
+        // end cash back insert data
+
+           // Amount Distribution Per Month
+           $this->calmemberAmountDistribution($mno,$branch_code,$card_code,$open_date,$valid_upto,$valid_string,$premium_amt,$payment_master_id,$comp);
+
+           
 
            //start insert member compaliment 
            $where_del = array('member_id'=>$cus_id,'validity_string'=>$valid_string);
@@ -870,14 +920,15 @@ public function getinstallmentview(){
            }
                         
            //end insert member compaliment 
-
+           $sent_msg = 'N';
            $isSms= $this->isSmsFacility($comp);
-                 
+           $module = "Renewal Reminder";
+           $controller = "Renewalreminder/addedit_action"; 
            if($isSms=='Y'){
 
               $message = "Your Mantra membership no ".$mno." has been successfully renewed with payment of Rs. ".$totalAmt." Thank You for being part of Mantra family!";
               
-               mantraSend($phone,$message);
+              $sent_msg = mantraSend($phone,$message,$module,$controller);
            }
       
 
@@ -889,6 +940,7 @@ public function getinstallmentview(){
             "mode"=>$mode,
             "cust_ins_id"=>$cus_id, 
             "pmt_ins_id"=>$payment_master_id, 
+            'sent_msg'=>$sent_msg
            
         );
 

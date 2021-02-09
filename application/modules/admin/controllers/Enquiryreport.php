@@ -48,21 +48,16 @@ public function getenquiryreportlist(){
        }else{
         $to_date=NULL;
        }
-       if(trim(htmlspecialchars($this->input->post('from_dob'))) != ''){          
-        $from_dob = date('Y-m-d',strtotime($this->input->post('from_dob')));
-       }else{
-        $from_dob=NULL;
-       }
-       if(trim(htmlspecialchars($this->input->post('to_dob'))) != ''){          
-        $to_dob = date('Y-m-d',strtotime($this->input->post('to_dob')));
-       }else{
-        $to_dob=NULL;
-       }
+               
+        $from_dob = trim(htmlspecialchars($this->input->post('from_dob')));     
+            
+        $to_dob = trim(htmlspecialchars($this->input->post('to_dob')));
+       
     
-      // $branch =  $this->input->post('branch');
+       $branch =  $this->input->post('branch');
      
      
-      $data['enquirylist'] = $this->enquirymodel->getenquiryreportlist($gender,$from_dt,$to_date,$from_dob,$to_dob);
+      $data['enquirylist'] = $this->enquirymodel->getenquiryreportlist($branch,$gender,$from_dt,$to_date,$from_dob,$to_dob);
       //pre($data['enquirylist']);exit;
     
      $page = 'dashboard/front_office/enquiry_report/equiry_report_partial_list';      

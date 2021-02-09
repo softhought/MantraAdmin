@@ -220,8 +220,8 @@ public function addedit_action(){
           $mno = $memberdtl->MEMBERSHIP_NO;
           $card_code=$memberdtl->CUS_CARD;
           $branch_code=$memberdtl->CUS_BRANCH;
-          $branch_id=$memberdtl->branch_id;
-          $card_id=$memberdtl->card_id;
+          $branch_id =  $this->getBranchIDByCompany($branch_code,$comp);
+         // $card_id=$memberdtl->card_id;
           $member_acc_code=$memberdtl->member_acc_code;
 
           $where_due = array('tran_id'=>$tran_id);
@@ -277,7 +277,12 @@ public function addedit_action(){
 
           $rcpt_srl= $this->vouchermodel->gen_rcpt_serial_brn_fin($branch_code,$year_id,$comp);
           $narration = "Due Payment";
-          if($branch_code!="LT" && $branch_code!="TR" && $payment_now>0)
+
+
+          $where_comp = array('comany_id'=>$comp);
+          $is_gst = $this->commondatamodel->getSingleRowByWhereCls('company_master',$where_comp)->is_gst;
+
+          if($branch_code!="TR" && $payment_now>0)
           {
 
             $payment_master_id = $this->insertpaymentmaster($mno,$card_code,$payment_dt,$due_amt,$payment_now,$due_actual,$cgstTaxAmt,$cgstRateID,$sgstTaxAmt,$sgstRateID,$totalAmt,$branch_code,$rcpt_srl,$payment_mode,$cheque_no,$cheque_date,$cheque_bank,$cheque_branch,$cus_id,$valid_string,$coll_brn_code,$corporate_comp_id,$collection_branch_id,$branch_id,$card_id);
@@ -295,12 +300,16 @@ public function addedit_action(){
              $voucher_master_id = $this->insertvouchermaster($voucher_srl,$voucher_no,$payment_dt,$branch_id,$payment_from,$narration,$from_payment_id,$totalAmt,$card_category,$card_id,$card_code,$card_desc);
              // voucher details insert data  for voucher A
              if($voucher_master_id > 0){
-
+                 if($is_gst == 'Y'){
               $this->insertvoucherdetails($voucher_master_id,'Cr',$card_acc_id,$payment_now,1);
               $this->insertvoucherdetails($voucher_master_id,'Cr',$cgstAccID,$cgstTaxAmt,2);
               $this->insertvoucherdetails($voucher_master_id,'Cr',$sgstAccID,$sgstTaxAmt,3);
               $this->insertvoucherdetails($voucher_master_id,'Dr',$mem_account_id,$totalAmt,4,$member_acc_code,$membership_ref);
+              }else{
+                $this->insertvoucherdetails($voucher_master_id,'Cr',$card_acc_id,$payment_now,1);
+                $this->insertvoucherdetails($voucher_master_id,'Dr',$mem_account_id,$totalAmt,2,$member_acc_code,$membership_ref);
               }
+            }
 
               // voucher master insert data for voucher B
               $serial_char2 = 'B';
@@ -321,7 +330,11 @@ public function addedit_action(){
               $upd_payment = array('voucher_master_id'=>$voucher_master_id,'second_voucher_mast_id'=>$voucher_master_id2);
               $upd_enq = $this->commondatamodel->updateSingleTableData('payment_master',$upd_payment,$where_payment);
               }
+            }else{
 
+              $payment_master_id = $this->insertpaymentmaster($mno,$card_code,$payment_dt,$due_amt,$payment_now,$due_actual,$cgstTaxAmt,$cgstRateID,$sgstTaxAmt,$sgstRateID,$totalAmt,$branch_code,$rcpt_srl,$payment_mode,$cheque_no,$cheque_date,$cheque_bank,$cheque_branch,$cus_id,$valid_string,$coll_brn_code,$corporate_comp_id,$collection_branch_id,$branch_id,$card_id);
+
+            }
               $where_duepayable = array('tran_id'=>$tran_id);
               $update_due_arr['payment_id']=$payment_master_id;
               $update_due_arr['payment_amount']=$payment_now;
@@ -350,14 +363,15 @@ public function addedit_action(){
                 $this->commondatamodel->insertSingleTableData('due_payable',$insert_due_arr);
               }
               $sms = 'N';
-              // $isSms= $this->commondatamodel->getSingleRowByWhereCls('company_master',array('comany_id'=>$comp))->sms_facility; ;
-                 
-              //  if($isSms=='Y'){    
-              //     $message = "Welcome to Mantra";
+              $module = "Due Reminder & Payment";
+              $controller = "Duereminder/addedit_action";
+              
+                
+                  $message = "Welcome to Mantra";
                   
-              //      $sms = mantraSend($phone,$message);
-              //  }
-          }
+                   $sms = mantraSend($phone,$message,$module,$controller);
+               
+         
 
 
           if($payment_master_id){
@@ -555,6 +569,11 @@ private function insertpaymentmaster($mno,$card_code,$payment_dt,$due_amt,$payme
 
      }
 
+public function getBranchIDByCompany($branch_code,$company_id){
 
+      return $branch_id = $this->commondatamodel->getSingleRowByWhereCls('branch_master',array('BRANCH_CODE'=>$branch_code,
+                                                     'company_id'=>$company_id))->BRANCH_ID; 
+    
+     }
 
 }

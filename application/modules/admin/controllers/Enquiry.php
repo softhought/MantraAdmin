@@ -216,7 +216,7 @@ public function getallwings(){
       //pre($locationlist);exit;
       $wingsview = '';
       if(!empty($wingslist)){
-          
+        $wingsview.='<option value="">Select</option>';
       foreach($wingslist as $wingslist){
         $wingsview.='<option value="'.$wingslist->wing_id.'">'.$wingslist->wing_name.'</option>';
       }
@@ -246,7 +246,7 @@ public function addedit_action(){
         $json_response = array();
         $formData = $this->input->post('formDatas');
         parse_str($formData, $dataArry);
-
+        $comp = $session['companyid'];
         $enquiryId = trim(htmlspecialchars($this->input->post('enquiryId')));
         $mayhelp_id = trim(htmlspecialchars($this->input->post('mayhelp_id')));
         $frguestpId = trim(htmlspecialchars($this->input->post('frguestpId')));
@@ -283,9 +283,22 @@ public function addedit_action(){
        $remarks = trim(htmlspecialchars($this->input->post('remarks')));
        $done_by = trim(htmlspecialchars($this->input->post('done_by')));
        $where_brn = array('BRANCH_ID'=>$branch_id);
-       $branch_code = $this->commondatamodel->getSingleRowByWhereCls('branch_master',$where_brn)->BRANCH_CODE;
+       $branchdtl = $this->commondatamodel->getSingleRowByWhereCls('branch_master',$where_brn);
+       $branch_code = $branchdtl->BRANCH_CODE;
+       $company_contact = $branchdtl->company_contact;
+       $contact_person = $branchdtl->contact_person;
+       if($company_contact != "" && $contact_person != ""){
+          $contact_no = $company_contact.' / '.$contact_person;
+       }else if($company_contact != "" ){
+            $contact_no = $company_contact;
+       }else{
+        $contact_no = $contact_person;
+       }
        $where_enqwing = array('wing_id'=>$wing_id);
-       $wing_name = $this->commondatamodel->getSingleRowByWhereCls('enquiry_wings',$where_enqwing)->wing_name;
+       $wingdtl = $this->commondatamodel->getSingleRowByWhereCls('enquiry_wings',$where_enqwing);
+       $wing_name = $wingdtl->wing_name;
+       $is_wing_sms = $wingdtl->is_sms;
+
        $upd_inser = 0;
 
        $insert_arr = array(
@@ -342,14 +355,26 @@ public function addedit_action(){
                   $upd_inser = $this->commondatamodel->insertSingleTableData('enquiry_detail',$enquiry_dtl);
                     
                       // For SMS  
-                      if ($wing_name=="RENEWAL")
-                      {
-                          $sms_stat="N";
+                      // if ($wing_name=="RENEWAL")
+                      // {
+                      //     $sms_stat="N";
+                      // }
+                      // else
+                      // {
+                      //     $sms_stat=$this->send_my_sms($mobile_no,$enq_no,$wing_name,$branch_code);
+                      // }
+                      $sms_stat = 'N';
+                      $isSms= $this->isSmsFacility($comp);
+                      $module = "Enquiry";
+                      $controller = "Enquiry/addedit_action"; 
+                      if($isSms=='Y' && $is_wing_sms == 'Y'){
+           
+                         $message = "Thank you for showing interest on Mantra Health Club.Your Enquiry No. is ".$enq_no.". We look forward to serving you better, please contact ".$contact_no." for any further queries";
+                         
+                         $sms_stat = mantraSend($mobile_no,$message,$module,$controller);
                       }
-                      else
-                      {
-                          $sms_stat=$this->send_my_sms($mobile_no,$enq_no,$wing_name,$branch_code);
-                      }
+
+
                       $update_enqno = array('sms_stat'=>$sms_stat);
                       $upd_enq = $this->commondatamodel->updateSingleTableData('enquiry_master',$update_enqno,$where_enq);
                       if ($mayhelp_id != 0 || $mayhelp_id != "")
@@ -602,6 +627,29 @@ public function getSmslistOldMem(){
 }
 
 
+public function getSmslistExtMem(){  
+  if($this->session->userdata('mantra_user_detail'))
+  {   
+    $session = $this->session->userdata('mantra_user_detail');
+      $cus_id =  $this->input->post('cus_id');
+      
+      $where = array('CUS_ID'=>$cus_id);
+      $data['customermstdata']= $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where);
+
+      $data['oldmemsmsdel']= $this->enquirymodel->getExtMemberSms($cus_id);
+     // pre($data['enquirysmsdel']);exit;
+     // $page = 'dashboard/front_office/calling/feedback_list_modal';   
+      $page = 'dashboard/front_office/special-enquiry/sms_list_modal_existing_mem';      
+      $this->load->view($page,$data);
+  
+  }else{
+      redirect('admin','refresh');
+
+}
+
+}
+
+
 
 public function getEmailList(){  
   if($this->session->userdata('mantra_user_detail'))
@@ -650,6 +698,33 @@ public function getEmailListOldMem(){
 }
 
 
+public function getEmailListExistingMem(){  
+  if($this->session->userdata('mantra_user_detail'))
+  {   
+    $session = $this->session->userdata('mantra_user_detail');
+      $cus_id =  $this->input->post('cus_id');
+      
+      $where = array('CUS_ID'=>$cus_id);
+      $data['customermstdata']= $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where);
+
+      $membership_no=$data['customermstdata']->MEMBERSHIP_NO;
+
+      $data['oldmememaildel']= $this->enquirymodel->getOldmemberEmail($membership_no);
+     // pre($data['enquirysmsdel']);exit;
+     // $page = 'dashboard/front_office/calling/feedback_list_modal';   
+      $page = 'dashboard/front_office/special-enquiry/email_list_modal_old_mem.php';      
+      $this->load->view($page,$data);
+  
+  }else{
+      redirect('admin','refresh');
+
+}
+
+}
+
+
+
+
 public function enquiryclose(){
   if($this->session->userdata('mantra_user_detail'))
 
@@ -690,7 +765,7 @@ function send_my_sms($phone,$enq_no,$wing,$branch)
     $feed = 'N';
     $module = "Enquiry";
     $controller = "Enquiry/send_my_sms";
-
+    $message ="";
 	if ($wing=="GYM")
 	{
 		 if($branch=="CM")
@@ -1025,9 +1100,12 @@ public function getspecialenquiry(){
    
         $data['specialenquirylist']=$this->enquirymodel->getAllOldMemberList($from_dt,$to_date,$sel_category,$sel_card,$branch,$session['companyid']);
       $page = 'dashboard/front_office/special-enquiry/special_enquiry_partial_list_old_member';   
-      }else{
-        $data['specialenquirylist']=[];
-        $page = 'dashboard/front_office/special-enquiry/special_enquiry_partial_list';   
+      }else if($search_type=='EXISTING MEMBER'){
+                  $sel_month =  $this->input->post('sel_month');
+          $sel_category =  $this->input->post('sel_category');
+          $sel_card =  $this->input->post('sel_card');
+         $data['specialenquirylist']=$this->enquirymodel->getAllExistingMemberList($from_dt,$to_date,$sel_category,$sel_card,$branch,$session['companyid']);
+        $page = 'dashboard/front_office/special-enquiry/special_enquiry_partial_list_existing_member';   
       }
     
       // pre($data['specialenquirylist']);
@@ -1236,6 +1314,95 @@ if($applytype=='OLD MEMBER'){
 
 }
 /* -------------------------------------------END OF OLD MEMBER---------------------------------------------------- */
+
+
+/* ------------------------------------------- EXISTING MEMBER ---------------------------------------------------- */
+
+if($applytype=='EXISTING MEMBER'){
+
+  $customer_ids=$enqids;
+  $rowMemberData = $this->enquirymodel->getMemberDetailsByIds($customer_ids);
+
+  
+      if($send_type=='sms'){
+
+          foreach ($rowMemberData as $rowMemberData) {
+            
+
+              $member_mobile=$rowMemberData->CUS_PHONE;
+              $member_name=$rowMemberData->CUS_NAME;
+		          $member_no=$rowMemberData->MEMBERSHIP_NO;  
+		          $mem_id=$rowMemberData->CUS_ID;  
+
+              $message = $matter_data;
+             // $member_mobile=7003319369;
+              $module = "Special Enquiry";
+              $controller = "Enquiry/applyEnquiryNotification";
+              $msg_res= mantraSend($member_mobile,$message,$module,$controller);
+             // $msg_res='Y';
+              if($msg_res=='Y'){$err_id =1;}else{$err_id =0;}
+
+              $sms_old_master['sms_master_id']=$subject_id;
+              $sms_old_master['sms_text']=$message;
+              $sms_old_master['member_id']=$mem_id;
+              $sms_old_master['membership_no']=$member_no;
+              $sms_old_master['mobile_no']=$member_mobile;
+              $sms_old_master['err_id']=$err_id;
+              $sms_old_master['date_of_sending']=date('Y-m-d h:i');
+              $sms_old_master['branch_id']=$rowMemberData->branch_id;
+              $sms_old_master['company_id']=$rowMemberData->company_id;
+
+              $this->commondatamodel->insertSingleTableData('smsnew_report_bulk',$sms_old_master);
+
+          }
+       
+      }else{
+
+
+            foreach ($rowMemberData as $rowMemberData) {
+            
+
+              $member_mobile=$rowMemberData->CUS_PHONE;
+              $member_name=$rowMemberData->CUS_NAME;
+		          $member_no=$rowMemberData->MEMBERSHIP_NO;  
+              $mem_id=$rowMemberData->CUS_ID;  
+              $member_email=$rowMemberData->CUS_EMAIL;
+
+              $message = $matter_data;
+         
+              $member_email='devsofthought@gmail.com';
+             
+              $email_stat ='';
+              
+              $title=$sel_email;
+              $subject="Existing Member Notification";
+
+
+              	$email_sending_detail['date_of_sending']=date('Y-m-d h:i');
+                $email_sending_detail['matter_id']=$sel_email;
+                $email_sending_detail['membership_no']=$member_no;
+                $email_sending_detail['member_name']=$member_name;
+                $email_sending_detail['email_text']=$message;
+                $email_sending_detail['email_tag']=$email_stat;
+                $email_sending_detail['email_id']=$member_email;
+
+
+             $this->commondatamodel->insertSingleTableData('email_report_bulk',$email_sending_detail);
+
+          }
+
+
+        
+      }
+
+
+
+
+}
+
+exit;
+
+/* -------------------------------------------END OF EXISTING MEMBER ---------------------------------------------------- */
 
         
       $json_response = array(
@@ -1455,7 +1622,11 @@ $message.="</html>";
             echo 'Message has been sent';
         }
     }
+    public function isSmsFacility($company_id){
 
+      return $sms_facility = $this->commondatamodel->getSingleRowByWhereCls('company_master',array('comany_id'=>$company_id))->sms_facility; 
+    
+     }
 
 }/* end of class  */
 

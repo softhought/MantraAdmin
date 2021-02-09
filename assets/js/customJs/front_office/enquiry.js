@@ -1,5 +1,13 @@
 $(document).ready(function(){
    var basepath = $("#basepath").val();
+   var startDate = new Date($("#acstartDate").val());
+   var endDate = new Date($("#acendDate").val()); 
+   $('#dob').datepicker({
+    format: 'dd-mm-yyyy',    
+    autoclose:true,
+    todayHighlight:true, 
+    orientation: 'bottom auto'
+ });
     $(document).on('submit', '#EnquiryForm', function(event) {
         event.preventDefault();
         var formData = new FormData($(this)[0]);
@@ -50,7 +58,7 @@ $(document).ready(function(){
         var data =  ajaxcallcontrollerforcutom(method,formData);
         $("#location").html(data.locationlist);
     })
-    getallenquery();
+    // getallenquery();
     $("#viewbtn").click(function(){
         getallenquery();
     });
@@ -65,7 +73,7 @@ $(document).ready(function(){
         $("#enquiry_id").val( enq_id );
         $("#fname").val(data.enquirymstdata['FIRST_NAME'])
         $("#lname").val(data.enquirymstdata['LAST_NAME'])
-        $("#pincode").val(data.enquirymstdata['PIN'])
+        $("#pincode").val(data.pincode)
         $("#location").val(data.enquirymstdata['LOCATION'])
         $("#address").val(data.enquirymstdata['ADDRESS'])
         $("#email").val(data.enquirymstdata['EMAIL'])
@@ -152,6 +160,9 @@ function validateform(){
     var first_name = $("#first_name").val();
     var wings = $("#wings").val();
     var last_name = $("#last_name").val();
+    var gender = $("#gender").val();
+    var dob = $("#dob").val();
+    var age = $("#age").val();
     var branch_id = $("#branch_id").val();
     var pin = $("#pin").val();
     var location = $("#location").val();   
@@ -159,6 +170,7 @@ function validateform(){
     var address = $("#address").val();   
     var followup_date  = $("#followup_date").val();
     var done_by = $("#done_by").val();
+    
     $("#errormsg").text("").css('color','red');
     if(enquiry_dt == ""){
         $("#errormsg").text("Error : Select Enquiry Date");
@@ -168,22 +180,31 @@ function validateform(){
         $("#errormsg").text("Error : Enter First Name");
         $("#first_name").focus();
         return false;
-    }else if(wings == ""){
-        $("#errormsg").text("Error : Select Wing");
-        $("#wings").focus();
+    }else if(branch_id == ""){
+        $("#errormsg").text("Error : Select Branch");
+        $("#branch_id").focus();
         return false;
     }
     else if(last_name == ""){
         $("#errormsg").text("Error : Enter Last Name");
         $("#last_name").focus();
         return false;
-    }else if(branch_id == ""){
-        $("#errormsg").text("Error : Select Branch");
-        $("#branch_id").focus();
+    }else if(gender == ""){
+        $("#errormsg").text("Error : Select Gender");
+        $("#gender").focus();
+        return false;
+    }else if(age == "" && dob == "" ){
+        $("#errormsg").text("Error : Select DOB or Age");
+        $("#dob").focus();
         return false;
     }else if(pin == ""){
         $("#errormsg").text("Error : Select Pin");
         $("#pin").focus();
+        return false;
+    }
+    else if(wings == ""){
+        $("#errormsg").text("Error : Select Wing");
+        $("#wings").focus();
         return false;
     }else if(location == ""){
         $("#errormsg").text("Error : Select Location");

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Renewalremidermodel extends CI_Model{
 
-    public function getAllRenewalreminder($from_dt,$to_date,$branch_id,$card,$trainer,$mobile_no,$mem_no)
+    public function getAllRenewalreminder($from_dt,$to_date,$branch_id,$card,$category,$trainer,$mobile_no,$mem_no)
 	{
 		$session = $this->session->userdata('mantra_user_detail');
         $data = array();
@@ -20,7 +20,7 @@ class Renewalremidermodel extends CI_Model{
              $where3 = array();
          }
          if($card != ""){
-            $where4 = array("a.card_id"=>$card);
+            $where4 = array("a.CARD_CODE"=>$card);
          }else{
              $where4 = array();
          }
@@ -28,6 +28,11 @@ class Renewalremidermodel extends CI_Model{
             $where_trainer = array("b.trainer_id"=>$trainer);
          }else{
              $where_trainer = array();
+         }
+           if($category != "" && $card == ""){
+            $where_category = " a.CARD_CODE LIKE '".$category."%'";;
+         }else{
+             $where_category = array();
          }
         //  if($mobile_no != ""){
         //     $where_mob = array("b.CUS_PHONE"=>$mobile_no);
@@ -60,8 +65,8 @@ class Renewalremidermodel extends CI_Model{
                     a.VALIDITY_STRING,
                     a.FRESH_RENEWAL,
                     a.card_id,
-                    a.DUE_AMOUNT,
                     a.EXPIRY_DT,
+                    a.DUE_AMOUNT,
                     b.CUS_ID,
                     b.CUS_NAME,
                     b.CUS_PHONE,
@@ -86,7 +91,7 @@ class Renewalremidermodel extends CI_Model{
                 ->join('branch_master','a.branch_id = branch_master.BRANCH_ID','INNER')
                 ->join('employee_master','employee_master.empl_id = b.trainer_id','LEFT')
                 ->join('card_master','card_master.CARD_ID = a.card_id','INNER')
-                ->join('rate_detail','rate_detail.card_id = card_master.CARD_ID AND rate_detail.branch_id = branch_master.BRANCH_ID  AND rate_detail.company_id = "'.$session['companyid'].'"','INNER')                
+                ->join('rate_detail','rate_detail.card_id = card_master.CARD_ID AND rate_detail.branch_code = branch_master.BRANCH_CODE  AND rate_detail.company_id = "'.$session['companyid'].'"','INNER')                
                 ->join('renewaltable','renewaltable.renew_id = a.RENEW_ID','LEFT')
                 ->join('payment_master AS ren_pay','ren_pay.PAYMENT_ID = renewaltable.payment_id','LEFT')
                 ->where($where)
@@ -94,7 +99,7 @@ class Renewalremidermodel extends CI_Model{
 				->where($where3)
 				->where($where4)
 				->where($where_trainer)
-				// ->where($where_mob)
+			    ->where($where_category)
 				->where($where_mem)
 				->where('a.company_id',$session['companyid'])
                 ->order_by('a.EXPIRY_DT','ASC');
@@ -187,7 +192,7 @@ class Renewalremidermodel extends CI_Model{
 	{
 		$session = $this->session->userdata('mantra_user_detail');
         $data = array();
-        $where = 'PAYMENT_ID = (SELECT min(PAYMENT_ID) FROM payment_master WHERE CUST_ID = "'.$cus_id.'" and PAYMENT_ID < "'.$payment_id.'" and payment_master.FRESH_RENEWAL!="D" and payment_master.FRESH_RENEWAL!="P" and payment_master.FRESH_RENEWAL!="C" and payment_master.FRESH_RENEWAL!="H" and payment_master.FRESH_RENEWAL!="OC")';
+        $where = 'PAYMENT_ID = (SELECT min(PAYMENT_ID) FROM payment_master WHERE CUST_ID = "'.$cus_id.'" and PAYMENT_ID > "'.$payment_id.'" and payment_master.FRESH_RENEWAL!="D" and payment_master.FRESH_RENEWAL!="P" and payment_master.FRESH_RENEWAL!="C" and payment_master.FRESH_RENEWAL!="H" and payment_master.FRESH_RENEWAL!="OC")';
        
       
 		$this->db->select("*")
@@ -338,12 +343,13 @@ class Renewalremidermodel extends CI_Model{
 
         $where = array('enquiry_detail.member_id'=>$mid,'enquiry_detail.payment_id'=>$pid,'for_the_wing'=>$wing);
       
-		$this->db->select("count(*) as totalcall")
-                ->from('enquiry_detail')                
-				->where($where);
-				               
+		$sSql = "SELECT count(*) as totalcall FROM enquiry_detail WHERE enquiry_detail.`enq_id` IN
+			(
+			SELECT enquiry_detail.enq_id FROM enquiry_detail WHERE
+			member_id=".$mid." AND payment_id=".$pid." AND enquiry_detail.`for_the_wing`='".$wing."'
+			)";
                 // ->limit(10);
-		$query = $this->db->get();
+                $query = $this->db->query($sSql);
 		#echo $this->db->last_query();exit;
 
 		if($query->num_rows()> 0)
@@ -374,7 +380,8 @@ class Renewalremidermodel extends CI_Model{
                             enquiry_master.DATE_OF_ENQ")
                 ->from('enquiry_detail')                
                 ->join('enquiry_master','enquiry_master.ID = enquiry_detail.enq_id','INNER')
-				->where($where)				               
+                ->where($where)	
+                ->order_by('enquiry_master.ID','DESC')			               
                  ->limit(1);
 		$query = $this->db->get();
 		#echo $this->db->last_query();exit;
@@ -449,8 +456,44 @@ class Renewalremidermodel extends CI_Model{
                 ->join('reason_master','reason_master.reason_id = enquiry_detail.remarks_id','LEFT')
                 ->join('users','enquiry_detail.user_id = users.id','LEFT')
 				->where($where1)
-                // ->group_by('enquiry_detail.enq_id')
+                ->group_by('enqMastID')
                 ->order_by('enqMastID','DESC');
+               
+		$query = $this->db->get();
+		#echo "<br>".$this->db->last_query();	
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data; 
+        }
+		else
+		{
+             return $data;
+         }
+    }
+
+    public function getEnquiryDetailByEnqNo($enq_mast_id)
+	{
+        $data = array();
+		$where1 = array('enquiry_detail.enq_id' => $enq_mast_id                       
+					 );
+	   
+		$this->db->select(" enquiry_detail.enq_date,
+                    enquiry_detail.member_id,
+                    enquiry_detail.payment_id,
+                    enquiry_detail.enq_remarks,
+                    enquiry_detail.followup_date,
+                    reason_master.reason_title,
+                    users.name")
+				->from('enquiry_detail')				
+                ->join('reason_master','reason_master.reason_id = enquiry_detail.remarks_id','LEFT')
+                ->join('users','enquiry_detail.user_id = users.id','LEFT')
+				->where($where1)
+                //->group_by('enqMastID')
+                ->order_by('enquiry_detail.followup_date','DESC');
                
 		$query = $this->db->get();
 		#echo "<br>".$this->db->last_query();	
@@ -484,7 +527,7 @@ class Renewalremidermodel extends CI_Model{
                 ->where($where)
                 ->limit(1);
 		$query = $this->db->get();
-		#q();
+		#echo "<br>".$this->db->last_query();exit;	
 		if($query->num_rows()> 0)
 		{
             $row = $query->row();

@@ -572,7 +572,8 @@ function __construct()
          $regID = $this->input->post('regId',true);  
 
 
-         if(isset($_POST['chkIsact']) && $_POST['chkIsact']=='on'){ $is_act="H"; }else{ $is_act="Y"; }
+         // if(isset($_POST['chkIsact']) && $_POST['chkIsact']=='on'){ $is_act="H"; }else{ $is_act="Y"; }
+         $is_act = "Y";
          if(isset($_POST['chkIscompl']) && $_POST['chkIscompl']=='on'){ $is_compl="Y"; }else{ $is_compl="N";}
 
          $curr_date = date('Y-m-d');
@@ -629,21 +630,35 @@ function __construct()
          $whatsup_number=$_POST['whatsup_number'];
          $mail=$_POST['txt_mail'];
          $occu=$_POST['txt_occu'];
-         $compl=$_POST['txt_comp'];
-         $history=$_POST['txt_his'];
+         // $compl=$_POST['txt_comp'];
+         // $history=$_POST['txt_his'];
+          $compl="";
+         $history="";
 
          $trainer=$_POST['sel_trainer'];
 
-         $app=$_POST['sel_app'];
-         $dig=$_POST['sel_dig'];
-         $hrt=$_POST['sel_hrt'];
-         $urn=$_POST['sel_urn'];
-         $nrv=$_POST['sel_nrv'];
-         $ent=$_POST['sel_ent'];
-         $ort=$_POST['sel_ort'];
-         $psy=$_POST['sel_psy'];
-         $fem=$_POST['sel_fem'];
-         $dit=$_POST['sel_dit'];
+         // $app=$_POST['sel_app'];
+         // $dig=$_POST['sel_dig'];
+         // $hrt=$_POST['sel_hrt'];
+         // $urn=$_POST['sel_urn'];
+         // $nrv=$_POST['sel_nrv'];
+         // $ent=$_POST['sel_ent'];
+         // $ort=$_POST['sel_ort'];
+         // $psy=$_POST['sel_psy'];
+         // $fem=$_POST['sel_fem'];
+         // $dit=$_POST['sel_dit'];
+
+          $app="";
+         $dig="";
+         $hrt="";
+         $urn="";
+         $nrv="";
+         $ent="";
+         $ort="";
+         $psy="";
+         $fem="";
+         $dit="";
+         $dit="";
 
          $heard=$_POST['sel_heard'];
          $ref_mem_mob='';$ref_mem_id='';$ref_doct_id='';
@@ -1096,7 +1111,7 @@ function __construct()
                $insert_fields_arr['BP']=$bp;
                $insert_fields_arr['FAT']=$fat;
                $insert_fields_arr['service_id']=$service_id;
-              // $insert_fields_arr['member_diet']=$this->chekFromData($_POST,'sel_diet');
+            //   $insert_fields_arr['member_diet']=$this->chekFromData($_POST,'sel_diet');
                $insert_fields_arr['website']=$this->chekFromData($_POST,'txt_website');
                $insert_fields_arr['houseno']=$this->chekFromData($_POST,'txt_houseno');
                $insert_fields_arr['buildingno']= $this->chekFromData($_POST,'txt_buildingno');
@@ -1209,12 +1224,14 @@ function __construct()
 
                  $cust_ins_id = $this->commondatamodel->insertSingleTableData('customer_master',$insert_fields_arr);
 
+                 $where_comp = array('comany_id'=>$company_id);
+                 $is_gst = $this->commondatamodel->getSingleRowByWhereCls('company_master',$where_comp)->is_gst;
                  
 
              /*------------------------------- voucher entry start -------------------- */
              $voucher_master_id = 0; $voucher_master_id_2 = 0;
 
-             if($branch!="LT" && $branch!="TR" && $is_compl=="N" && $payment_now>0)
+             if($branch!="TR" && $is_compl=="N" && $payment_now>0)
                {
                   $voucherno_prefix = 'RG';
                   $voucher_srl = $this->reg_model->getLatestVoucherSerialNoNew($year_id,$company_id);
@@ -1275,7 +1292,7 @@ function __construct()
                      "accountcode" => NULL,
                      "membership_no" => NULL
                   );
-
+               if($is_gst == 'Y'){
                   // CGST A/C Credit ----- 2
                   $voucherDtlArry2 = array(
                      "master_id" => $voucher_master_id,
@@ -1304,10 +1321,12 @@ function __construct()
                      "membership_no" => NULL
                   );
 
+               }
+
                   // Sundry Debtor A/C Debit ----- 4
                   $voucherDtlArry4 = array(
                      "master_id" => $voucher_master_id,
-                     "srl_no" => 4,
+                     "srl_no" => ($is_gst == 'Y') ? 4 : 2,
                      "tran_tag" => 'Dr',
                      "acc_id" => $accountData['mem_account_id'],
                      "pay_to_id" => '',
@@ -1317,8 +1336,13 @@ function __construct()
                      "accountcode" => $accountData['mem_acc_code'],
                      "membership_no" => $accountData['membership_ref']
                   );
-
-                  $voucher_dtl_array = array($voucherDtlArry1,$voucherDtlArry2,$voucherDtlArry3,$voucherDtlArry4);
+                  if($is_gst == 'Y'){ 
+                     $voucher_dtl_array = array($voucherDtlArry1,$voucherDtlArry2,$voucherDtlArry3,$voucherDtlArry4);
+                  }else{
+                     
+                     $voucher_dtl_array = array($voucherDtlArry1,$voucherDtlArry4);
+                  }
+                  //$voucher_dtl_array = array($voucherDtlArry1,$voucherDtlArry2,$voucherDtlArry3,$voucherDtlArry4);
                   $this->insertIntoVoucherDetailData($voucher_master_id,$voucher_dtl_array);
                   
                   /*----- For Second Voucher Prepare Master Data-----*/
@@ -1492,10 +1516,12 @@ function __construct()
 
                        $isSms= $this->isSmsFacility($company_id);
                        $sent_msg = 'N';
+                       $module = "New Registraion";
+                       $controller = "Registration/registration_action";
                         if($isSms=='Y'){
 
                            $message = "Thank you for being part of Mantra family.Your Membership no. is ".$mno.". Please use the same for any further communication.";
-                           $sent_msg = mantraSend($phone,$message);
+                           $sent_msg = mantraSend($phone,$message,$module,$controller);
                         }
 
                          if($cust_ins_id){
@@ -2879,7 +2905,7 @@ public function insertIntoMemberCompliment($cust_ins_id,$mno,$valid_string,$bran
               $company_id = $session['companyid']; 
               $user_id = $session['userid']; 
 
-              $verifed_code=rand(10000,999999);
+              $verifed_code=rand(100000,999999);
 
 
              $insert_array = array(
@@ -2894,7 +2920,9 @@ public function insertIntoMemberCompliment($cust_ins_id,$mno,$valid_string,$bran
 
             $link="https://www.mantrahealthclub.com/mantra/termofuse/agreement/".$sign_id;
             $message = "Please read the agreement to get verification code ".$link;
-            mantraSend($mobile,$message);
+            $module = "New Registraion";
+            $controller = "Registration/getTermconSendVerificationCode";
+            mantraSend($mobile,$message,$module,$controller);
 
             
              $json_response = array("sign_id" => $sign_id,

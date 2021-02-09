@@ -84,14 +84,44 @@ public function receiptpdf(){
   { 
 
   //$payment_id = 49817;
+  $session = $this->session->userdata('mantra_user_detail');
+  $comp = $session['companyid'];
+ 
   $payment_id = $this->uri->segment(4);
   $cus_id = $this->uri->segment(5);
  
 //  pre($payment_id);
-
+$result['corporatecompdtl'] =array();
    $result['paymentdtl'] =  $this->motherpackagemodel->getpaymentdtl($payment_id,$cus_id);
-    // pre($result['paymentdtl']);exit;
+     //pre($result['paymentdtl']);exit;
+     $branch_id = $result['paymentdtl']->branch_id;
    $result['brn'] = $result['paymentdtl']->BRANCH_CODE;
+   $corporate_comp_id = $result['paymentdtl']->corporate_comp_id;
+   if($corporate_comp_id > 0){
+    $where_corporate = array('id'=>$corporate_comp_id);
+    $result['corporatecompdtl'] = $this->commondatamodel->getSingleRowByWhereCls('corporate_company',$where_corporate); 
+   }
+
+  //   product receipt print 
+   $result['product_name'] = "";
+   if($result['paymentdtl']->payment_from == 'PRODSALE'){
+   $where_pack = array('PAYMENT_ID'=>$payment_id);
+   $productdtl = $this->commondatamodel->getSingleRowByWhereCls('package_sale',$where_pack);
+   
+   if(!empty($productdtl)){
+    $prod_id = $productdtl->PRODUCT_ID;
+   
+    $where_prod = array('PROD_ID'=>$prod_id);
+    $result['product_name'] = $this->commondatamodel->getSingleRowByWhereCls('product_master',$where_prod)->PROD_DESC;
+   } 
+  
+  }
+
+   $where_comp = array('comany_id'=>$comp);
+   $where_brn = array('BRANCH_ID'=>$branch_id);
+  $result['compantdtl'] = $this->commondatamodel->getSingleRowByWhereCls('company_master',$where_comp); 
+   $result['branchdtl'] = $this->commondatamodel->getSingleRowByWhereCls('branch_master',$where_brn); 
+   //pre($data['branchdtl']);exit;
    
    $fig_in_words =$this->no_to_words($result["paymentdtl"]->TOTAL_AMOUNT);
      
@@ -105,7 +135,7 @@ public function receiptpdf(){
    {
      $zero=@$zero."0";
    }
-     $result['receipt_no']=$this->gen_rcpt_no_pad($srl,$result['brn']);
+     $result['receipt_no']=$this->gen_rcpt_no_pad($srl,$result['brn'],$comp);
    
     
       // load library
@@ -141,7 +171,7 @@ public function receiptpdf(){
   
   $cus_id = $this->uri->segment(4);
  
-//  pre($payment_id);
+ 
    $arrFitNesDesc = array();
    $arrFitNesQty = array();
    $arrWorkOutDesc = array();
@@ -152,8 +182,8 @@ public function receiptpdf(){
    $sum_qty4 = 0;
    $sum_qty5 = 0;
    $result['memberdtl'] =  $this->motherpackagemodel->getmemeberdtl($cus_id);
-   $result['mem_name'] = ucwords(strtolower($result['memberdtl']->CUS_NAME));
-    // pre($result['paymentdtl']);exit;
+  
+     //pre($result['memberdtl']);exit;
     $branch = $result['memberdtl']->branch_id;
     $card = $result['memberdtl']->card_id;
     $type="Part of Package";
@@ -307,7 +337,7 @@ public function receiptpdf(){
 
 
 
- function gen_rcpt_no_pad($srl,$brn)
+ function gen_rcpt_no_pad($srl,$brn,$company)
 {
 	$srl_len=strlen($srl);
     $rem_len=8-$srl_len;
@@ -316,14 +346,10 @@ public function receiptpdf(){
     {
 	    $zero=@$zero."0";
     }
-	if($brn=="LT")
-	{
-	    $mSrl_no="SM".$zero.$srl;
-	}
-	else
-	{
-	    $mSrl_no="MH".$zero.$srl;
-	}
+    $short_name = $this->commondatamodel->getSingleRowByWhereCls('company_master',array('comany_id'=>$company))->short_name; 
+	
+	  $mSrl_no=$short_name.$zero.$srl;
+	
    	return $mSrl_no;
 }
 

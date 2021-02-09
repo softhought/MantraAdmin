@@ -426,7 +426,7 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
          }
     }
     
-    public function getenquiryreportlist($gender,$from_dt,$to_date,$from_dob,$to_dob)
+    public function getenquiryreportlist($branch,$gender,$from_dt,$to_date,$from_dob,$to_dob)
 
     {
         $session = $this->session->userdata('mantra_user_detail');
@@ -443,10 +443,22 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
         }else{
             $where_gen = array();
        }
+      
        if($from_dob != '' && $to_dob != ''){
-          $where_dob = "enquiry_master.dob between '$from_dob' and '$to_dob'";           
+            $from_db = date('Y', strtotime('-'.$to_dob.' years'));
+            $to_db = date('Y', strtotime('-'.$from_dob.' years'));
+
+          $where_dob = "DATE_FORMAT(enquiry_master.dob, '%Y') between '$from_db' and '$to_db'";           
+          $where_age = "(enquiry_master.age between '$from_dob' and '$to_dob' or $where_dob)";           
        }else{
            $where_dob = array();
+        }
+        if($branch != ''){
+
+            $where_brn = array("enquiry_master.branch_id"=>$branch);
+ 
+         }else{
+             $where_brn = array();
         }
         
         $where_comp = array('enquiry_master.company_id'=>$session['companyid']);
@@ -462,15 +474,16 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
                           ->join('branch_master','enquiry_detail.branch_id = branch_master.BRANCH_ID','INNER')   
                           ->join('users','enquiry_detail.user_id = users.id','LEFT')
                           ->where($where)   
+                          ->where($where_brn)   
                           ->where($where_gen)   
-                          ->where($where_dob)   
+                          ->where($where_age)
                           ->where($where_comp)
                            ->group_by($where_group)                          
                           ->order_by($where_order,$by);
                           
       
 		$query = $this->db->get();
-		# echo $this->db->last_query();exit;
+		#echo $this->db->last_query();exit;
 		if($query->num_rows()> 0)
 		{
             foreach ($query->result() as $rows)
@@ -570,7 +583,7 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
     }
 
 
-         public function getOldMemberSms($cus_id)
+    public function getOldMemberSms($cus_id)
 	{
         $data = array();
         $where = array('member_id' => $cus_id,'err_id' => 1 );
@@ -582,6 +595,34 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
                 ;
         $query = $this->db->get();
        # echo "<br>".$this->db->last_query();
+       
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data;
+             
+        }
+		else
+		{
+             return $data;
+         }
+    }
+
+    public function getExtMemberSms($cus_id)
+	{
+        $data = array();
+        $where = array('member_id' => $cus_id,'err_id' => 1 );
+		$this->db->select("*")
+                ->from('smsnew_report_bulk')
+                ->join('sms_matter','sms_matter.tran_id = smsnew_report_bulk.sms_master_id','INNER') 
+                ->where($where)
+                ->order_by("date_of_sending", "desc");
+                ;
+        $query = $this->db->get();
+        #echo "<br>".$this->db->last_query();
        
 		if($query->num_rows()> 0)
 		{
@@ -717,7 +758,7 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
                         'payment_master.company_id' => $company_id,
                        );
         if($from_dt !="" && $to_date != ""){
-            $where_expiary_date = 'payment_master.EXPIRY_DT between "'.$from_dt.'" and "'.$to_date.'"';
+         $where_expiary_date = 'payment_master.EXPIRY_DT between "'.$from_dt.'" and "'.$to_date.'" and payment_master.EXPIRY_DT  < CURDATE()';
         }else{
             $where_expiary_date = array();
         }
@@ -786,6 +827,93 @@ public function list_of_enquiry($search_by,$from_dt,$to_date,$branch,$wing,$call
                if($currentPackagedata==0){
                     $data[] = $rows;
                }
+
+           
+              
+            }
+            return $data; 
+        }
+		else
+		{
+             return $data;
+         }
+    }
+
+         public function getAllExistingMemberList($from_dt,$to_date,$sel_category,$sel_card,$branch_id,$company_id)
+	{
+        $data = array();
+        $where = array(
+                        'payment_master.company_id' => $company_id,
+                       );
+        if($from_dt !="" && $to_date != ""){
+            $where_expiary_date = 'payment_master.EXPIRY_DT between "'.$from_dt.'" and "'.$to_date.'" and payment_master.EXPIRY_DT  >=CURDATE()';
+        }else{
+            $where_expiary_date = array();
+        }
+
+        
+     if($sel_category!=''){
+           $where_category = array(
+                        'product_category.id' => $sel_category,
+                       ); 
+       }else{
+            $where_category = [];
+       }
+
+        
+     if($sel_card!=''){
+           $where_card = array(
+                        'payment_master.card_id' => $sel_card,
+                       ); 
+       }else{
+            $where_card = [];
+       }
+
+       if($branch_id!=''){
+           $where_branch = array(
+                        'payment_master.branch_id' => $branch_id,
+                       ); 
+       }else{
+            $where_branch = [];
+       }
+
+       
+        $this->db->select("
+                            customer_master.`CUS_ID`,
+                            product_category.category_name,
+                            customer_master.`MEMBERSHIP_NO` AS membership_no,
+                            customer_master.`CUS_NAME`,
+                            customer_master.`CUS_SEX`,
+                            customer_master.`CUS_PHONE`,
+                            customer_master.`CUS_EMAIL`,
+                            payment_master.`CARD_CODE`,
+                            payment_master.`BRANCH_CODE`,
+                            DATE_FORMAT(payment_master.`FROM_DT`,'%d-%m-%Y') AS validFrom,
+                            DATE_FORMAT(payment_master.`EXPIRY_DT`,'%d-%m-%Y') AS expiryDate")
+                ->from('payment_master')
+                ->join('customer_master','customer_master.MEMBERSHIP_NO = payment_master.MEMBERSHIP_NO','INNER')
+                ->join('card_master','card_master.CARD_ID = payment_master.card_id','INNER')
+                ->join('product_category','product_category.id = card_master.PROD_CATEGORY_ID','INNER')
+				->where($where_branch)
+				->where($where_category)
+				->where($where_card)
+				->where($where)
+                ->where($where_expiary_date)
+                ->group_by('customer_master.CUS_PHONE')
+				->order_by('payment_master.EXPIRY_DT', 'desc');
+        $query = $this->db->get();
+        #echo "<br>".$this->db->last_query();	
+		#q();
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+                
+
+               $currentPackagedata= $this->countCurrentPackage($rows->CUS_PHONE,$company_id);
+
+                    $data[] = $rows;
+               
 
            
               

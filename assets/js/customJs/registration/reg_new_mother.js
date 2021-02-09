@@ -270,12 +270,15 @@ $(document).ready(function () {
       if (data.msg_status == 1 && data.mode == "Add") {
         var customer_id = data.cust_ins_id;
         var payment_id = data.pmt_ins_id;
+        var sent_msg = data.sent_msg;
         window.location.href =
           basepath +
           "registration/conformation/" +
           customer_id +
           "/" +
-          payment_id;
+          payment_id+
+          "/" +
+          sent_msg;
       } else if (data.msg_status == 0 && data.mode == "Add") {
         $("#errormsg").text(data.msg_data);
       }
@@ -2220,9 +2223,13 @@ function validatePersonalInfo() {
   $("#collapseFour").attr("class", "panel-collapse collapse");
   $("#collapseFour").css("height", "0px");
 
-  $("#collapseFive").attr("aria-expended", "true");
-  $("#collapseFive").attr("class", "panel-collapse collapse show");
-  $("#collapseFive").css("height", "auto");
+  // $("#collapseFive").attr("aria-expended", "true");
+  // $("#collapseFive").attr("class", "panel-collapse collapse show");
+  // $("#collapseFive").css("height", "auto");
+
+  $("#collapseSix").attr("aria-expended", "true");
+  $("#collapseSix").attr("class", "panel-collapse collapse show");
+  $("#collapseSix").css("height", "auto");
 
   return true;
 }

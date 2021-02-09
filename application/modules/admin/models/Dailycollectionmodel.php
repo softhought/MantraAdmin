@@ -248,7 +248,7 @@ public function getCollTotalAmtFromPayment($dt1,$dt2,$brn_id,$comp,$payment_mode
        
 		$this->db->select("payment_master.*,customer_master.CUS_NAME,customer_master.CUS_PHONE")
                 ->from('payment_master')
-                ->join('customer_master','payment_master.MEMBERSHIP_NO = customer_master.MEMBERSHIP_NO','INNER')                            
+                ->join('customer_master','payment_master.MEMBERSHIP_NO = customer_master.MEMBERSHIP_NO','LEFT')                            
                 ->where($where)
                 ->where($where_between)
                 ->group_by('payment_master.PAYMENT_ID');

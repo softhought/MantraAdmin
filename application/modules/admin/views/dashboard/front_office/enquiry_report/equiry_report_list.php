@@ -61,30 +61,27 @@
                         
                     </div> 
                     <div class="col-sm-2">
-                    <label for="from_dob">From DOB</label>
+                    <label for="from_dob">From Age</label>
                        <div class="form-group">
                         <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                            </div>
-                            <input type="text" class="form-control dobdatepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask="" name="from_dob" id="from_dob" im-insert="false" value="" readonly>
+                            
+                            <input type="text" class="form-control"  name="from_dob" id="from_dob" im-insert="false" value="" >
                           </div>
                         </div>
                         
                     </div>
+                    <div class="col-sm-1">
+                    <label for="to_dob">To Age</label>
+                       <div class="form-group">
+                        <div class="input-group input-group-sm">
+                           
+                            <input type="text" class="form-control" name="to_dob" id="to_dob" im-insert="false" value="" >
+                          </div>
+                        </div>
+                        
+                    </div>
+                    
                     <div class="col-sm-2">
-                    <label for="to_dob">From DOB</label>
-                       <div class="form-group">
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                            </div>
-                            <input type="text" class="form-control dobdatepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask="" name="to_dob" id="to_dob" im-insert="false" value="" readonly>
-                          </div>
-                        </div>
-                        
-                    </div>
-                    <!-- <div class="col-sm-2">
                     <label for="branch">Branch</label>
                       <div class="form-group">
                        <div class="input-group input-group-sm">
@@ -98,14 +95,14 @@
                           </div>
                         </div>
                         
-                    </div> -->
+                    </div>
                    
                    
                    
                    
-                <div class="col-md-2">
+                <div class="col-md-1">
                 <label for="report">&nbsp;</label>
-                 <button type="button" class="btn btn-block action-button btn-sm" id="reportviewbtn" style="width: 60%;">Show</button>
+                 <button type="button" class="btn btn-block action-button btn-sm" id="reportviewbtn" >Show</button>
 
                    <!-- Total <span class="badge" id="total_amount_value">7</span> -->
                </div>

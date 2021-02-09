@@ -16,7 +16,7 @@
 
     <div class="list-search-block">
                <div class="row box">  
-              <?php if($user_role == 1 && $user_role == 2){ ?>
+              <?php if($user_role == 1 || $user_role == 2){ ?>
                   <div class="col-sm-2">
                     <label for="from_dt">From Date</label>
                        <div class="form-group">

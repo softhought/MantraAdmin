@@ -80,55 +80,37 @@
 			</td>
 			<td class="paddingleft textstyle">
 			       Receipt No : <?php echo $receipt_no; ?>
+				   
 			</td>
 			
 		
 		  </tr>
 		  <tr>
 				<td class="borderleft textstyle">
-				<?PHP
-				if ($brn=="SN")
-				{
-				?>
-				Sinthee More &lsquo;OM TOWER&rsquo; 36C, B.T. Road, Kol- 700002
-				<?PHP
-				}
-				?>
-				<?PHP
-				if ($brn=="CM")
-				{
-				?>
-				Chiriamore 29F, B.T. Road, (Ground Floor) Kolkata- 700002
-				<?PHP
-				}
-				?>
-				<?PHP
-				if ($brn=="BP")
-				{
-				?>
-				Barrackpore 4/2, S.N. Banerjee Road, Kolkata- 700120
-				<?PHP
-				}
-				?>
-
-				<?PHP
-				if ($brn=="LT")
-				{
-				?>
-				95, Block-B, Laketown, Kolkata - 700089<br>
-				<?PHP
-				}
+				<?php 				
+				echo $branchdtl->BRANCH_NAME." ".$branchdtl->branch_address;
 				?>
 					
 				</td>
 				<td class="paddingleft textstyle" style="text-transform: capitalize;">
-			       Name :  <?php echo $paymentdtl->cus_name; ?>
+			       Name :  <?php if(!empty($corporatecompdtl)){ echo $corporatecompdtl->company_name; }else{ echo $paymentdtl->cus_name; } ?>
+				   
+				   
 			    </td>
 				
 			</tr>
+			<?php if(!empty($corporatecompdtl)){  ?>
+			<tr>
+			<td class="borderleft textstyle">&nbsp;</td>
+			<td class="paddingleft textstyle">GISTN : <?php echo $corporatecompdtl->gistn_no;  ?></td>
+			</tr>
+			<?php } ?>
 			<tr>
 			<td class="borderleft textstyle">
-			         Phone No : 9748488321/9836959859/033-25452738
+			         Phone No : <?php 				
+				echo $branchdtl->company_contact;
+				if($branchdtl->contact_person != "" && $branchdtl->company_contact != ""){ echo "/".$branchdtl->contact_person; }else{ echo $branchdtl->contact_person; }
+				?>
 			</td>
 			   <td class="paddingleft textstyle">
 						Address  :  <?php echo $paymentdtl->CUS_ADRESS; ?>
@@ -148,7 +130,7 @@
 			</tr>
 		  <tr>
 				<td class="borderleft textstyle">
-				GSTIN : 19AADCN1378E1ZG
+				GSTIN : <?php echo $branchdtl->gst_no; ?>
 				</td>
 			
 				<td class="paddingleft textstyle">
@@ -195,7 +177,7 @@
 				
 				</td>
 				<td class=" textstyle borderbottom">
-				Validity : <?php echo '('.date('d-m-Y',strtotime($paymentdtl->FROM_DT)).' - '.date('d-m-Y',strtotime($paymentdtl->EXPIRY_DT)).')'; ?>
+				Validity : <?php echo '('.date('d-m-Y',strtotime($paymentdtl->FROM_DT)).' - '.date('d-m-Y',strtotime($paymentdtl->VALID_UPTO)).')'; ?>
 				</td>
         </tr>
 		<?php } ?>
@@ -208,8 +190,10 @@
 			<td style="width:300px;text-align:center;">Particulars</td>
 			<td>Qty</td>
 			<td>Rate</td>
-			<td>Amount</td>
 			<td>Disc.</td>
+			<!-- <td>Amount</td> -->
+			
+			<td>Due</td>
 			<td>Taxable</td>
 			<td>CGST</td>
 			<td>SGST</td>
@@ -217,11 +201,13 @@
 		</tr>
 
 		<tr class="padding15">
-			<td ><?php echo $paymentdtl->CARD_DESC; ?> </td>
+			<td ><?php if($paymentdtl->payment_from == 'PRODSALE'){ echo $product_name; }else{ echo $paymentdtl->CARD_DESC; } ?> </td>
 			<td>1</td>
-			<td><?php echo $paymentdtl->AMOUNT+$paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT;  ?></td>
-			<td><?php echo $paymentdtl->AMOUNT+$paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT;  ?></td>
+			<td><?php echo $paymentdtl->AMOUNT+$paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT+$paymentdtl->DUE_AMOUNT;  ?></td>
+			<!-- <td><?php echo $paymentdtl->AMOUNT+$paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT;  ?></td> -->
+			
 			<td><?php echo $paymentdtl->DISCOUNT_CONV+$paymentdtl->DISCOUNT_OFFER+$paymentdtl->DISCOUNT_NEGO+$paymentdtl->WALLET_AMT; ?></td>
+			<td><?php echo $paymentdtl->DUE_AMOUNT;  ?></td>
 			<td><?php echo $paymentdtl->AMOUNT; ?></td>
 			<td><?php echo $paymentdtl->CGST_AMT; ?></td>
 			<td><?php echo $paymentdtl->SGST_AMT; ?></td>
@@ -241,7 +227,7 @@
 <div class="info-1" style="width:100%;">
   <div style="text-align:left;width:50%;float:left;">
      <p style="margin:0px;">-----------------------------------------</p>
-    <p style="margin:0px;text-indent:20px;">Degignation/Status</p>
+    <p style="margin:0px;text-indent:20px;">Designation/Status</p>
   </div>
   <div style="text-align:right;width:50%;float:rigth;">
   <p style="margin:0px;">-----------------------------------------</p>   

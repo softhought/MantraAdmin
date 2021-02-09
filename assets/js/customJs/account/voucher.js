@@ -144,7 +144,7 @@ $(document).ready(function(){
         $("tr#rowcarddetails_" + rowDtlNo[1]).remove();
         $("#is_voucher_dtl").val('Y');
         resetDrCrAmount();
-        $("#rowno").val(parseFloat($("#rowno").val()) - 1);
+        $("#rowno").val(parseFloat($("#rowno").val()) + 1);
     });
 
 // form submit
@@ -192,6 +192,14 @@ $(document).on('submit', '#VoucherForm', function(event) {
     }
 });
 
+
+// voucher list
+
+$("#vouchershowbtn").click(function(){
+    getvoucherdata();
+})
+
+// delete voucher
 $(".voucherdelete").click(function(){
     var voucher_id = $(this).attr('data-voucherid');
    
@@ -221,14 +229,6 @@ $(".voucherdelete").click(function(){
     });
 
 })
-
-
-// voucher list
-
-$("#vouchershowbtn").click(function(){
-    getvoucherdata();
-})
-
 
 });
 

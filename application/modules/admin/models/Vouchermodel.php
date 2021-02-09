@@ -184,17 +184,19 @@ class vouchermodel extends CI_Model{
         }else{
            $where_brn = array();
         }
-        if($tranction_type != "" && $tranction_type != "REG"){
+        if($tranction_type != "" && ($tranction_type == "RECEIPT" || $tranction_type == "PAYMENT")){
             $where_trn = array('tran_sub_type'=>$tranction_type);
-        }else if($tranction_type == "REG"){
+        }else if($tranction_type != "" && ($tranction_type == "REG" || $tranction_type == "JOURNAL")){
             $where_trn = array('tran_type'=>$tranction_type);
         }else{
             $where_trn = array();
          }
-        if($collection_type != ""){
-            $where_coll = array('is_daily_collection'=>$collection_type);
+        if($collection_type == "Y"){
+            $where_coll = array('is_daily_collection'=>'Y');
+        }else if($collection_type == "N"){
+           $where_coll = array('is_daily_collection'=>'N');
         }else{
-           $where_coll = array('is_daily_collection'=>'Y');
+            $where_coll = array();
         }
 
 		$this->db->select("id,voucher_no,voucher_date,narration,tran_type,tran_sub_type,total_dr_amt,auto_voucher_type")
@@ -547,91 +549,89 @@ class vouchermodel extends CI_Model{
              return $data;
          }
     }
-
-
-//renewal reminder
+    //renewal reminder
 public function gen_rcpt_serial_brn_fin($branch_id,$year_id,$comp)
-	{		
-        $serial = 0;   
-        $where = array('BRANCH_CODE'=>$branch_id,'FIN_ID'=>$year_id,'company_id'=>$comp);
-        $this->db->select("RCPT_NO")
-                 ->from('payment_master')                                              
-                ->where($where)   
-                ->order_by('RCPT_NO','DESC')            
-                ->limit(1);
-                
-                // ->limit(10);
-		$query = $this->db->get();
-        
-        #echo $this->db->last_query();exit;
+{		
+    $serial = 0;   
+    $where = array('BRANCH_CODE'=>$branch_id,'FIN_ID'=>$year_id,'company_id'=>$comp);
+    $this->db->select("RCPT_NO")
+             ->from('payment_master')                                              
+            ->where($where)   
+            ->order_by('RCPT_NO','DESC')            
+            ->limit(1);
+            
+            // ->limit(10);
+    $query = $this->db->get();
+    
+    #echo $this->db->last_query();exit;
 
-		if($query->num_rows()> 0)
-		{
-            $row = $query->row(); 
-            $serial = $row->RCPT_NO+1;
-            return $serial;
-             
-        }
-		else
-		{
-             return $serial;
-         }
+    if($query->num_rows()> 0)
+    {
+        $row = $query->row(); 
+        $serial = $row->RCPT_NO+1;
+        return $serial;
+         
     }
+    else
+    {
+         return $serial;
+     }
+}
 
 public function get_duration($card,$comp)
-	{		
-        $card_duration = 0;   
-        $where = array('CARD_CODE'=>$card,'company_id'=>$comp);
-        $this->db->select("CARD_ACTIVE_DAYS")
-                 ->from('card_master')                                              
-                ->where($where)                            
-                ->limit(1);
-                
-                // ->limit(10);
-		$query = $this->db->get();
-        
-        #echo $this->db->last_query();exit;
+{		
+    $card_duration = 0;   
+    $where = array('CARD_CODE'=>$card,'company_id'=>$comp);
+    $this->db->select("CARD_ACTIVE_DAYS")
+             ->from('card_master')                                              
+            ->where($where)                            
+            ->limit(1);
+            
+            // ->limit(10);
+    $query = $this->db->get();
+    
+    #echo $this->db->last_query();exit;
 
-		if($query->num_rows()> 0)
-		{
-            $row = $query->row(); 
-            $card_duration = $row->CARD_ACTIVE_DAYS;
-            return $card_duration;
-             
-        }
-		else
-		{
-             return $card_duration;
-         }
+    if($query->num_rows()> 0)
+    {
+        $row = $query->row(); 
+        $card_duration = $row->CARD_ACTIVE_DAYS;
+        return $card_duration;
+         
     }
+    else
+    {
+         return $card_duration;
+     }
+}
 
-    public function getAccountIdByPaymentModeByBrnCode($branch_code,$payment_mode,$comp)
-	{		
-        $accountid = 0;   
-        $where = array('branch_acc_payment.branch'=>$branch_code,'branch_acc_payment.payment_mode'=>$payment_mode,'branch_acc_payment.is_active'=>'Y','branch_acc_payment.company_id'=>$comp);
-        $this->db->select("branch_acc_payment.account_id")
-                 ->from('branch_acc_payment')                             
-                ->where($where)
-                ->order_by('id','DESC')               
-                ->limit(1);
-                
-                // ->limit(10);
-		$query = $this->db->get();
-        
-        #echo $this->db->last_query();exit;
+public function getAccountIdByPaymentModeByBrnCode($branch_code,$payment_mode,$comp)
+{		
+    $accountid = 0;   
+    $where = array('branch_acc_payment.branch'=>$branch_code,'branch_acc_payment.payment_mode'=>$payment_mode,'branch_acc_payment.is_active'=>'Y','branch_acc_payment.company_id'=>$comp);
+    $this->db->select("branch_acc_payment.account_id")
+             ->from('branch_acc_payment')                             
+            ->where($where)
+            ->order_by('id','DESC')               
+            ->limit(1);
+            
+            // ->limit(10);
+    $query = $this->db->get();
+    
+    #echo $this->db->last_query();exit;
 
-		if($query->num_rows()> 0)
-		{
-            $row = $query->row(); 
-            $accountid = $row->account_id;
-            return $accountid;
-             
-        }
-		else
-		{
-             return $accountid;
-         }
+    if($query->num_rows()> 0)
+    {
+        $row = $query->row(); 
+        $accountid = $row->account_id;
+        return $accountid;
+         
     }
+    else
+    {
+         return $accountid;
+     }
+}
 
 
 }

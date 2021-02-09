@@ -67,10 +67,10 @@ public function addeditcard(){
                 //exit;
                 
                }
-               $data['packagecatlist'] = $this->commondatamodel->getAllRecordWhereByComIdOrderBy('product_category',['is_active_web_menu'=>'Y'],'category_name');
+               $data['packagecatlist'] = $this->commondatamodel->getAllRecordWhereByComIdOrderBy('product_category',[],'category_name');
                $data['branchlist'] = $this->commondatamodel->getAllDropdownActiveDataByComId('branch_master');
-               $data['couponlist'] = $this->commondatamodel->getAllDropdownDataByComId('coupon_master');   
-               $data['achivmentslist'] = $this->commondatamodel->getAllDropdownDataByComId('card_achievements_master');   
+               $data['couponlist'] = $this->commondatamodel->getAllDropdownData('coupon_master');   
+               $data['achivmentslist'] = $this->commondatamodel->getAllDropdownData('card_achievements_master');   
            // pre($data['packagecatlist']);exit;
             $data['view_file'] = 'dashboard/registration/master/card-creation/addedit_card';       
             $this->template->admin_template($data);  
@@ -156,9 +156,10 @@ public function checkcarcode()
           {  
               $session = $this->session->userdata('mantra_user_detail');
 
+              $card_prefix = $this->input->post('card_prefix');  
               $card_code = $this->input->post('card_code');  
-              
-              $where = array('CARD_CODE'=>$card_code); 
+              $cardcode = $card_prefix.strtoupper($card_code);
+              $where = array('CARD_CODE'=>$cardcode,'company_id'=>$session['companyid']); 
               $existing = $this->commondatamodel->getSingleRowByWhereClsByComId("card_master",$where); 
              if(!empty($existing)){
                 $json_response = array('msg_status'=>1);

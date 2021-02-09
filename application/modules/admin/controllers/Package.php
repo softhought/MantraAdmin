@@ -279,7 +279,7 @@ function __construct()
     { 
         //$where = array('is_active_web_menu'=>'Y'); 
      
-      $data['couponlist'] = $this->commondatamodel->getAllDropdownDataByComId('coupon_master');  
+      $data['couponlist'] = $this->commondatamodel->getAllDropdownData('coupon_master');  
     // pre($_SERVER);exit;
       $data['view_file'] = 'dashboard/registration/master/facilities/facilities_list';      
         $this->template->admin_template($data);  

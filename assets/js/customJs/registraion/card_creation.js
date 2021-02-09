@@ -260,9 +260,10 @@ function validatecard(){
  }
 
  function checkcarcode(){
+    var card_prefix = $("#card_prefix").val();  
     var card_code = $("#card_code").val();  
     
-    var formData = {card_code:card_code};
+    var formData = {card_code:card_code,card_prefix:card_prefix};
     var method = 'packagecardcreation/checkcarcode';
     var data =  ajaxcallcontrollerforcutom(method,formData);
     if(data.msg_status == 1){ 
