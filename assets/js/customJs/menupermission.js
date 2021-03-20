@@ -1,361 +1,247 @@
 $(document).ready(function () {
+  var Toast = Swal.mixin({
+    toast: true,
 
-    var Toast = Swal.mixin({
+    position: "top-end",
 
-        toast: true,
+    showConfirmButton: false,
 
-        position: 'top-end',
+    timer: 4000,
+  });
 
-        showConfirmButton: false,
+  // $('.alert-dismissible').delay(5000).fadeOut();
 
-        timer: 4000
+  $("#srch-term").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
 
-      });
-
-
-
-    // $('.alert-dismissible').delay(5000).fadeOut();
-
-
-
-    $("#myjstree").jstree({
-
-        "themes": {
-
-            "theme": "apple", "dots": false, "icons": false
-
-        },
-
-        // "checkbox":{three_state : false},
-
-        "plugins": ["themes", "html_data", "checkbox"]
-
+    $(".userpername").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
+  });
 
+  $("#myjstree").jstree({
+    themes: {
+      theme: "apple",
+      dots: false,
+      icons: false,
+    },
 
+    // "checkbox":{three_state : false},
 
-    $("#myjstree").bind('loaded.jstree', function (e, data) {
+    plugins: ["themes", "html_data", "checkbox"],
+  });
 
-        alert(1);
+  $("#myjstree").bind("loaded.jstree", function (e, data) {
+    alert(1);
 
-        displayList();
+    displayList();
+  });
 
-    })
+  $("#myjstree").bind("change_state.jstree", function (e, data) {
+    alert(1);
 
-    $("#myjstree").bind('change_state.jstree', function (e, data) {
+    displayList();
+  });
 
-        alert(1);
+  $("div.bhoechie-tab-menu>div.list-group>a").click(function (e) {
+    e.preventDefault();
 
-        displayList();
+    $(this).siblings("a.active").removeClass("active");
 
-    });
+    $(this).addClass("active");
 
+    var index = $(this).index();
 
+    $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
 
-    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+    $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+  });
 
-        e.preventDefault();
+  $("#myjstree").on("changed.jstree", function (e, data) {
+    console.log(data.node.id);
 
-        
+    var checkedNodes = $("#myjstree").jstree("get_selected");
 
-        $(this).siblings('a.active').removeClass("active");
+    var checked_ids = [];
 
-        $(this).addClass("active");
+    checked_ids = $("#myjstree").jstree("get_selected_All");
 
-        var index = $(this).index();
+    // $("#myjstree").jstree("get_checked", null, true).each(function () {
 
-        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+    //        checked_ids.push(this.id);
 
-        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    //    });
 
-    });
+    checked_ids.splice(checked_ids.indexOf("#"), 1); // to re move the "#""
 
+    console.log(checkedNodes);
 
+    console.log(checked_ids);
+  });
 
-    $('#myjstree').on('changed.jstree', function (e, data) {
+  $(document).on("click", "#btnusersave", function () {
+    var checkedNodes = $("#myjstree").jstree("get_selected_All");
 
-        console.log(data.node.id);
+    checkedNodes.splice(checkedNodes.indexOf("#"), 1);
 
-        var checkedNodes = $("#myjstree").jstree("get_selected");
+    var formData = new FormData();
 
-        var checked_ids = [];
+    formData.append("userId", $("#userId").val());
 
-         checked_ids = $("#myjstree").jstree("get_selected_All");
-
-        // $("#myjstree").jstree("get_checked", null, true).each(function () {
-
-        //        checked_ids.push(this.id);
-
-        //    });
-
-        checked_ids.splice(checked_ids.indexOf("#"), 1); // to re move the "#""
-
-       console.log(checkedNodes);
-
-        console.log(checked_ids);
-
-
-
-        
-
-       
-
-    });
-
-
-
-
-
-
-
-    $(document).on('click', "#btnusersave", function () {
-
-        var checkedNodes = $("#myjstree").jstree("get_selected_All");
-
-        checkedNodes.splice(checkedNodes.indexOf("#"), 1);
-
-        
-
-        var formData = new FormData();
-
-        formData.append('userId',  $('#userId').val());    
-
-        formData.append('MenuString', checkedNodes.toString());    
-
-        $.ajax({
-
-            type: "POST",
-
-            url:'menupermission/AssignMenu',
-
-            data:formData,
-
-            processData: false,
-
-            contentType: false,
-
-            success: function(result) {                
-
-                // location.reload();
-
-                Toast.fire({
-
-                    type: 'success',
-
-                    title: result.msg
-
-                })
-
-                
-
-            },
-
-            error: function(jqXHR, exception) {
-
-                var msg = '';
-
-                if (jqXHR.status === 0) {
-
-                    msg = 'Not connect.\n Verify Network.';
-
-                } else if (jqXHR.status == 404) {
-
-                    msg = 'Requested page not found. [404]';
-
-                } else if (jqXHR.status == 500) {
-
-                    msg = 'Internal Server Error [500].';
-
-                } else if (exception === 'parsererror') {
-
-                    msg = 'Requested JSON parse failed.';
-
-                } else if (exception === 'timeout') {
-
-                    msg = 'Time out error.';
-
-                } else if (exception === 'abort') {
-
-                    msg = 'Ajax request aborted.';
-
-                } else {
-
-                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-
-                }
-
-                // alert(msg);  
-
-            }
-
-        }); /*end ajax call*/
-
-      
-
-    });
-
-
-
-
-
-
-
-
-
-    // $(function()
-
-    // {
-
-    //   //  var checked_ids = [40, 3, 4, 6, 8, 9, 11, 15];
-
-    //     //$.each(checked_ids, function (index, value) {
-
-    //     //    alert(value);
-
-    //     //    $('#myjstree').jstree("select_node", value, true);
-
-    //     //}
-
-    //     //)
-
-    //     $.ajax({
-
-    //         type: 'GET',
-
-    //         url: '@Url.Action("getUserMenuByUserId", "MenuPermission")',
-
-    //         data: { userId: $('#userId').val() || 0 },
-
-    //         contentType: "application/json; charset=utf-8",
-
-    //         dataType: "json",
-
-
-
-    //         success: function (data) {
-
-    //             if (data.success == '1') {
-
-    //                 $.each(data.Message, function (index, value) {
-
-    //                     //alert(value);
-
-    //                     $('#myjstree').jstree("select_node", value, true);
-
-    //                 })
-
-    //               }
-
-
-
-    //               else {
-
-    //                  // alert('Data not properly Saved');
-
-    //                   return false;
-
-    //               }
-
-    //           }
-
-    //     });
-
-    
-
-    // });
-
-
-
-
-
-
-
-
-
-
-
-});// end off document ready
-
-
-
-function getUsersPermittedMenu(userId)
-
-{
-
-    $("#myjstree").jstree().deselect_all(true);
-
-    $('#userId').val('');
-
-    $('#userId').val(userId);    
+    formData.append("MenuString", checkedNodes.toString());
 
     $.ajax({
+      type: "POST",
 
-        type: "POST",
+      url: "menupermission/AssignMenu",
 
-        url:'menupermission/getUsersPermittedMenu',
+      data: formData,
 
-        data:{userId:userId},
+      processData: false,
 
-        dataType: 'json',
+      contentType: false,
 
-        success: function(result) {
+      success: function (result) {
+        // location.reload();
 
-        console.log(result.data)     ;
+        Toast.fire({
+          type: "success",
 
-           $.each(result.data, function (index, value) {
+          title: result.msg,
+        });
+      },
 
-            console.log(value);
+      error: function (jqXHR, exception) {
+        var msg = "";
 
-                $('#myjstree').jstree("select_node", value, true);
-               
-                
-
-            })
-
-            $('#btnusersaveDiv').css('display','block');
-
-        },
-
-        error: function(jqXHR, exception) {
-
-            $('#btnusersaveDiv').css('display','none');
-
-            var msg = '';
-
-            if (jqXHR.status === 0) {
-
-                msg = 'Not connect.\n Verify Network.';
-
-            } else if (jqXHR.status == 404) {
-
-                msg = 'Requested page not found. [404]';
-
-            } else if (jqXHR.status == 500) {
-
-                msg = 'Internal Server Error [500].';
-
-            } else if (exception === 'parsererror') {
-
-                msg = 'Requested JSON parse failed.';
-
-            } else if (exception === 'timeout') {
-
-                msg = 'Time out error.';
-
-            } else if (exception === 'abort') {
-
-                msg = 'Ajax request aborted.';
-
-            } else {
-
-                msg = 'Uncaught Error.\n' + jqXHR.responseText;
-
-            }
-
-            // alert(msg);  
-
+        if (jqXHR.status === 0) {
+          msg = "Not connect.\n Verify Network.";
+        } else if (jqXHR.status == 404) {
+          msg = "Requested page not found. [404]";
+        } else if (jqXHR.status == 500) {
+          msg = "Internal Server Error [500].";
+        } else if (exception === "parsererror") {
+          msg = "Requested JSON parse failed.";
+        } else if (exception === "timeout") {
+          msg = "Time out error.";
+        } else if (exception === "abort") {
+          msg = "Ajax request aborted.";
+        } else {
+          msg = "Uncaught Error.\n" + jqXHR.responseText;
         }
 
+        // alert(msg);
+      },
     }); /*end ajax call*/
+  });
 
+  // $(function()
+
+  // {
+
+  //   //  var checked_ids = [40, 3, 4, 6, 8, 9, 11, 15];
+
+  //     //$.each(checked_ids, function (index, value) {
+
+  //     //    alert(value);
+
+  //     //    $('#myjstree').jstree("select_node", value, true);
+
+  //     //}
+
+  //     //)
+
+  //     $.ajax({
+
+  //         type: 'GET',
+
+  //         url: '@Url.Action("getUserMenuByUserId", "MenuPermission")',
+
+  //         data: { userId: $('#userId').val() || 0 },
+
+  //         contentType: "application/json; charset=utf-8",
+
+  //         dataType: "json",
+
+  //         success: function (data) {
+
+  //             if (data.success == '1') {
+
+  //                 $.each(data.Message, function (index, value) {
+
+  //                     //alert(value);
+
+  //                     $('#myjstree').jstree("select_node", value, true);
+
+  //                 })
+
+  //               }
+
+  //               else {
+
+  //                  // alert('Data not properly Saved');
+
+  //                   return false;
+
+  //               }
+
+  //           }
+
+  //     });
+
+  // });
+}); // end off document ready
+
+function getUsersPermittedMenu(userId) {
+  $("#myjstree").jstree().deselect_all(true);
+
+  $("#userId").val("");
+
+  $("#userId").val(userId);
+
+  $.ajax({
+    type: "POST",
+
+    url: "menupermission/getUsersPermittedMenu",
+
+    data: { userId: userId },
+
+    dataType: "json",
+
+    success: function (result) {
+      console.log(result.data);
+
+      $.each(result.data, function (index, value) {
+        console.log(value);
+
+        $("#myjstree").jstree("select_node", value, true);
+      });
+
+      $("#btnusersaveDiv").css("display", "block");
+    },
+
+    error: function (jqXHR, exception) {
+      $("#btnusersaveDiv").css("display", "none");
+
+      var msg = "";
+
+      if (jqXHR.status === 0) {
+        msg = "Not connect.\n Verify Network.";
+      } else if (jqXHR.status == 404) {
+        msg = "Requested page not found. [404]";
+      } else if (jqXHR.status == 500) {
+        msg = "Internal Server Error [500].";
+      } else if (exception === "parsererror") {
+        msg = "Requested JSON parse failed.";
+      } else if (exception === "timeout") {
+        msg = "Time out error.";
+      } else if (exception === "abort") {
+        msg = "Ajax request aborted.";
+      } else {
+        msg = "Uncaught Error.\n" + jqXHR.responseText;
+      }
+
+      // alert(msg);
+    },
+  }); /*end ajax call*/
 }

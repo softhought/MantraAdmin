@@ -1252,6 +1252,7 @@ public function getAllRecordWhereByComId($table,$where)
        
         $query = $this->db->select("customer_master.CUS_ID,
                                     customer_master.MEMBERSHIP_NO,
+                                    customer_master.CUS_DIET,
                                     customer_master.CUS_BRANCH,
                                     customer_master.CUS_CARD,
                                     customer_master.CUS_NAME,

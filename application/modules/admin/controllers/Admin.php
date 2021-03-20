@@ -25,7 +25,7 @@ function __construct()
 public function index(){
 
        
-
+//print_r($_COOKIE);exit;
         $this->load->library('form_validation'); 
 
         $where = array('is_active'=>'Y');
@@ -298,6 +298,7 @@ public function checklogin(){
 
                  $this->setSessionData($user_session);
 
+
                  redirect('admin/dashboard');
 
                     
@@ -325,6 +326,17 @@ public function checklogin(){
         if ($result) {
 
             $this->session->set_userdata("mantra_user_detail", $result);
+            
+            if(!isset($_COOKIE['umetainfo'])) {
+              unset($_COOKIE['umetainfo']);
+			  setcookie("umetainfo", "", time() - 3600);
+			  //setcookie('umetainfo', json_encode($session), time()+86400);
+			    $cookie_name = "umetainfo";
+				$cookie_value =  json_encode($result);
+				setcookie($cookie_name, $cookie_value, time() + (86400 * 1), "/");
+
+
+            }
 
         }
 
@@ -358,9 +370,18 @@ function logout(){
 
    
 
-    
+       // setcookie('umetainfo', null, -1);
+      
+        setcookie("umetainfo","",1,'/');
+        unset($_COOKIE["umetainfo"]);
+
         $this->session->unset_userdata('mantra_user_detail');
+
+                 // unset($_COOKIE['umetainfo']);
+			 // setcookie("umetainfo", "", time() - 3600);
     //  $this->session->sess_destroy();
+
+
 
      redirect('admin');
 

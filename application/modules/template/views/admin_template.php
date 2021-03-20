@@ -34,7 +34,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <link rel="stylesheet" href="<?php echo(base_url());?>assets/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
 
-  <link href="https://cdn.datatables.net/fixedcolumns/3.3.2/css/fixedColumns.dataTables.min.css" rel="stylesheet">
+
 
   <!-- Theme style -->
 
@@ -105,7 +105,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="<?php echo(base_url());?>assets/plugins/moment/moment.min.js"></script>
 
 <script src="<?php echo(base_url());?>assets/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
-
+<script src="<?php echo(base_url());?>assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
 
 
 <!-- datepicker -->
@@ -117,7 +117,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="<?php echo(base_url());?>assets/plugins/datatables/jquery.dataTables.js"></script>
 
 <script src="<?php echo(base_url());?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="https://cdn.datatables.net/fixedcolumns/3.3.2/js/dataTables.fixedColumns.min.js"></script>
+
 <!-- AdminLTE App -->
 
 <script src="<?php echo(base_url());?>assets/dist/js/adminlte.min.js"></script>
@@ -150,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 
-<!-- <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
 
 <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
 
@@ -162,10 +162,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script> 
 
-<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>  -->
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script> 
 
 
-
+<!-- 
 <script src="<?php echo base_url(); ?>assets/js/datatables/dataTables.buttons.min.js"></script>
 
 <script src="<?php echo base_url(); ?>assets/js/datatables/buttons.flash.min.js"></script>
@@ -178,17 +178,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <script src="<?php echo base_url(); ?>assets/js/datatables/buttons.html5.min.js"></script>
 
-<script src="<?php echo base_url(); ?>assets/js/datatables/buttons.print.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/datatables/buttons.print.min.js"></script> -->
 
 <script src="<?php echo base_url(); ?>assets/js/customJs/comman.js"></script>
-
 
   <!-- Google Font: Source Sans Pro -->
 
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
   <link href="https://fonts.googleapis.com/css?family=Monoton&display=swap" rel="stylesheet"> 
-   
 
 
 
@@ -199,23 +197,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     border: 2px solid red !important;
 
   }
-
-  .float{
-	position:fixed;
-	width:60px;
-	height:60px;
-	bottom:20px;
-	right:20px;
-	background-color:#881A62;;
-	color:#FFF;
-	border-radius:50px;
-	text-align:center;
-	box-shadow: 2px 2px 3px #999;
-}
-
-.my-float{
-	margin-top:22px;
-}
 
   </style>
 
@@ -240,7 +221,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- <img src="<?php echo(base_url());?>assets/img/logo-dks.png" alt=" Dakshin Kalikata Sansad Logo" class="brand-image " style="opacity: 1"> -->
 
           </a>
+          	<?php
 
+          if(isset($_COOKIE['umetainfo'])) {        
+              $kpcls="badge-success";   
+              $kptext="Active login for today";   
+                
+                  }else{
+                  $kpcls="badge-danger";  
+              $kptext="Keep me logged in";  
+                  }
+
+          ?>
+<!-- <span class="badge <?php echo $kpcls;?> " ><?php echo $kptext;?></span> -->
             <h3> 
               <?php echo $companyname; ?>
               <!-- Mantra&nbsp;&nbsp; The&nbsp;&nbsp; Life&nbsp;&nbsp; Style&nbsp;&nbsp; Health&nbsp;&nbsp; Club  -->
@@ -264,9 +257,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 <form class="form-inline my-2 my-lg-0 searchForm">
 
-                  <input class="form-control custom-fm-input-sm" type="search" placeholder="Search" aria-label="Search">
+                  <!-- <input class="form-control custom-fm-input-sm" type="search" placeholder="Search" aria-label="Search">
 
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="button"><i class="fas fa-search"></i></button>
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="button"><i class="fas fa-search"></i></button> -->
+                   <div class="row">    <div class="col-md-5"> <div class="form-group">
+                              <div class="input-group input-group-sm searchGlobal">
+                                <select class="form-control custom-fm-input-sm select2" id="menu_id" name="menu_id" style="width: 200%;" autocomplete="off">
+                                  <option value='' data-linkval="">Search            </option>
+                                  <?php foreach ($menuListDropdown as $menulistdropdown) { ?>
+                                    <option value="<?php echo $menulistdropdown['menuid']; ?>" 
+                                      data-linkval="<?php echo $menulistdropdown['menulink']; ?>"
+                                  
+                                     ><?php echo $menulistdropdown['name']; ?></option>
+                                <?php   } ?>
+                                </select>      
+                                </div>
+                              </div> 
+                               </div> 
+                                </div> 
 
                 </form>
 
@@ -602,12 +610,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
  <input type="hidden" value="<?php echo $end_date;?>" id="acendDate" readonly />
 
-     <!-- Code begins here -->
-
-<a href="#" class="float">
-
-<i class="fas fa-envelope-open-text my-float"></i>
-</a>
+     
 
       </div><!-- /.container-fluid -->
 
@@ -662,6 +665,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script>
 
   $(document).ready(function() {
+
+  $(document).on('change','#menu_id',function(event)
+ {
+    event.preventDefault();
+     basepath = $("#basepath").val();
+    var selectedCode = $('#menu_id').find('option:selected');
+    if(selectedCode.data('linkval')!=''){
+       window.location.href = basepath + selectedCode.data('linkval');
+    }
+    
+
+});
 
     $('.selectpicker').selectpicker();
 
@@ -858,8 +873,4 @@ $(".input-number").keydown(function (e) {
 </body>
 
 </html>
-
-
-
-
 

@@ -11,3 +11,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	https://codeigniter.com/user_guide/general/hooks.html
 |
 */
+
+$hook['pre_controller'] = array(
+        'class'    => 'Resetsession',
+        'function' => 'restore',
+        'filename' => 'Resetsession.php',
+        'filepath' => 'hooks',
+        'params'   => ""
+);
