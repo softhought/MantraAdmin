@@ -202,7 +202,7 @@
 
                         <h3 class="card-title"><?php if($mode=='ADD'){echo "Prepare Diet";}else{echo "Edit Diet";}?></h3>
                         <div class="btn-group btn-group-sm float-right" role="group" aria-label="MoreActionButtons" >
-                        <a href="<?php echo admin_with_base_url(); ?>account" class="btn btn-info btnpos">
+                        <a href="<?php echo admin_with_base_url(); ?>diet/membersdiet" class="btn btn-info btnpos">
                         <i class="fas fa-clipboard-list"></i> List </a>
                           </div>           
                       </div><!-- /.card-header -->
@@ -1236,7 +1236,7 @@
                                 <div class="form-group">
                                   <label for="code">Meal Time</label>
                                   <div class="input-group input-group-sm" >
-                                    <input type="text" class="form-control mealTime clrField" name="mealTime[]" id="mealTime_<?php echo $i;?>" placeholder="" value="" autocomplete="off" >
+                                    <input type="text" class="form-control mealTime clrField" name="mealTime[]" id="mealTime_<?php echo $i;?>" placeholder="" value="<?php if ($mode=='EDIT'){echo $mealTime;} ?>" autocomplete="off" >
                                   </div>
                                 </div>
                             </div>

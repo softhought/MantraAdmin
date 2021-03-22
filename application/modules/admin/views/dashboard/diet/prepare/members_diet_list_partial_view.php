@@ -73,7 +73,7 @@
 					<tr>
 						<td >Date of Diet</td>
 						<td>
-							<input type="text" name="mealMastIdFc" id="mealMastIdFc" />
+							<input type="hidden" name="mealMastIdFc" id="mealMastIdFc" />
 							<input type="text" name="copyMealdate" id="copyMealdate" class="datepicker" style="border: 1px solid #FFF;width:198px;color:#fe5c36;font-weight:600;" readonly onchange="enableCopyButton();"/>
 						</td>
 					</tr>

@@ -266,8 +266,8 @@ $tFatSupllmntCalorie = $this->_dietmodel->converGramToCalorie($totalFatSupllmnt,
 						<b><?php echo $title_tag." ".$member_name ; ?>,</b><br> 
                         Your Calorie requirement is <b><?php echo number_format($calorie_requierd); ?> kcal ,</b>
 					   Your Body fa% is <b><?php echo $body_fat_percentg; ?></b> which is <b><?php echo $body_fat_remarks; ?></b> State.
-                       Your visceral fat % is <b><?php //echo $body_fat_percentg; ?></b> which is <b><?php //echo $visceral_fat_remarks; ?></b> State.
-				       Your metabolic age is  which is 
+                       <!-- Your visceral fat % is <b><?php //echo $body_fat_percentg; ?></b> which is <b><?php //echo $visceral_fat_remarks; ?></b> State.
+				       Your metabolic age is  which is  -->
                     </p>
 					
 					<p><b>According to the above body composition assessment Your ideal meal plan  is given bellow. </b> </p>

@@ -54,7 +54,11 @@ public function preparediet(){
 		  $data['proteinCalorie'] = $this->getCalorieByPercentage($final_calorie_req,$protein_percentage);
 		  $data['carbsCalorie'] = $this->getCalorieByPercentage($final_calorie_req,$carbs_percentage);
 		  $data['fatCalorie'] = $this->getCalorieByPercentage($final_calorie_req,$fat_percentage);
+		
 
+		 $where2 = array('customer_master.MEMBERSHIP_NO'=>$data['rowMemberMasterData']->membership_no);
+         $data['memberInfo'] = $this->commondatamodel->getSingleRowByWhereCls('customer_master',$where2);
+         pre($data['memberInfo']);exit;
 
 
        }
@@ -2053,7 +2057,7 @@ public function getMembersDietList()
 			"modify_date"=>NULL,
 			"dietitian_id"=>$dietitian_id,			
 			"disease_guidlines"=>$disease_guidline,			
-			"youtube_videos"=>$$youtube_videos,			
+			"youtube_videos"=>$youtube_videos,			
 			"is_new_soft"=>$is_new_soft,			
 			"calculate_by"=>$calculate_by,			
 		);
@@ -2292,6 +2296,400 @@ public function printdiet(){
   }
 
 
+  public function unitlist(){ 
+    $session = $this->session->userdata('mantra_user_detail');
+    if($this->session->userdata('mantra_user_detail'))
+    {   
+        $company_id=$session['companyid'];
+        $year_id=$session['yearid'];
+        $where = array('company_id' => $company_id);
+        $orderby2='unit_name'; 
+        $data['rowFoodUnit'] = $this->commondatamodel->getAllRecordWhereOrderBy('diet_unit_master',[],$orderby2);
+        // pre($data['rowFoodUnit']);exit;
+        $data['view_file'] = 'dashboard/diet/masters/unit/unit_view';       
+        $this->template->admin_template($data);  
+		
+    }else{
+        redirect('admin','refresh');
+  
+    }
 
+  }
+
+
+ public function addUnit(){
+    $session = $this->session->userdata('mantra_user_detail');
+    if($this->session->userdata('mantra_user_detail'))
+    {  
+        $company_id=$session['companyid'];
+        $year_id=$session['yearid'];
+       if($this->uri->segment(4) == NULL){
+
+        $data['mode'] = "ADD";
+        $data['btnText'] = "Save";
+        $data['btnTextLoader'] = "Saving...";
+        $data['unitId'] = 0;
+        $data['unitEditdata'] = [];
+ 
+       }else{
+
+          $data['mode'] = "EDIT";
+          $data['btnText'] = "Update";
+          $data['btnTextLoader'] = "Updating...";
+          $data['unitId'] = $this->uri->segment(4);
+          $where = array('id'=>$data['unitId']);
+          $data['unitEditdata'] = $this->commondatamodel->getSingleRowByWhereCls('diet_unit_master',$where);
+
+       }
+     
+        $data['view_file'] = 'dashboard/diet/masters/unit/addedit_unit';  
+        $header="";
+        $this->template->admin_template($data);  
+
+    }else{
+
+        redirect('admin','refresh');
+
+    }
+
+}
+
+public function unit_action() {
+    $session = $this->session->userdata('mantra_user_detail');
+    if($this->session->userdata('mantra_user_detail'))
+    {
+         $mealData = $_POST['formData'];
+            parse_str($mealData, $data);
+            //pre($data);exit;
+            $mode = $data['mode'];
+            $unitId = $data['unitId'];
+   
+     
+
+
+        $company_id=$session['companyid'];
+        $year_id=$session['yearid'];
+
+        if ($mode == "ADD" && $unitId == "0") {
+
+            $insert_arr = array(                             
+                                'unit_name' => $data['unit_name'],   
+                           );
+
+             $insertData = $this->commondatamodel->insertSingleTableData('diet_unit_master',$insert_arr);
+
+
+
+                /** audit trail */ 
+                  $module = 'diet unit master ';           
+                  $action = "Insert";
+                  $method = "diet/unit_action";
+
+                  $table="diet_unit_master";
+                  $old_details="";
+                  $new_details = json_encode($insert_arr);
+                  $this->commondatamodel->insertSingleActivityTableData('Add unit master',$module,$action,$method,$insertData,$table,$old_details,$new_details);
+
+
+               if($insertData)
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "Saved successfully",
+                            "mode" => "ADD",
+                        );
+
+                    }
+                    else
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "There is some problem.Try again"
+                        );
+
+                    }
+
+
+
+        }else{
+
+              $update_arr = array(
+                                'unit_name' => $data['unit_name'],                                             
+                           );
+                $where = array('id'=>$unitId);
+                $olddtl = $this->commondatamodel->getSingleRowByWhereCls('diet_unit_master',$where);
+                $upd_insert = $this->commondatamodel->updateSingleTableData('diet_unit_master',$update_arr,$where);
+
+
+  
+
+
+                  /** audit trail */ 
+                 $module = 'diet unit master ';           
+                  $action = "update";
+                  $method = "diet/unit_action";
+
+                  $table="diet_unit_master";
+                 $old_details = json_encode($olddtl);
+                 $new_details = json_encode($update_arr);
+                 $this->commondatamodel->insertSingleActivityTableData('Update unit_master ',$module,$action,$method,$unitId,$table,$old_details,$new_details);
+
+
+               if($upd_insert)
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "Saved successfully",
+                            "mode" => "ADD",
+                        );
+
+                    }
+                    else
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "There is some problem.Try again"
+                        );
+
+                    }
+
+
+
+            
+
+        }
+
+
+            header('Content-Type: application/json');
+            echo json_encode( $json_response );
+            exit;
+
+   }else
+		{
+			redirect('login','refresh');
+        }
+        
+  }
+
+  
+  public function guidelinelist(){ 
+    $session = $this->session->userdata('mantra_user_detail');
+    if($this->session->userdata('mantra_user_detail'))
+    {   
+        $company_id=$session['companyid'];
+        $year_id=$session['yearid'];
+        $where = array('company_id' => $company_id);
+        $orderby2='id desc'; 
+        $data['diseaseguidelineList'] = $this->commondatamodel->getAllRecordWhereOrderBy('diet_disease_guide_master',[],$orderby2);
+        // pre($data['rowFoodUnit']);exit;
+        $data['view_file'] = 'dashboard/diet/masters/disease_guideline/disease_guideline_view';       
+        $this->template->admin_template($data);  
+		
+    }else{
+        redirect('admin','refresh');
+  
+    }
+
+  }
+
+
+ public function addGuideline(){
+    $session = $this->session->userdata('mantra_user_detail');
+    if($this->session->userdata('mantra_user_detail'))
+    {  
+        $company_id=$session['companyid'];
+        $year_id=$session['yearid'];
+       if($this->uri->segment(4) == NULL){
+
+        $data['mode'] = "ADD";
+        $data['btnText'] = "Save";
+        $data['btnTextLoader'] = "Saving...";
+        $data['guidelineId'] = 0;
+        $data['guideEditdata'] = [];
+ 
+       }else{
+
+          $data['mode'] = "EDIT";
+          $data['btnText'] = "Update";
+          $data['btnTextLoader'] = "Updating...";
+          $data['guidelineId'] = $this->uri->segment(4);
+          $where = array('id'=>$data['guidelineId']);
+          $data['guideEditdata'] = $this->commondatamodel->getSingleRowByWhereCls('diet_disease_guide_master',$where);
+
+       }
+     
+        $data['view_file'] = 'dashboard/diet/masters/disease_guideline/addedit_disease_guideline';  
+        $header="";
+        $this->template->admin_template($data);  
+
+    }else{
+
+        redirect('admin','refresh');
+
+    }
+
+}
+	public function diseaseGuidelineSetStatus(){
+		$session = $this->session->userdata('mantra_user_detail');
+		if($this->session->userdata('mantra_user_detail'))
+		{
+			$updID = trim($this->input->post('uid'));
+			$setstatus = trim($this->input->post('setstatus'));
+			
+			$update_array  = array(
+				"is_active" => $setstatus
+				);
+				
+			$where = array(
+				"id" => $updID
+				);
+
+			$update = $this->commondatamodel->updateSingleTableData('diet_disease_guide_master',$update_array,$where);
+			if($update)
+			{
+				$json_response = array(
+					"msg_status" => 1,
+					"msg_data" => "Status updated"
+				);
+			}
+			else
+			{
+				$json_response = array(
+					"msg_status" => 0,
+					"msg_data" => "Failed to update"
+				);
+			}
+
+
+		header('Content-Type: application/json');
+		echo json_encode( $json_response );
+		exit;
+
+		}
+		else
+		{
+			redirect('admin','refresh');
+		}
+    }
+
+
+	public function advice_guideline_action() {
+    $session = $this->session->userdata('mantra_user_detail');
+    if($this->session->userdata('mantra_user_detail'))
+    {
+         $mealData = $_POST['formData'];
+            parse_str($mealData, $data);
+            //pre($data);exit;
+            $mode = $data['mode'];
+            $guidelineId = $data['guidelineId'];
+   
+     
+
+
+        $company_id=$session['companyid'];
+        $year_id=$session['yearid'];
+
+        if ($mode == "ADD" && $guidelineId == "0") {
+
+            $insert_arr = array(                             
+                                'disease' => $data['disease'],   
+                                'disease_guidelines' => trim($data['disease_guidelines']),   
+                           );
+
+             $insertData = $this->commondatamodel->insertSingleTableData('diet_disease_guide_master',$insert_arr);
+
+
+
+                /** audit trail */ 
+                 $module = 'diet advice_guideline_action ';           
+                  $action = "Insert";
+                  $method = "diet/advice_guideline_action";
+
+                  $table="diet_disease_guide_master";
+                  $old_details="";
+                  $new_details = json_encode($insert_arr);
+                  $this->commondatamodel->insertSingleActivityTableData('Add diet_disease_guide_master',$module,$action,$method,$insertData,$table,$old_details,$new_details);
+
+
+               if($insertData)
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "Saved successfully",
+                            "mode" => "ADD",
+                        );
+
+                    }
+                    else
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "There is some problem.Try again"
+                        );
+
+                    }
+
+
+
+        }else{
+
+              $update_arr = array(
+                                'disease' => $data['disease'],   
+                                'disease_guidelines' => trim($data['disease_guidelines']),                                              
+                           );
+                $where = array('id'=>$guidelineId);
+                $olddtl = $this->commondatamodel->getSingleRowByWhereCls('diet_disease_guide_master',$where);
+                $upd_insert = $this->commondatamodel->updateSingleTableData('diet_disease_guide_master',$update_arr,$where);
+
+
+  
+
+
+                  /** audit trail */ 
+                 $module = 'diet advice_guideline_action ';           
+                  $action = "update";
+                  $method = "diet/advice_guideline_action";
+
+                  $table="diet_disease_guide_master";
+                 $old_details = json_encode($olddtl);
+                 $new_details = json_encode($update_arr);
+                 $this->commondatamodel->insertSingleActivityTableData('Update diet_disease_guide_master ',$module,$action,$method,$guidelineId,$table,$old_details,$new_details);
+
+
+               if($upd_insert)
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "Saved successfully",
+                            "mode" => "ADD",
+                        );
+
+                    }
+                    else
+                    {
+                        $json_response = array(
+                            "msg_status" => 1,
+                            "msg_data" => "There is some problem.Try again"
+                        );
+
+                    }
+
+
+
+            
+
+        }
+
+
+            header('Content-Type: application/json');
+            echo json_encode( $json_response );
+            exit;
+
+   }else
+		{
+			redirect('login','refresh');
+        }
+        
+  }
 
 }/* end of class */

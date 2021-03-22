@@ -1296,4 +1296,45 @@ public function converGramToCalorie($gmValue,$catg)
 
 	}
 
+	public function GetAllFoodMaster()
+	{
+		$data = [];
+
+		$sql="SELECT 
+				  diet_food_master.id AS foodMasterID,
+				  diet_food_master.food_name,
+				  diet_food_master.food_qty,
+				  diet_food_master.calorie,
+				  diet_food_master.carbohydrate,
+				  diet_food_master.protein,
+				  diet_food_master.fat,
+				  diet_food_master.glucose_index,
+				  food_type.food_type_name,
+				  diet_food_category.`category`,
+				  diet_unit_master.unit_name 
+				FROM
+				  diet_food_master 
+				  INNER JOIN food_type 
+					ON food_type.id = diet_food_master.food_type_id 
+				  INNER JOIN diet_food_category
+				  ON diet_food_category.`id`=diet_food_master.`food_category_id`
+				  INNER JOIN diet_unit_master 
+					ON diet_unit_master.id = diet_food_master.diet_unit_id 
+				ORDER BY diet_food_master.food_name ";
+				 $query = $this->db->query($sql);
+		if($query->num_rows()> 0)
+		{
+            foreach ($query->result() as $rows)
+			{
+				$data[] = $rows;
+            }
+            return $data;           
+        }
+		else
+		{
+             return $data;
+         }
+
+	}
+
 }/* end of class  */
